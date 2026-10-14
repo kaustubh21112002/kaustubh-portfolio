@@ -82,3 +82,10 @@ npm run preview
 
 ### Configuration
 Edit [`src/config/portfolio.ts`](file:///src/config/portfolio.ts) to update profile details, contact information, or resume settings.
+
+### Deploy to GitHub & Vercel
+```bash
+git remote add origin https://github.com/kaustubh21112002/kaustubh-portfolio.git
+git push -u origin main
+```
+Then import `kaustubh-portfolio` in [vercel.com/new](https://vercel.com/new) or run `npx vercel`.
