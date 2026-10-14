@@ -1,0 +1,243 @@
+import React, { useEffect, useState } from 'react';
+import { X, ArrowRight, ShieldAlert, CheckCircle2, FileText, ChevronDown, ChevronUp, Layers, HelpCircle, Activity } from 'lucide-react';
+import { Project } from '../../data/projects';
+
+interface CaseStudyModalProps {
+  project: Project | null;
+  onClose: () => void;
+}
+
+export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose }) => {
+  const [expandedSection, setExpandedSection] = useState<number | null>(0);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    if (project) {
+      document.body.style.overflow = 'hidden';
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [project, onClose]);
+
+  if (!project) return null;
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 lg:p-8 overflow-y-auto">
+      {/* Backdrop */}
+      <div
+        className="fixed inset-0 bg-black/85 backdrop-blur-md transition-opacity"
+        onClick={onClose}
+      />
+
+      {/* Modal Card */}
+      <div className="relative w-full max-w-4xl max-h-[90vh] bg-[#10121a] border border-white/20 rounded-3xl shadow-2xl overflow-y-auto z-10 text-white p-6 sm:p-10 my-auto">
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="absolute top-6 right-6 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+          aria-label="Close case study"
+        >
+          <X className="w-5 h-5" />
+        </button>
+
+        {/* Header */}
+        <div className="mb-8 pr-12">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-mono uppercase tracking-widest mb-3">
+            <span>{project.category}</span>
+            <span>•</span>
+            <span>{project.status}</span>
+          </div>
+
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
+            {project.title}
+          </h2>
+          <p className="text-white/70 text-sm sm:text-base mt-2 font-mono">{project.tagline}</p>
+        </div>
+
+        {/* Top Storytelling Framework: Problem -> Approach -> Finding -> Implication */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          <div className="p-5 rounded-2xl bg-[#141722] border border-white/10">
+            <span className="text-[11px] font-mono uppercase text-red-400 font-bold block mb-1.5">
+              1. Business Problem
+            </span>
+            <p className="text-white/80 text-xs sm:text-sm leading-relaxed">{project.problemStatement}</p>
+          </div>
+
+          <div className="p-5 rounded-2xl bg-[#141722] border border-white/10">
+            <span className="text-[11px] font-mono uppercase text-blue-400 font-bold block mb-1.5">
+              2. Analytical Approach
+            </span>
+            <p className="text-white/80 text-xs sm:text-sm leading-relaxed">{project.approach}</p>
+          </div>
+
+          <div className="p-5 rounded-2xl bg-[#141722] border border-white/10">
+            <span className="text-[11px] font-mono uppercase text-emerald-400 font-bold block mb-1.5">
+              3. Key Verified Finding
+            </span>
+            <p className="text-white/80 text-xs sm:text-sm leading-relaxed">{project.keyFinding}</p>
+          </div>
+
+          <div className="p-5 rounded-2xl bg-[#141722] border border-white/10">
+            <span className="text-[11px] font-mono uppercase text-amber-400 font-bold block mb-1.5">
+              4. Business Implication
+            </span>
+            <p className="text-white/80 text-xs sm:text-sm leading-relaxed">{project.businessImplication}</p>
+          </div>
+        </div>
+
+        {/* Key Metrics Grid */}
+        <div className="mb-8">
+          <div className="text-xs font-mono text-white/50 uppercase tracking-wider mb-3">Verified Project Metrics</div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {project.keyMetrics.map((m, idx) => (
+              <div key={idx} className="p-4 rounded-xl bg-black/40 border border-white/10">
+                <div className="text-[10px] text-white/50 font-mono uppercase tracking-wider">{m.label}</div>
+                <div className="text-xl sm:text-2xl font-extrabold text-white font-mono mt-1">{m.value}</div>
+                {m.subtext && <div className="text-[11px] text-white/40 mt-1 font-mono">{m.subtext}</div>}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Methods, Assumptions & Limitations Panels */}
+        <div className="space-y-4 mb-8">
+          <div className="text-xs font-mono text-white/50 uppercase tracking-wider">Detailed Analytical Findings & Methodology</div>
+
+          {/* Grouped Methods and Assumptions Panel */}
+          {project.methodsAndAssumptions && project.methodsAndAssumptions.length > 0 && (
+            <div className="rounded-2xl bg-white/[0.02] border border-white/10 overflow-hidden">
+              <div className="p-5 border-b border-white/5 bg-black/20">
+                <span className="text-sm font-bold text-white font-mono flex items-center gap-2">
+                  <Layers className="w-4 h-4 text-blue-400" />
+                  <span>Methods & Quantitative Assumptions</span>
+                </span>
+              </div>
+              <div className="p-5 space-y-2">
+                {project.methodsAndAssumptions.map((item, idx) => (
+                  <div key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-white/80">
+                    <span className="text-blue-400 font-mono text-xs mt-0.5">•</span>
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Expandable Case Study Sections */}
+          {project.caseStudy.sections.map((section, sIdx) => {
+            const isExpanded = expandedSection === sIdx;
+            return (
+              <div key={sIdx} className="rounded-2xl bg-white/[0.02] border border-white/10 overflow-hidden">
+                <button
+                  onClick={() => setExpandedSection(isExpanded ? null : sIdx)}
+                  className="w-full p-5 flex items-center justify-between text-left hover:bg-white/[0.02] transition-colors cursor-pointer"
+                >
+                  <span className="text-sm sm:text-base font-bold text-white font-mono">{section.title}</span>
+                  <div className="p-1.5 rounded-full bg-white/5 text-white/70">
+                    {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                  </div>
+                </button>
+
+                {isExpanded && (
+                  <div className="px-5 pb-6 pt-1 border-t border-white/5 space-y-4">
+                    <div className="space-y-2 text-white/80 text-xs sm:text-sm leading-relaxed">
+                      {section.content.map((p, pIdx) => (
+                        <p key={pIdx}>{p}</p>
+                      ))}
+                    </div>
+
+                    {/* Table if present */}
+                    {section.table && (
+                      <div className="mt-4 overflow-x-auto rounded-xl border border-white/10">
+                        <table className="w-full text-left border-collapse text-xs font-mono">
+                          <thead>
+                            <tr className="bg-black/50 border-b border-white/10 text-white/50 text-[11px] uppercase">
+                              {section.table.headers.map((h, hIdx) => (
+                                <th key={hIdx} className="py-2.5 px-3">
+                                  {h}
+                                </th>
+                              ))}
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-white/5 bg-black/20">
+                            {section.table.rows.map((row, rIdx) => (
+                              <tr key={rIdx} className="hover:bg-white/[0.02]">
+                                {row.map((cell, cIdx) => (
+                                  <td key={cIdx} className={`py-2 px-3 ${cIdx === 0 ? 'font-sans font-medium text-white' : 'text-white/80'}`}>
+                                    {cell}
+                                  </td>
+                                ))}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+
+                    {/* Callout if present */}
+                    {section.callout && (
+                      <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-3">
+                        <ShieldAlert className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                        <p className="text-xs text-amber-200/90 leading-relaxed font-sans">{section.callout.text}</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+
+          {/* Limitations & Uncertainties Panel */}
+          {project.limitations && project.limitations.length > 0 && (
+            <div className="rounded-2xl bg-amber-950/20 border border-amber-500/25 p-5 space-y-2.5">
+              <div className="flex items-center gap-2 text-xs font-mono uppercase text-amber-300 font-bold">
+                <ShieldAlert className="w-4 h-4 text-amber-400" />
+                <span>Methodological Limitations & Governance Constraints</span>
+              </div>
+              <div className="space-y-1.5">
+                {project.limitations.map((lim, idx) => (
+                  <p key={idx} className="text-xs text-amber-200/80 leading-relaxed">
+                    • {lim}
+                  </p>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Tools and Stack */}
+        <div className="pt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <div className="text-[10px] font-mono text-white/40 uppercase mb-2">Verified Technology Stack</div>
+            <div className="flex flex-wrap gap-1.5">
+              {project.tools.map((t, idx) => (
+                <span key={idx} className="px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-white/70 text-xs font-mono">
+                  {t}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <button
+            onClick={onClose}
+            className="px-6 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-mono uppercase tracking-wider transition-colors cursor-pointer"
+          >
+            Close Overview
+          </button>
+        </div>
+
+        {/* Disclaimer */}
+        {project.caseStudy.disclaimer && (
+          <div className="mt-6 p-4 rounded-xl bg-black/50 border border-white/5 text-[11px] text-white/50 font-mono leading-relaxed">
+            <strong>Disclosure:</strong> {project.caseStudy.disclaimer}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
