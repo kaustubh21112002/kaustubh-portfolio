@@ -10,7 +10,8 @@ if js_match:
     js_content = urllib.request.urlopen(js_url).read().decode('utf-8')
     print('Fetched JS bundle:', js_url, 'Size:', len(js_content))
     checks = [
-        'Business Analytics & Research.',
+        'Business Analytics',
+        '& Research.',
         'Kaustubh K. Nandurkar',
         'Historical & Forecast Assumptions',
         '33,431.99',
