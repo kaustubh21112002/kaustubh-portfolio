@@ -31,7 +31,6 @@ export const Header: React.FC<HeaderProps> = ({ activeSection = 'hero' }) => {
     { label: 'JOURNEY', href: '#journey', id: 'journey' },
     { label: 'SKILLS', href: '#skills', id: 'skills' },
     { label: 'RESEARCH', href: '#research', id: 'research' },
-    { label: 'RESUME', href: '#resume', id: 'resume' },
     { label: 'CONTACT', href: '#contact', id: 'contact' },
   ];
 

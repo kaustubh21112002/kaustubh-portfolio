@@ -53,7 +53,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       />
 
       {/* 3. Hero Content Container */}
-      <div className="relative z-20 h-full max-w-7xl mx-auto px-5 sm:px-10 lg:px-14 flex flex-col justify-between pt-24 sm:pt-28 pb-8 sm:pb-10">
+      <div className="relative z-20 h-full max-w-7xl mx-auto px-4 sm:px-10 lg:px-14 flex flex-col justify-between pt-20 sm:pt-28 pb-6 sm:pb-10">
         
         {/* Top Eyebrow / Direct Contact Touchpoint */}
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -72,7 +72,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         </div>
 
         {/* Core Editorial Identity & CTAs */}
-        <div className="max-w-xl lg:max-w-2xl my-auto py-4 sm:py-6">
+        <div className="max-w-xl lg:max-w-xl xl:max-w-2xl my-auto py-5 sm:py-6 max-md:bg-[#0b0d13]/85 max-md:backdrop-blur-xl max-md:border max-md:border-white/15 max-md:rounded-3xl max-md:p-5 sm:max-md:p-6 max-md:shadow-2xl">
           {/* Candidate Name & Positioning: Immediate Readability */}
           <div className="flex flex-wrap items-center gap-2 mb-2">
             <span className="text-white font-mono text-xs sm:text-base font-bold tracking-widest uppercase">
@@ -94,19 +94,19 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             Evaluating commercial decisions through quantitative valuation (<span className="text-white font-semibold">PhonePe Pre-IPO DCF</span>), relational SQL & Power BI analytics pipelines, and governed transaction architecture (<span className="text-white font-semibold">STRATOS AI</span>).
           </p>
 
-          {/* Recruiter Quick Proof Signals */}
-          <div className="flex flex-wrap gap-2 mb-6 sm:mb-8 text-[11px] font-mono">
-            <span className="px-2.5 py-1 rounded-md bg-black/50 backdrop-blur-md border border-white/15 text-white/90 flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-              SPIIDEO Match Analytics Intern
+          {/* Recruiter Quick Proof Signals - Guaranteed No-Overflow */}
+          <div className="flex flex-col sm:flex-row sm:flex-wrap items-start gap-1.5 sm:gap-2 mb-6 sm:mb-8 text-[10px] sm:text-[11px] font-mono">
+            <span className="w-fit px-2.5 py-1 rounded-md bg-black/60 backdrop-blur-md border border-white/20 text-white/95 flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
+              <span>SPIIDEO Match Analytics Intern</span>
             </span>
-            <span className="px-2.5 py-1 rounded-md bg-black/50 backdrop-blur-md border border-white/15 text-white/90 flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
-              ₹41,631 Cr Pre-IPO Valuation
+            <span className="w-fit px-2.5 py-1 rounded-md bg-black/60 backdrop-blur-md border border-white/20 text-white/95 flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
+              <span>₹41,631 Cr Pre-IPO Valuation</span>
             </span>
-            <span className="px-2.5 py-1 rounded-md bg-black/50 backdrop-blur-md border border-white/15 text-white/90 flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-              50,000 Order Governed System
+            <span className="w-fit px-2.5 py-1 rounded-md bg-black/60 backdrop-blur-md border border-white/20 text-white/95 flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0" />
+              <span>50,000 Order Governed System</span>
             </span>
           </div>
 

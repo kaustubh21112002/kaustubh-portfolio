@@ -81,8 +81,8 @@ export const FlagshipPhonePe: React.FC = () => {
           <div className="p-5 sm:p-6 rounded-2xl bg-[#141722] border border-white/10 hover:border-white/20 transition-all">
             <div className="text-[11px] font-mono uppercase text-white/50 tracking-wider">Implied Equity Value</div>
             <div className="text-2xl sm:text-3xl font-extrabold text-white mt-1.5 font-mono">₹41,631 Cr</div>
-            <div className="text-xs text-emerald-400 mt-1 font-mono font-bold">₹821.78 / share (50.66 Cr shares)</div>
-            <div className="text-[10px] text-white/40 mt-1 font-mono">+₹8,915 Cr Cash/Invest, -₹716 Cr Debt</div>
+            <div className="text-xs text-emerald-400 mt-1 font-mono font-bold">₹821.78 / share (Independent Model Estimate)</div>
+            <div className="text-[10px] text-white/40 mt-1 font-mono">+₹8,915 Cr Cash/Invest, -₹716 Cr Debt • 50.66 Cr shares</div>
           </div>
 
           <div className="p-5 sm:p-6 rounded-2xl bg-[#141722] border border-white/10 hover:border-white/20 transition-all">
@@ -98,6 +98,14 @@ export const FlagshipPhonePe: React.FC = () => {
             <div className="text-xs text-white/50 mt-1 font-mono">Terminal Methodology</div>
             <div className="text-[10px] text-white/40 mt-1 font-mono">Blended with 7.0% Perpetuity Growth</div>
           </div>
+        </div>
+
+        {/* Model Transparency & Governance Callout Banner */}
+        <div className="p-4 rounded-2xl bg-[#141722] border border-white/10 flex items-start gap-3 mb-8">
+          <ShieldAlert className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+          <p className="text-xs text-white/70 leading-relaxed font-sans">
+            <strong className="text-white font-mono">Independent Research Governance:</strong> All valuation figures, cash flows, and per-share values are independent analytical estimates derived from public disclosures and an audited DCF workbook (<code className="text-amber-300 font-mono">DCF of phonepe.xlsx</code>). These outputs represent independent modeling research, not official company guidance or investment underwriting.
+          </p>
         </div>
 
         {/* Interactive Navigation Tabs */}

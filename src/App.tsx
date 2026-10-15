@@ -43,7 +43,22 @@ export function App() {
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    // Initial hash scroll restoration after React hydration
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    if (window.location.hash) {
+      timer = setTimeout(() => {
+        const el = document.querySelector(window.location.hash);
+        if (el) {
+          el.scrollIntoView({ behavior: 'auto' });
+        }
+      }, 50);
+    }
+
+    return () => {
+      if (timer) clearTimeout(timer);
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   return (

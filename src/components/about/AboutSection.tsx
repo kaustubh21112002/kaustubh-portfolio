@@ -83,15 +83,17 @@ export const AboutSection: React.FC = () => {
           {verifiedProofPoints.map((item, idx) => (
             <div
               key={idx}
-              className="p-6 rounded-3xl bg-[#141722] border border-white/10 hover:border-white/20 transition-all duration-300 shadow-xl"
+              className="p-6 rounded-3xl bg-[#141722] border border-white/10 hover:border-red-500/30 transition-all duration-300 shadow-xl flex flex-col justify-between h-full group"
             >
-              <div className="text-3xl sm:text-4xl font-extrabold font-mono text-white tracking-tight">
-                {item.metric}
+              <div>
+                <div className="text-3xl sm:text-4xl font-extrabold font-mono text-white tracking-tight group-hover:text-red-400 transition-colors">
+                  {item.metric}
+                </div>
+                <div className="text-xs font-mono uppercase text-red-400 font-bold tracking-wider mt-2">
+                  {item.label}
+                </div>
               </div>
-              <div className="text-xs font-mono uppercase text-red-400 font-bold tracking-wider mt-2">
-                {item.label}
-              </div>
-              <p className="text-xs text-white/60 mt-2 leading-relaxed font-sans">
+              <p className="text-xs text-white/60 mt-3 pt-3 border-t border-white/5 leading-relaxed font-sans">
                 {item.subtext}
               </p>
             </div>
