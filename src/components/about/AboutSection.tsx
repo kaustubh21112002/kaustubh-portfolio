@@ -1,27 +1,105 @@
 import React from 'react';
-import { User, Award, Terminal, Compass, GraduationCap, ShieldCheck, Briefcase } from 'lucide-react';
+import {
+  User,
+  ShieldCheck,
+  Search,
+  Database,
+  BarChart2,
+  FileCheck2,
+  CheckCircle2,
+  ArrowRight,
+  GraduationCap,
+  Briefcase
+} from 'lucide-react';
 import { portfolioConfig } from '../../config/portfolio';
+
+const methodologySteps = [
+  {
+    step: '01',
+    title: 'Scope the Commercial Question',
+    description: 'Isolate the underlying business driver and define precise decision criteria before manipulating data, avoiding confirmation bias or premature model assumptions.'
+  },
+  {
+    step: '02',
+    title: 'Audit & Profile Raw Distributions',
+    description: 'Inspect transaction-level data for missing fields, skewed distributions, and unmapped attributes. Preserve attribution gaps as "Unspecified" rather than dropping records.'
+  },
+  {
+    step: '03',
+    title: 'Validate & Enforce Governance',
+    description: 'Reconcile controlled totals across financial and relational layers (PRESERVE → DOCUMENT → FLAG → GOVERN). Never silently alter source records or fabricate benchmarks.'
+  },
+  {
+    step: '04',
+    title: 'Construct Transparent Models',
+    description: 'Build explicit models—whether 5-year DCF cash flows with CAPM WACC, MySQL star schemas, or regression duration models—with documented formulas and caveats.'
+  },
+  {
+    step: '05',
+    title: 'Synthesize & Advise',
+    description: 'Translate analytical findings into executive-ready insights structured around: What Matters → What Changed → Why → What To Do Next.'
+  }
+];
+
+const verifiedProofPoints = [
+  {
+    metric: '₹41,631 Cr',
+    label: 'Implied Pre-IPO Equity Valuation',
+    subtext: 'Explicit 5-year forecast (FY26E–FY30E), CAPM WACC (14.92%), audited balance-sheet liquidity bridge'
+  },
+  {
+    metric: '50,000',
+    label: 'Controlled Orders Governed',
+    subtext: '14,465 financial exception occurrences reconciled with 30/30 KPI traceability in STRATOS AI'
+  },
+  {
+    metric: '10,000+',
+    label: 'Support Incidents Modeled',
+    subtext: 'MySQL star-schema database, Power BI DAX calculated metrics, and Python regression duration modeling'
+  }
+];
 
 export const AboutSection: React.FC = () => {
   return (
-    <section id="about" className="py-28 sm:py-36 px-4 sm:px-6 lg:px-8 bg-[#0e1017] text-white border-t border-white/10">
+    <section id="about" className="relative py-28 sm:py-36 px-4 sm:px-6 lg:px-8 bg-[#0e1017] text-white border-t border-white/10">
       <div className="max-w-6xl mx-auto">
-        {/* Section Header */}
-        <div className="mb-12">
+        {/* Editorial Section Label */}
+        <div className="mb-14">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/70 text-xs font-mono uppercase tracking-widest mb-3">
-            <User className="w-3.5 h-3.5 text-red-400" />
-            <span>Professional Profile</span>
+            <span className="text-red-400 font-bold">(01)</span>
+            <span>About & Analytical Manifesto</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white">
-            About {portfolioConfig.fullName}
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
+            Evidence-Driven Analytics <br className="hidden sm:inline" />
+            Before Decorative Complexity.
           </h2>
-          <p className="text-white/60 text-base mt-2 max-w-2xl">
-            Connecting quantitative valuation, SQL & Power BI analytics pipelines, and governed data architecture.
+          <p className="text-white/60 text-sm sm:text-base mt-3 max-w-2xl leading-relaxed">
+            I am an MBA candidate in Business Analytics with a computer science foundation, focused on quantitative valuation, data governance, and decision intelligence.
           </p>
         </div>
 
+        {/* 3 Verified Quantitative Benchmarks */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-16">
+          {verifiedProofPoints.map((item, idx) => (
+            <div
+              key={idx}
+              className="p-6 rounded-3xl bg-[#141722] border border-white/10 hover:border-white/20 transition-all duration-300 shadow-xl"
+            >
+              <div className="text-3xl sm:text-4xl font-extrabold font-mono text-white tracking-tight">
+                {item.metric}
+              </div>
+              <div className="text-xs font-mono uppercase text-red-400 font-bold tracking-wider mt-2">
+                {item.label}
+              </div>
+              <p className="text-xs text-white/60 mt-2 leading-relaxed font-sans">
+                {item.subtext}
+              </p>
+            </div>
+          ))}
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-          {/* Portrait & Fast Facts */}
+          {/* Left Column: Portrait & Credential Summary */}
           <div className="lg:col-span-5 space-y-6">
             <div className="relative rounded-3xl overflow-hidden border border-white/15 bg-black/40 group shadow-2xl">
               <img
@@ -29,98 +107,86 @@ export const AboutSection: React.FC = () => {
                 alt={`${portfolioConfig.fullName} Portrait`}
                 className="w-full h-auto aspect-[4/3] object-cover object-top transition-transform duration-500 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
               <div className="absolute bottom-6 left-6 right-6">
-                <div className="text-xl font-bold text-white">{portfolioConfig.fullName}</div>
-                <div className="text-xs text-white/70 font-mono mt-0.5">{portfolioConfig.role}</div>
-                <div className="text-xs text-white/50 font-mono mt-1">{portfolioConfig.location}</div>
+                <div className="text-xl font-bold text-white tracking-tight">{portfolioConfig.fullName}</div>
+                <div className="text-xs text-white/80 font-mono mt-0.5">MBA Business Analytics • Sandip University</div>
+                <div className="text-xs text-white/50 font-mono mt-0.5">{portfolioConfig.location}</div>
               </div>
             </div>
 
-            {/* Academic Credentials Card */}
+            {/* Quick Snapshot Card */}
             <div className="p-6 rounded-3xl bg-[#141722] border border-white/10 space-y-4">
-              <div className="flex items-center gap-2.5 text-xs font-mono uppercase text-red-400 font-bold">
-                <GraduationCap className="w-4 h-4" />
-                <span>Academic Qualifications</span>
+              <div className="text-xs font-mono uppercase text-white/50 tracking-wider font-bold">
+                Professional Profile
               </div>
-              {portfolioConfig.education.map((edu, idx) => (
-                <div key={idx} className={idx > 0 ? 'pt-3 border-t border-white/10' : ''}>
-                  <div className="flex justify-between items-baseline">
-                    <h4 className="text-sm font-bold text-white">{edu.degree}</h4>
-                    <span className="text-[11px] font-mono text-white/40">{edu.period}</span>
-                  </div>
-                  <p className="text-xs text-white/70 mt-0.5">{edu.institution}</p>
-                  <p className="text-[11px] text-white/50 font-mono mt-0.5">{edu.details}</p>
-                </div>
-              ))}
-            </div>
 
-            {/* Experience Card */}
-            <div className="p-6 rounded-3xl bg-[#141722] border border-white/10 space-y-3">
-              <div className="flex items-center gap-2.5 text-xs font-mono uppercase text-red-400 font-bold">
-                <Briefcase className="w-4 h-4" />
-                <span>Current Experience</span>
-              </div>
-              {portfolioConfig.experience.map((exp, idx) => (
-                <div key={idx}>
-                  <div className="flex justify-between items-baseline">
-                    <h4 className="text-sm font-bold text-white">{exp.role}</h4>
-                    <span className="text-[11px] font-mono text-white/40">{exp.period}</span>
+              <div className="space-y-3 text-xs">
+                <div className="flex items-start gap-2.5">
+                  <GraduationCap className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-bold text-white">MBA - Business Analytics</span>
+                    <p className="text-white/60">Sandip University, Nashik (2025 – 2027)</p>
                   </div>
-                  <p className="text-xs text-white/70 mt-0.5">{exp.organization}</p>
-                  <ul className="mt-2 space-y-1 text-xs text-white/60">
-                    {exp.responsibilities.map((r, rIdx) => (
-                      <li key={rIdx}>• {r}</li>
-                    ))}
-                  </ul>
                 </div>
-              ))}
+
+                <div className="flex items-start gap-2.5 pt-2 border-t border-white/5">
+                  <GraduationCap className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-bold text-white">BSc - Computer Science</span>
+                    <p className="text-white/60">Kamla Nehru Mahavidyalaya, Nagpur (2021 – 2025)</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-2.5 pt-2 border-t border-white/5">
+                  <Briefcase className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-bold text-white">Sports Data Analyst Intern</span>
+                    <p className="text-white/60">SPIIDEO (June 2026 – Present)</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Narrative & Philosophy */}
-          <div className="lg:col-span-7 space-y-8">
-            <div className="space-y-4 text-white/80 text-sm sm:text-base leading-relaxed">
-              <p>
-                I am an MBA candidate in Business Analytics at Sandip University with a foundational degree in Computer Science. My objective is to bridge quantitative financial analysis, relational database engineering, and managerial decision intelligence.
-              </p>
-              <p>
-                In analytics and financial valuation, I focus on evidence and governance: balance sheets and cash flows must reconcile, exceptions must be preserved rather than silently altered, and observational patterns must be described objectively without unsubstantiated claims.
-              </p>
-            </div>
-
-            {/* Core Governance Principles */}
-            <div>
-              <h3 className="text-xs font-mono uppercase tracking-widest text-white/50 mb-4 flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                Governed Analytical Principles
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {portfolioConfig.governancePrinciples.map((principle) => (
-                  <div key={principle.id} className="p-4 rounded-2xl bg-[#141722] border border-white/10">
-                    <div className="text-xs font-bold text-white font-mono">{principle.title}</div>
-                    <p className="text-xs text-white/65 mt-1.5 leading-relaxed">{principle.description}</p>
-                  </div>
-                ))}
+          {/* Right Column: Narrative Manifesto & Problem-Solving Methodology */}
+          <div className="lg:col-span-7 space-y-10">
+            {/* Core Manifesto */}
+            <div className="p-7 rounded-3xl bg-[#141722] border border-white/10 space-y-4 shadow-xl">
+              <div className="text-xs font-mono uppercase text-red-400 font-bold tracking-wider">
+                Analytical Philosophy
               </div>
+              <p className="text-white/85 text-sm sm:text-base leading-relaxed">
+                Most analytical errors occur before any calculation is made: questions are improperly scoped, corrupted transactions are silently cleaned, and observational correlations are treated as causal facts.
+              </p>
+              <p className="text-white/75 text-sm leading-relaxed">
+                My objective is to bridge financial accounting logic, relational database discipline, and executive storytelling. Whether evaluating the monetization trajectory of a consumer payments giant like PhonePe or reconciling exception-ridden order ledgers, I adhere to a governed doctrine: <span className="text-white font-mono font-semibold">PRESERVE → DOCUMENT → FLAG → GOVERN</span>.
+              </p>
             </div>
 
-            {/* Verified Tool Competencies */}
+            {/* 5-Step Methodology */}
             <div>
-              <h3 className="text-xs font-mono uppercase tracking-widest text-white/50 mb-4 flex items-center gap-2">
-                <Terminal className="w-4 h-4 text-red-400" />
-                Verified Tool Matrix
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {portfolioConfig.skills.map((cat, idx) => (
-                  <div key={idx} className="p-4 rounded-2xl bg-white/[0.02] border border-white/10">
-                    <div className="text-xs font-semibold text-white/90 mb-2 font-mono">{cat.title}</div>
-                    <div className="flex flex-wrap gap-1.5">
-                      {cat.skills.map((s, sIdx) => (
-                        <span key={sIdx} className="px-2 py-0.5 rounded-md bg-white/5 text-[11px] font-mono text-white/70">
-                          {s}
-                        </span>
-                      ))}
+              <div className="text-xs font-mono uppercase tracking-widest text-white/50 mb-4 flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                Problem-Solving Methodology
+              </div>
+
+              <div className="space-y-3">
+                {methodologySteps.map((m) => (
+                  <div
+                    key={m.step}
+                    className="p-4 rounded-2xl bg-[#141722]/80 border border-white/10 hover:border-white/20 transition-all flex items-start gap-4"
+                  >
+                    <span className="text-sm font-mono font-extrabold text-red-400 bg-red-500/10 px-2.5 py-1 rounded-lg border border-red-500/20 shrink-0">
+                      {m.step}
+                    </span>
+                    <div>
+                      <h4 className="text-sm font-bold text-white tracking-tight">
+                        {m.title}
+                      </h4>
+                      <p className="text-xs text-white/65 mt-1 leading-relaxed font-sans">
+                        {m.description}
+                      </p>
                     </div>
                   </div>
                 ))}

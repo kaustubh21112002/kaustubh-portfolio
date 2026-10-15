@@ -89,22 +89,38 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             Business Analytics <br className="sm:hidden" />& Research.
           </h1>
 
-          {/* Evidence-Based Short Description */}
-          <p className="text-white/90 sm:text-white/85 text-xs sm:text-base leading-relaxed font-normal mb-6 sm:mb-8 max-w-xl">
-            Evaluating real-world commercial decisions through quantitative valuation (<span className="text-white font-semibold">PhonePe Pre-IPO DCF</span>), relational SQL & Power BI analytics pipelines, and governed transaction architecture (<span className="text-white font-semibold">STRATOS AI</span>).
+          {/* Evidence-Based Short Description (3 lines) */}
+          <p className="text-white/90 sm:text-white/85 text-xs sm:text-base leading-relaxed font-normal mb-5 sm:mb-6 max-w-xl">
+            Evaluating commercial decisions through quantitative valuation (<span className="text-white font-semibold">PhonePe Pre-IPO DCF</span>), relational SQL & Power BI analytics pipelines, and governed transaction architecture (<span className="text-white font-semibold">STRATOS AI</span>).
           </p>
 
-          {/* Action Buttons: Primary "Explore Projects", Secondary "Download Resume", Tertiary "Contact" */}
+          {/* Recruiter Quick Proof Signals */}
+          <div className="flex flex-wrap gap-2 mb-6 sm:mb-8 text-[11px] font-mono">
+            <span className="px-2.5 py-1 rounded-md bg-black/50 backdrop-blur-md border border-white/15 text-white/90 flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              SPIIDEO Match Analytics Intern
+            </span>
+            <span className="px-2.5 py-1 rounded-md bg-black/50 backdrop-blur-md border border-white/15 text-white/90 flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
+              ₹41,631 Cr Pre-IPO Valuation
+            </span>
+            <span className="px-2.5 py-1 rounded-md bg-black/50 backdrop-blur-md border border-white/15 text-white/90 flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+              50,000 Order Governed System
+            </span>
+          </div>
+
+          {/* Action Buttons: Primary "Explore My Work", Secondary "Download Résumé", Tertiary "Contact" */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 max-w-xs sm:max-w-none">
             {/* Primary CTA */}
             <button
               onClick={() => {
-                scrollTo('projects');
+                scrollTo('flagship');
                 if (onExploreClick) onExploreClick();
               }}
               className="flex items-center justify-center gap-2 px-6 sm:px-7 py-3 rounded-full bg-white text-black font-bold text-sm tracking-wide transition-all duration-200 hover:bg-white/95 hover:shadow-[0_0_25px_rgba(255,255,255,0.45)] active:scale-95 cursor-pointer shadow-md"
             >
-              <span>Explore Projects</span>
+              <span>Explore My Work</span>
               <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
             </button>
 
@@ -115,7 +131,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               className="flex items-center justify-center gap-2 px-6 sm:px-7 py-3 rounded-full bg-black/60 hover:bg-black/80 backdrop-blur-md border border-white/30 text-white font-semibold text-sm tracking-wide transition-all duration-200 hover:border-white hover:shadow-[0_0_20px_rgba(255,255,255,0.2)] active:scale-95 shadow-md"
             >
               <Download className="w-4 h-4 transition-transform group-hover:-translate-y-0.5" />
-              <span>Download Resume</span>
+              <span>Download Résumé</span>
             </a>
 
             {/* Quick Contact CTA in Hero */}

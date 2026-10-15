@@ -28,8 +28,8 @@ export const ContactSection: React.FC = () => {
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/70 text-xs font-mono uppercase tracking-widest mb-3">
-            <MessageSquare className="w-3.5 h-3.5 text-red-400" />
-            <span>Connect & Inquire</span>
+            <span className="font-bold text-red-400">(08)</span>
+            <span>Direct Contact • Inquiries & Opportunities</span>
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white">
             Let’s Discuss Analytics & Research

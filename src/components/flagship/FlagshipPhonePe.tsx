@@ -48,8 +48,8 @@ export const FlagshipPhonePe: React.FC = () => {
         {/* Section Header */}
         <div className="mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-mono uppercase tracking-widest mb-3.5">
-            <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-            <span>Flagship Project • Pre-IPO Equity Research</span>
+            <span className="font-bold text-red-400">(02)</span>
+            <span>Flagship Valuation • Pre-IPO Equity Research</span>
           </div>
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white mb-4">
@@ -81,7 +81,7 @@ export const FlagshipPhonePe: React.FC = () => {
           <div className="p-5 sm:p-6 rounded-2xl bg-[#141722] border border-white/10 hover:border-white/20 transition-all">
             <div className="text-[11px] font-mono uppercase text-white/50 tracking-wider">Implied Equity Value</div>
             <div className="text-2xl sm:text-3xl font-extrabold text-white mt-1.5 font-mono">₹41,631 Cr</div>
-            <div className="text-xs text-white/50 mt-1 font-mono">Bridge Adjustments</div>
+            <div className="text-xs text-emerald-400 mt-1 font-mono font-bold">₹821.78 / share (50.66 Cr shares)</div>
             <div className="text-[10px] text-white/40 mt-1 font-mono">+₹8,915 Cr Cash/Invest, -₹716 Cr Debt</div>
           </div>
 
