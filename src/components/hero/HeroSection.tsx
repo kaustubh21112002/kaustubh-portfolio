@@ -24,7 +24,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   return (
     <section
       id="hero"
-      className="relative w-full h-screen min-h-[640px] overflow-hidden select-none"
+      className="relative w-full h-screen max-h-[1080px] min-h-[640px] overflow-hidden select-none"
       style={{ backgroundColor: portfolioConfig.characterBgColor }}
     >
       {/* 1. Full Viewport Canvas Character (Hardware-Accelerated Directional Tracking) */}
@@ -57,9 +57,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         
         {/* Top Eyebrow / Direct Contact Touchpoint */}
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/20 text-white/95 text-[11px] sm:text-xs font-mono uppercase tracking-wider shadow-lg">
-            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="truncate">MBA Business Analytics • Sandip University</span>
+          <div className="inline-flex max-w-full min-w-0 items-center gap-2 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/20 text-white/95 text-[10px] sm:text-xs font-mono uppercase tracking-wider shadow-lg">
+            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 shrink-0 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="truncate min-w-0">MBA Business Analytics • Sandip University</span>
           </div>
 
           <a

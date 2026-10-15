@@ -56,11 +56,11 @@ export const ContactSection: React.FC = () => {
                   <div className="p-2.5 rounded-xl bg-red-500/10 text-red-400">
                     <Mail className="w-5 h-5" />
                   </div>
-                  <div className="truncate">
+                  <div className="min-w-0 flex-1">
                     <div className="text-[10px] font-mono text-white/40 uppercase">Email Address</div>
                     <a
                       href={`mailto:${portfolioConfig.socials.email}`}
-                      className="text-xs sm:text-sm font-mono text-white hover:text-red-400 transition-colors truncate block"
+                      className="text-[11px] sm:text-xs xl:text-sm font-mono text-white hover:text-red-400 transition-colors block break-all"
                     >
                       {portfolioConfig.socials.email}
                     </a>

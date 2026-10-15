@@ -44,19 +44,28 @@ export function App() {
 
     window.addEventListener('scroll', handleScroll, { passive: true });
 
-    // Initial hash scroll restoration after React hydration
-    let timer: ReturnType<typeof setTimeout> | null = null;
-    if (window.location.hash) {
-      timer = setTimeout(() => {
-        const el = document.querySelector(window.location.hash);
+    // Synchronous section positioning for deep links & headless capture
+    const searchTarget = new URLSearchParams(window.location.search).get('section');
+    const hashTarget = window.location.hash ? window.location.hash.replace('#', '') : '';
+    const targetId = searchTarget || hashTarget;
+
+    if (targetId) {
+      const scrollNow = () => {
+        const el = document.getElementById(targetId);
         if (el) {
-          el.scrollIntoView({ behavior: 'auto' });
+          el.scrollIntoView({ behavior: 'instant', block: 'start' });
         }
-      }, 50);
+      };
+      scrollNow();
+      requestAnimationFrame(scrollNow);
+      const timer = setTimeout(scrollNow, 100);
+      return () => {
+        clearTimeout(timer);
+        window.removeEventListener('scroll', handleScroll);
+      };
     }
 
     return () => {
-      if (timer) clearTimeout(timer);
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);

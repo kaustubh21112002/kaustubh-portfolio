@@ -27,7 +27,12 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
   if (!project) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 lg:p-8 overflow-y-auto">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="case-study-title"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 lg:p-8 overflow-y-auto"
+    >
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/85 backdrop-blur-md transition-opacity"
@@ -53,7 +58,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
             <span>{project.status}</span>
           </div>
 
-          <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
+          <h2 id="case-study-title" className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
             {project.title}
           </h2>
           <p className="text-white/70 text-sm sm:text-base mt-2 font-mono">{project.tagline}</p>
