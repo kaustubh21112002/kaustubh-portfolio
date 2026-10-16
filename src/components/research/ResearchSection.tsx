@@ -45,8 +45,8 @@ export const ResearchSection: React.FC = () => {
                       <span className="px-2.5 py-0.5 rounded-full bg-red-500/10 text-red-400 border border-red-500/20">
                         {paper.topic}
                       </span>
-                      <span className="text-white/40">• {paper.date}</span>
-                      <span className="text-white/40">• {paper.fileType}</span>
+                      <span className="text-white/65">• {paper.date}</span>
+                      <span className="text-white/65">• {paper.fileType}</span>
                       <span className="text-emerald-400/80">• {paper.status}</span>
                     </div>
                     <h3 className="text-lg sm:text-xl font-bold text-white leading-snug">{paper.title}</h3>

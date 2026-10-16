@@ -60,7 +60,7 @@ export const ProjectsSection: React.FC = () => {
                   }`}
                 >
                   <span>{cat}</span>
-                  <span className={`ml-1.5 text-[10px] ${selectedCategory === cat ? 'text-black/60' : 'text-white/40'}`}>
+                  <span className={`ml-1.5 text-[10px] ${selectedCategory === cat ? 'text-black/80' : 'text-white/65'}`}>
                     ({count})
                   </span>
                 </button>
@@ -87,7 +87,7 @@ export const ProjectsSection: React.FC = () => {
                       {project.status}
                     </span>
                   </div>
-                  <span className="text-xs font-mono text-white/40">{project.date}</span>
+                  <span className="text-xs font-mono text-white/65">{project.date}</span>
                 </div>
 
                 {/* Project Title */}
@@ -139,7 +139,7 @@ export const ProjectsSection: React.FC = () => {
                     <div key={idx} className="p-4 rounded-2xl bg-black/30 border border-white/5">
                       <div className="text-[10px] uppercase font-mono text-white/50 tracking-wider">{m.label}</div>
                       <div className="text-xl sm:text-2xl font-extrabold text-white font-mono mt-1">{m.value}</div>
-                      {m.subtext && <div className="text-[11px] text-white/40 mt-0.5 truncate font-mono">{m.subtext}</div>}
+                      {m.subtext && <div className="text-[11px] text-white/65 mt-0.5 truncate font-mono">{m.subtext}</div>}
                     </div>
                   ))}
                 </div>
@@ -156,7 +156,7 @@ export const ProjectsSection: React.FC = () => {
 
               {/* Action Button */}
               <div className="pt-5 border-t border-white/10 flex items-center justify-between">
-                <span className="text-xs text-white/40 font-mono">Complete Methodology</span>
+                <span className="text-xs text-white/65 font-mono">Complete Methodology</span>
                 <button
                   onClick={() => setActiveModalProject(project)}
                   className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/10 hover:bg-white text-white hover:text-black text-xs font-mono font-bold transition-all duration-200 cursor-pointer shadow-sm active:scale-95"

@@ -183,9 +183,9 @@ export const AboutSection: React.FC = () => {
                       {m.step}
                     </span>
                     <div>
-                      <h4 className="text-sm font-bold text-white tracking-tight">
+                      <h3 className="text-sm font-bold text-white tracking-tight">
                         {m.title}
-                      </h4>
+                      </h3>
                       <p className="text-xs text-white/65 mt-1 leading-relaxed font-sans">
                         {m.description}
                       </p>

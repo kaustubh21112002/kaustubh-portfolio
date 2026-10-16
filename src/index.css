@@ -7,6 +7,14 @@
     --bg-character: #ed2026;
     --bg-dark: #0b0d13;
     --text-primary: #ffffff;
+    --text-muted: rgba(255, 255, 255, 0.65);
+    --text-subtle: rgba(255, 255, 255, 0.55);
+  }
+
+  /* Universal high-visibility keyboard focus indicator */
+  :focus-visible {
+    outline: 2px solid #ed2026;
+    outline-offset: 2px;
   }
 
   html {

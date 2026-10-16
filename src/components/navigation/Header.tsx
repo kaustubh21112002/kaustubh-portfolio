@@ -127,7 +127,7 @@ export const Header: React.FC<HeaderProps> = ({ activeSection = 'hero' }) => {
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-40 bg-black/95 backdrop-blur-2xl lg:hidden flex flex-col justify-center items-center gap-5 p-8">
-          <div className="text-xs font-mono uppercase text-white/40 tracking-widest mb-2">
+          <div className="text-xs font-mono uppercase text-white/65 tracking-widest mb-2">
             Navigation Index
           </div>
           {navItems.map((item) => (

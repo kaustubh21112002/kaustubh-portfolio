@@ -129,7 +129,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
               <div key={idx} className="p-4 rounded-xl bg-black/40 border border-white/10">
                 <div className="text-[10px] text-white/50 font-mono uppercase tracking-wider">{m.label}</div>
                 <div className="text-xl sm:text-2xl font-extrabold text-white font-mono mt-1">{m.value}</div>
-                {m.subtext && <div className="text-[11px] text-white/40 mt-1 font-mono">{m.subtext}</div>}
+                {m.subtext && <div className="text-[11px] text-white/65 mt-1 font-mono">{m.subtext}</div>}
               </div>
             ))}
           </div>
@@ -274,7 +274,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
         {/* Tools and Stack */}
         <div className="pt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
           <div>
-            <div className="text-[10px] font-mono text-white/40 uppercase mb-2">Verified Technology Stack</div>
+            <div className="text-[10px] font-mono text-white/65 uppercase mb-2">Verified Technology Stack</div>
             <div className="flex flex-wrap gap-1.5">
               {project.tools.map((t, idx) => (
                 <span key={idx} className="px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-white/70 text-xs font-mono">

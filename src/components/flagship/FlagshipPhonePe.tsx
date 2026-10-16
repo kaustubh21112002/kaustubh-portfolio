@@ -98,28 +98,28 @@ export const FlagshipPhonePe: React.FC = () => {
             <div className="text-[11px] font-mono uppercase text-white/50 tracking-wider">Implied Enterprise Value (EV)</div>
             <div className="text-2xl sm:text-3xl font-extrabold text-white mt-1.5 font-mono">₹33,432 Cr</div>
             <div className="text-xs text-emerald-400 mt-1 font-mono">Verified Model Output</div>
-            <div className="text-[10px] text-white/40 mt-1 font-mono">PV FCF ₹13,878 Cr + PV TV ₹19,554 Cr</div>
+            <div className="text-[10px] text-white/65 mt-1 font-mono">PV FCF ₹13,878 Cr + PV TV ₹19,554 Cr</div>
           </div>
 
           <div className="p-5 sm:p-6 rounded-2xl bg-[#141722] border border-white/10 hover:border-white/20 transition-all">
             <div className="text-[11px] font-mono uppercase text-white/50 tracking-wider">Implied Equity Value</div>
             <div className="text-2xl sm:text-3xl font-extrabold text-white mt-1.5 font-mono">₹41,631 Cr</div>
             <div className="text-xs text-emerald-400 mt-1 font-mono">+₹8,199 Cr Net Liquidity</div>
-            <div className="text-[10px] text-white/40 mt-1 font-mono">Cash + Investments - Debt</div>
+            <div className="text-[10px] text-white/65 mt-1 font-mono">Cash + Investments - Debt</div>
           </div>
 
           <div className="p-5 sm:p-6 rounded-2xl bg-[#141722] border border-white/10 hover:border-white/20 transition-all">
             <div className="text-[11px] font-mono uppercase text-white/50 tracking-wider">Implied Price Per Share</div>
             <div className="text-2xl sm:text-3xl font-extrabold text-white mt-1.5 font-mono">₹821.78</div>
             <div className="text-xs text-emerald-400 mt-1 font-mono">50.66 Cr Common Shares</div>
-            <div className="text-[10px] text-white/40 mt-1 font-mono">Reconciled after Audit Finding 1</div>
+            <div className="text-[10px] text-white/65 mt-1 font-mono">Reconciled after Audit Finding 1</div>
           </div>
 
           <div className="p-5 sm:p-6 rounded-2xl bg-[#141722] border border-white/10 hover:border-white/20 transition-all">
             <div className="text-[11px] font-mono uppercase text-white/50 tracking-wider">WACC Benchmark</div>
             <div className="text-2xl sm:text-3xl font-extrabold text-white mt-1.5 font-mono">14.92%</div>
             <div className="text-xs text-amber-300 mt-1 font-mono">CAPM Derived Cost of Capital</div>
-            <div className="text-[10px] text-white/40 mt-1 font-mono">Rf: 3.0% | Beta: 1.35 | Rm: 11.82%</div>
+            <div className="text-[10px] text-white/65 mt-1 font-mono">Rf: 3.0% | Beta: 1.35 | Rm: 11.82%</div>
           </div>
         </div>
 
@@ -131,7 +131,7 @@ export const FlagshipPhonePe: React.FC = () => {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-mono tracking-wider transition-all whitespace-nowrap cursor-pointer ${
                 activeTab === tab.id
-                  ? 'bg-red-500 text-white font-bold shadow-lg shadow-red-500/25 border border-red-400'
+                  ? 'bg-red-600 text-white font-bold shadow-lg shadow-red-600/25 border border-red-500'
                   : 'bg-[#141722] text-white/70 hover:bg-white/10 hover:text-white border border-white/5'
               }`}
             >
@@ -790,7 +790,7 @@ export const FlagshipPhonePe: React.FC = () => {
                     onChange={(e) => setWaccOffset(parseFloat(e.target.value))}
                     className="w-full accent-red-500 cursor-pointer"
                   />
-                  <div className="flex justify-between text-[10px] text-white/40 font-mono mt-1">
+                  <div className="flex justify-between text-[10px] text-white/65 font-mono mt-1">
                     <span>12.92% (Low rate)</span>
                     <span>14.92% (Base)</span>
                     <span>16.92% (Tightening)</span>
@@ -810,7 +810,7 @@ export const FlagshipPhonePe: React.FC = () => {
                     onChange={(e) => setMultipleOffset(parseFloat(e.target.value))}
                     className="w-full accent-red-500 cursor-pointer"
                   />
-                  <div className="flex justify-between text-[10px] text-white/40 font-mono mt-1">
+                  <div className="flex justify-between text-[10px] text-white/65 font-mono mt-1">
                     <span>11.15x (Compressed)</span>
                     <span>13.15x (Base)</span>
                     <span>15.15x (Expanded)</span>

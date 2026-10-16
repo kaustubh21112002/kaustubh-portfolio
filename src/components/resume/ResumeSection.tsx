@@ -64,7 +64,7 @@ export const ResumeSection: React.FC = () => {
               onClick={handleCopyEmail}
               className="flex items-center gap-2 px-6 py-3.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/20 text-white font-medium text-sm transition-all active:scale-95"
             >
-              <CheckCircle className={`w-4 h-4 ${copied ? 'text-emerald-400' : 'text-white/40'}`} />
+              <CheckCircle className={`w-4 h-4 ${copied ? 'text-emerald-400' : 'text-white/70'}`} />
               <span>{copied ? 'Email Copied!' : 'Copy Direct Email'}</span>
             </button>
           </div>

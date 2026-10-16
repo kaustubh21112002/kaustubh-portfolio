@@ -142,11 +142,11 @@ export const JourneySection: React.FC = () => {
 
                   <div className="flex items-center gap-4 text-xs font-mono text-white/50">
                     <span className="flex items-center gap-1.5">
-                      <Calendar className="w-3.5 h-3.5 text-white/40" />
+                      <Calendar className="w-3.5 h-3.5 text-white/65" />
                       {item.period}
                     </span>
                     <span className="hidden sm:flex items-center gap-1.5">
-                      <MapPin className="w-3.5 h-3.5 text-white/40" />
+                      <MapPin className="w-3.5 h-3.5 text-white/65" />
                       {item.location}
                     </span>
                   </div>

@@ -57,7 +57,7 @@ export const ContactSection: React.FC = () => {
                     <Mail className="w-5 h-5" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className="text-[10px] font-mono text-white/40 uppercase">Email Address</div>
+                    <div className="text-[10px] font-mono text-white/65 uppercase">Email Address</div>
                     <a
                       href={`mailto:${portfolioConfig.socials.email}`}
                       className="text-[11px] sm:text-xs xl:text-sm font-mono text-white hover:text-red-400 transition-colors block break-all"
@@ -83,7 +83,7 @@ export const ContactSection: React.FC = () => {
                     <Phone className="w-5 h-5" />
                   </div>
                   <div>
-                    <div className="text-[10px] font-mono text-white/40 uppercase">Direct Phone</div>
+                    <div className="text-[10px] font-mono text-white/65 uppercase">Direct Phone</div>
                     <a
                       href={`tel:${portfolioConfig.socials.phone}`}
                       className="text-xs sm:text-sm font-mono text-white hover:text-emerald-400 transition-colors block"
@@ -110,7 +110,7 @@ export const ContactSection: React.FC = () => {
                       <div className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors">
                         LinkedIn Profile
                       </div>
-                      <div className="text-[10px] font-mono text-white/40">linkedin.com/in/kaustubhnandurkar</div>
+                      <div className="text-[10px] font-mono text-white/65">linkedin.com/in/kaustubhnandurkar</div>
                     </div>
                   </div>
                   <span className="text-xs font-mono text-white/50 group-hover:text-white transition-colors">
@@ -132,7 +132,7 @@ export const ContactSection: React.FC = () => {
                       <div className="text-xs font-bold text-white group-hover:text-purple-400 transition-colors">
                         GitHub Profile
                       </div>
-                      <div className="text-[10px] font-mono text-white/40">github.com/kaustubh21112002</div>
+                      <div className="text-[10px] font-mono text-white/65">github.com/kaustubh21112002</div>
                     </div>
                   </div>
                   <span className="text-xs font-mono text-white/50 group-hover:text-white transition-colors">
@@ -165,7 +165,7 @@ export const ContactSection: React.FC = () => {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder="e.g. Hiring Manager / Team Lead"
-                    className="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/10 text-white text-sm focus:border-red-500 focus:outline-none transition-colors"
+                    className="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/10 text-white placeholder:text-white/60 text-sm focus:border-red-500 focus:outline-none transition-colors"
                   />
                 </div>
 
@@ -177,7 +177,7 @@ export const ContactSection: React.FC = () => {
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     placeholder="e.g. contact@company.com"
-                    className="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/10 text-white text-sm focus:border-red-500 focus:outline-none transition-colors"
+                    className="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/10 text-white placeholder:text-white/60 text-sm focus:border-red-500 focus:outline-none transition-colors"
                   />
                 </div>
               </div>
@@ -190,7 +190,7 @@ export const ContactSection: React.FC = () => {
                   value={formData.subject}
                   onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                   placeholder="e.g. Role Opportunity / Valuation Model Inquiry"
-                  className="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/10 text-white text-sm focus:border-red-500 focus:outline-none transition-colors"
+                  className="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/10 text-white placeholder:text-white/60 text-sm focus:border-red-500 focus:outline-none transition-colors"
                 />
               </div>
 
@@ -202,7 +202,7 @@ export const ContactSection: React.FC = () => {
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   placeholder="Please specify role scope, analytical questions, or discussion topics..."
-                  className="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/10 text-white text-sm focus:border-red-500 focus:outline-none transition-colors resize-none"
+                  className="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/10 text-white placeholder:text-white/60 text-sm focus:border-red-500 focus:outline-none transition-colors resize-none"
                 />
               </div>
 
@@ -224,7 +224,7 @@ export const ContactSection: React.FC = () => {
         </div>
 
         {/* Footer */}
-        <div className="mt-20 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-white/40">
+        <div className="mt-20 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-white/65">
           <div>
             © {new Date().getFullYear()} {portfolioConfig.fullName}. All analytical methodologies preserved.
           </div>
