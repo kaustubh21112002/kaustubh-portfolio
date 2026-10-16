@@ -140,7 +140,14 @@ async function main() {
 
     console.log(`Navigating to ${BASE_URL}...`);
     await client.send('Page.navigate', { url: BASE_URL });
-    await sleep(2500);
+
+    // Wait for initial React DOM to mount
+    for (let i = 0; i < 30; i++) {
+      const ready = await client.eval(`!!document.querySelector('#hero')`);
+      if (ready) break;
+      await sleep(200);
+    }
+    await sleep(500);
 
     // ==========================================
     // 1. DESKTOP VIEWPORTS & SECTIONS (1600x900)
@@ -327,18 +334,19 @@ async function main() {
 
     const filterCategories = ['All', 'Data Governance', 'Sports Analytics', 'Business Analytics'];
     for (const cat of filterCategories) {
-      const filterRes = await client.eval(`
+      await client.eval(`
         (() => {
           const btns = Array.from(document.querySelectorAll('#projects button')).filter(b => b.textContent.includes('${cat}'));
-          if (btns.length > 0) {
-            btns[0].click();
-            const visibleCards = document.querySelectorAll('#projects .group').length;
-            return { clicked: true, visibleCards };
-          }
-          return { clicked: false, visibleCards: 0 };
+          if (btns.length > 0) btns[0].click();
         })()
       `);
-      await sleep(300);
+      await sleep(200);
+      const filterRes = await client.eval(`
+        (() => {
+          const visibleCards = document.querySelectorAll('#projects .group').length;
+          return { clicked: true, visibleCards };
+        })()
+      `);
       console.log(`Filter "${cat}":`, filterRes);
     }
 

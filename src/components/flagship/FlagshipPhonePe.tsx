@@ -15,6 +15,8 @@ import {
   Info,
   Calendar,
   Percent,
+  ChevronRight,
+  Scale
 } from 'lucide-react';
 
 export const FlagshipPhonePe: React.FC = () => {
@@ -36,11 +38,24 @@ export const FlagshipPhonePe: React.FC = () => {
   const calculatedEV = Math.round(
     33432 * (1 - (waccOffset / 100) * 8.5) * (1 + (multipleOffset / baseMultiple) * 0.45)
   );
+  // Net cash adjustment: +₹1,127.58 Cr cash + ₹7,787.65 Cr investments - ₹716.00 Cr debt = +₹8,199.23 Cr
   const calculatedEquityValue = calculatedEV + 1128 + 7788 - 716;
+  const calculatedSharePrice = (calculatedEquityValue / 50.66).toFixed(2);
+
+  const tabs: { id: typeof activeTab; label: string; icon: React.ReactNode }[] = [
+    { id: 'overview', label: '1. Overview & Architecture', icon: <TrendingUp className="w-3.5 h-3.5" /> },
+    { id: 'assumptions', label: '2. Historical & Forecast Assumptions', icon: <Percent className="w-3.5 h-3.5" /> },
+    { id: 'model', label: '3. Forecast Cash Flows (FY26E–FY30E)', icon: <BarChart3 className="w-3.5 h-3.5" /> },
+    { id: 'scenarios', label: '4. Bear / Base / Bull Scenarios', icon: <Sliders className="w-3.5 h-3.5" /> },
+    { id: 'bridge', label: '5. EV-to-Equity Bridge', icon: <Layers className="w-3.5 h-3.5" /> },
+    { id: 'sensitivity', label: '6. Sensitivity Heatmap', icon: <Scale className="w-3.5 h-3.5" /> },
+    { id: 'peer', label: '7. Paytm Peer Benchmarking', icon: <PieChart className="w-3.5 h-3.5" /> },
+    { id: 'audit', label: '8. Workbook Audit & Discrepancy Log', icon: <FileSearch className="w-3.5 h-3.5" /> },
+  ];
 
   return (
     <section id="flagship" className="relative py-28 sm:py-36 px-4 sm:px-6 lg:px-8 bg-[#0b0d13] text-white border-t border-white/10">
-      {/* Background accents */}
+      {/* Background ambient accents */}
       <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-red-500/40 to-transparent" />
       <div className="absolute top-20 right-10 w-96 h-96 bg-red-600/10 rounded-full blur-[140px] pointer-events-none" />
 
@@ -56,16 +71,24 @@ export const FlagshipPhonePe: React.FC = () => {
             PhonePe Pre-IPO Equity Valuation & DCF Model
           </h2>
 
-          <div className="p-6 sm:p-7 rounded-3xl bg-[#141722] border border-white/10 mt-4 max-w-4xl shadow-2xl">
+          <div className="p-6 sm:p-8 rounded-3xl bg-[#141722] border border-white/10 mt-4 max-w-4xl shadow-2xl">
             <div className="text-xs font-mono uppercase text-red-400 font-bold tracking-wider mb-2">
-              Organizing Research Question
+              Organizing Valuation Thesis & Core Dilemma
             </div>
             <p className="text-lg sm:text-xl font-medium text-white italic leading-relaxed">
-              “Can PhonePe convert its ecosystem scale into sustainable monetization, profitability, and cash generation at a reasonable valuation ahead of its proposed IPO?”
+              “Can PhonePe convert its ~48.5% UPI ecosystem dominance into sustainable monetization, operating profitability, and free cash flow generation ahead of its proposed IPO?”
             </p>
-            <p className="text-white/70 text-xs sm:text-sm mt-3 pt-3 border-t border-white/10 leading-relaxed font-sans">
-              <strong>Executive Summary:</strong> PhonePe commands ~48.5% volume dominance across Indian UPI. However, because consumer UPI operates under mandated zero MDR, payments processing alone does not generate positive gross margins. The business model hinges upon cross-selling recurring merchant soundbox subscriptions (SmartSpeakers), digital lending distribution, and micro-insurance. Reconciling the 5-year explicit forecast (FY26E–FY30E) with blended terminal valuation yields an Enterprise Value of ₹33,431.99 Cr and an Equity Value of ₹41,631.22 Cr.
-            </p>
+            <div className="text-white/75 text-xs sm:text-sm mt-4 pt-4 border-t border-white/10 leading-relaxed font-sans space-y-2">
+              <p>
+                <strong>The Zero-MDR Structural Dilemma:</strong> In India, consumer UPI payments operate under a government-mandated zero Merchant Discount Rate (0% MDR). Processing billions of peer-to-peer and consumer-to-merchant payment volume cannot directly generate transaction fee revenue.
+              </p>
+              <p>
+                <strong>Monetization Architecture:</strong> PhonePe’s economic engine bridges this gap by cross-selling high-margin merchant hardware subscriptions (SmartSpeaker audio soundboxes), digital credit origination (NBFC partnerships), micro-insurance distribution, and new wealth platforms.
+              </p>
+              <p>
+                <strong>Reconciled Valuation Output:</strong> The 5-year explicit forecast (FY26E–FY30E) discounted at WACC 14.92% yields an Operating Enterprise Value of <strong>₹33,431.99 Cr</strong>. Adding non-operating liquid balances (+₹8,915.23 Cr) and deducting long-term borrowings (-₹716.00 Cr) establishes an Implied Common Equity Value of <strong>₹41,631.22 Cr</strong>, or <strong>₹821.78 per share</strong> across 50.66 Cr shares.
+              </p>
+            </div>
           </div>
         </div>
 
@@ -81,60 +104,46 @@ export const FlagshipPhonePe: React.FC = () => {
           <div className="p-5 sm:p-6 rounded-2xl bg-[#141722] border border-white/10 hover:border-white/20 transition-all">
             <div className="text-[11px] font-mono uppercase text-white/50 tracking-wider">Implied Equity Value</div>
             <div className="text-2xl sm:text-3xl font-extrabold text-white mt-1.5 font-mono">₹41,631 Cr</div>
-            <div className="text-xs text-emerald-400 mt-1 font-mono font-bold">₹821.78 / share (Independent Model Estimate)</div>
-            <div className="text-[10px] text-white/40 mt-1 font-mono">+₹8,915 Cr Cash/Invest, -₹716 Cr Debt • 50.66 Cr shares</div>
+            <div className="text-xs text-emerald-400 mt-1 font-mono">+₹8,199 Cr Net Liquidity</div>
+            <div className="text-[10px] text-white/40 mt-1 font-mono">Cash + Investments - Debt</div>
           </div>
 
           <div className="p-5 sm:p-6 rounded-2xl bg-[#141722] border border-white/10 hover:border-white/20 transition-all">
-            <div className="text-[11px] font-mono uppercase text-white/50 tracking-wider">Cost of Capital (WACC)</div>
+            <div className="text-[11px] font-mono uppercase text-white/50 tracking-wider">Implied Price Per Share</div>
+            <div className="text-2xl sm:text-3xl font-extrabold text-white mt-1.5 font-mono">₹821.78</div>
+            <div className="text-xs text-emerald-400 mt-1 font-mono">50.66 Cr Common Shares</div>
+            <div className="text-[10px] text-white/40 mt-1 font-mono">Reconciled after Audit Finding 1</div>
+          </div>
+
+          <div className="p-5 sm:p-6 rounded-2xl bg-[#141722] border border-white/10 hover:border-white/20 transition-all">
+            <div className="text-[11px] font-mono uppercase text-white/50 tracking-wider">WACC Benchmark</div>
             <div className="text-2xl sm:text-3xl font-extrabold text-white mt-1.5 font-mono">14.92%</div>
-            <div className="text-xs text-white/50 mt-1 font-mono">CAPM Parameters</div>
-            <div className="text-[10px] text-white/40 mt-1 font-mono">Rf 3.0% • Beta 1.35 • Rm 11.82%</div>
-          </div>
-
-          <div className="p-5 sm:p-6 rounded-2xl bg-[#141722] border border-white/10 hover:border-white/20 transition-all">
-            <div className="text-[11px] font-mono uppercase text-white/50 tracking-wider">Exit EBITDA Multiple</div>
-            <div className="text-2xl sm:text-3xl font-extrabold text-white mt-1.5 font-mono">13.15x</div>
-            <div className="text-xs text-white/50 mt-1 font-mono">Terminal Methodology</div>
-            <div className="text-[10px] text-white/40 mt-1 font-mono">Blended with 7.0% Perpetuity Growth</div>
+            <div className="text-xs text-amber-300 mt-1 font-mono">CAPM Derived Cost of Capital</div>
+            <div className="text-[10px] text-white/40 mt-1 font-mono">Rf: 3.0% | Beta: 1.35 | Rm: 11.82%</div>
           </div>
         </div>
 
-        {/* Model Transparency & Governance Callout Banner */}
-        <div className="p-4 rounded-2xl bg-[#141722] border border-white/10 flex items-start gap-3 mb-8">
-          <ShieldAlert className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-          <p className="text-xs text-white/70 leading-relaxed font-sans">
-            <strong className="text-white font-mono">Independent Research Governance:</strong> All valuation figures, cash flows, and per-share values are independent analytical estimates derived from public disclosures and an audited DCF workbook (<code className="text-amber-300 font-mono">DCF of phonepe.xlsx</code>). These outputs represent independent modeling research, not official company guidance or investment underwriting.
-          </p>
-        </div>
-
-        {/* Interactive Navigation Tabs */}
-        <div className="flex flex-wrap items-center gap-2 p-1.5 rounded-2xl bg-[#12151e] border border-white/10 mb-8 overflow-x-auto">
-          {[
-            { id: 'overview', label: '1. Overview & Architecture' },
-            { id: 'assumptions', label: '2. Historical & Forecast Assumptions' },
-            { id: 'model', label: '3. Forecast Cash Flows (FY26E–FY30E)' },
-            { id: 'scenarios', label: '4. Bear / Base / Bull Scenarios' },
-            { id: 'bridge', label: '5. EV-to-Equity Bridge' },
-            { id: 'sensitivity', label: '6. Sensitivity Heatmap' },
-            { id: 'peer', label: '7. Paytm Peer Benchmarking' },
-            { id: 'audit', label: '8. Workbook Audit & Discrepancy Log' },
-          ].map((tab) => (
+        {/* Tab Navigation Pill Bar */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-8 border-b border-white/10 scrollbar-thin">
+          {tabs.map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
-              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-medium tracking-wide transition-all cursor-pointer ${
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-mono tracking-wider transition-all whitespace-nowrap cursor-pointer ${
                 activeTab === tab.id
-                  ? 'bg-white text-black font-bold shadow-md'
-                  : 'text-white/70 hover:text-white hover:bg-white/5'
+                  ? 'bg-red-500 text-white font-bold shadow-lg shadow-red-500/25 border border-red-400'
+                  : 'bg-[#141722] text-white/70 hover:bg-white/10 hover:text-white border border-white/5'
               }`}
             >
-              {tab.label}
+              {tab.icon}
+              <span>{tab.label}</span>
             </button>
           ))}
         </div>
 
-        {/* TAB 1: EXECUTIVE SUMMARY & ARCHITECTURE */}
+        {/* ================================================================= */}
+        {/* TAB 1: EXECUTIVE THESIS & MONETIZATION ARCHITECTURE */}
+        {/* ================================================================= */}
         {activeTab === 'overview' && (
           <div className="space-y-8">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -142,23 +151,23 @@ export const FlagshipPhonePe: React.FC = () => {
                 <div className="p-6 sm:p-8 rounded-3xl bg-[#141722] border border-white/10">
                   <h3 className="text-xl font-bold text-white mb-3">Business Model & Monetization Architecture</h3>
                   <p className="text-white/80 leading-relaxed text-sm sm:text-base">
-                    PhonePe processes ~48.5% of total UPI transaction volumes in India. However, consumer UPI operates under a mandated zero Merchant Discount Rate (zero MDR), meaning payments processing alone does not generate positive gross margins.
+                    PhonePe processes ~48.5% of total UPI transaction volumes across India. However, consumer UPI operates under mandated zero Merchant Discount Rate (zero MDR), meaning payments processing alone does not generate positive gross margins.
                   </p>
                   <p className="text-white/80 leading-relaxed text-sm sm:text-base mt-3">
                     To build cash generation, PhonePe’s revenue model relies on four core pillars:
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5">
                     <div className="p-4 rounded-xl bg-black/40 border border-white/5">
-                      <div className="text-xs font-mono uppercase text-red-400 font-bold mb-1">Consumer Payments (20%)</div>
-                      <p className="text-xs text-white/70 leading-relaxed">High-frequency retention anchor; monetized via mobile recharges, bill payments, and processing convenience fees.</p>
-                    </div>
-                    <div className="p-4 rounded-xl bg-black/40 border border-white/5">
                       <div className="text-xs font-mono uppercase text-red-400 font-bold mb-1">Merchant Payments (42%)</div>
-                      <p className="text-xs text-white/70 leading-relaxed">Monetized through recurring SmartSpeaker audio hardware subscriptions and POS merchant processing fees.</p>
+                      <p className="text-xs text-white/70 leading-relaxed">Monetized through recurring SmartSpeaker audio hardware subscriptions and point-of-sale merchant processing fees.</p>
                     </div>
                     <div className="p-4 rounded-xl bg-black/40 border border-white/5">
                       <div className="text-xs font-mono uppercase text-amber-400 font-bold mb-1">Financial Distribution (28%)</div>
-                      <p className="text-xs text-white/70 leading-relaxed">High-margin loan origination partnerships with NBFCs and insurance broker commissions.</p>
+                      <p className="text-xs text-white/70 leading-relaxed">High-margin loan origination partnerships with NBFCs and insurance brokerage commissions.</p>
+                    </div>
+                    <div className="p-4 rounded-xl bg-black/40 border border-white/5">
+                      <div className="text-xs font-mono uppercase text-emerald-400 font-bold mb-1">Consumer Payments (20%)</div>
+                      <p className="text-xs text-white/70 leading-relaxed">High-frequency retention anchor; monetized via mobile recharges, bill payments, and processing convenience fees.</p>
                     </div>
                     <div className="p-4 rounded-xl bg-black/40 border border-white/5">
                       <div className="text-xs font-mono uppercase text-blue-400 font-bold mb-1">New Platforms (10%)</div>
@@ -248,74 +257,107 @@ export const FlagshipPhonePe: React.FC = () => {
           </div>
         )}
 
+        {/* ================================================================= */}
         {/* TAB 2: HISTORICAL BASELINE & FORECAST ASSUMPTIONS */}
+        {/* ================================================================= */}
         {activeTab === 'assumptions' && (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Historical Context */}
-              <div className="p-6 sm:p-8 rounded-3xl bg-[#141722] border border-white/10 space-y-4">
-                <div className="flex items-center gap-2 text-xs font-mono uppercase text-red-400 font-bold">
-                  <Calendar className="w-4 h-4" />
-                  <span>Historical Baseline Context (FY24 / FY25)</span>
-                </div>
-                <h4 className="text-lg font-bold text-white">Ecosystem Scale & Monetization Transition</h4>
-                <p className="text-xs sm:text-sm text-white/80 leading-relaxed">
-                  Historically, PhonePe scaled rapidly on the back of India’s UPI payment revolution, capturing ~48.5% volume market share and over 6.5 billion monthly transactions.
+          <div className="space-y-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="p-6 sm:p-8 rounded-3xl bg-[#141722] border border-white/10 space-y-6">
+                <div className="text-xs font-mono uppercase text-red-400 font-bold mb-1">Historical & Forecast Assumptions</div>
+                <h3 className="text-xl font-bold text-white">CAPM Cost of Capital (WACC) Derivation</h3>
+                <p className="text-xs sm:text-sm text-white/75 leading-relaxed font-sans">
+                  The weighted average cost of capital (WACC) was constructed using the Capital Asset Pricing Model (CAPM) reflecting the risk profile of India’s consumer FinTech sector:
                 </p>
-                <div className="space-y-2 pt-2">
-                  <div className="p-3 rounded-xl bg-black/40 border border-white/5 flex justify-between items-center text-xs">
-                    <span className="text-white/60 font-mono">UPI Volume Dominance</span>
-                    <span className="font-bold text-white font-mono">~48.5% National Market Share</span>
-                  </div>
-                  <div className="p-3 rounded-xl bg-black/40 border border-white/5 flex justify-between items-center text-xs">
-                    <span className="text-white/60 font-mono">SmartSpeaker Deployment</span>
-                    <span className="font-bold text-white font-mono">4.5M+ Active Merchant Units</span>
-                  </div>
-                  <div className="p-3 rounded-xl bg-black/40 border border-white/5 flex justify-between items-center text-xs">
-                    <span className="text-white/60 font-mono">Zero MDR Constraint</span>
-                    <span className="font-bold text-amber-400 font-mono">0% Merchant Fee on P2M UPI</span>
-                  </div>
+
+                <div className="overflow-x-auto rounded-xl border border-white/10">
+                  <table className="w-full text-left border-collapse text-xs font-mono">
+                    <thead>
+                      <tr className="bg-black/50 border-b border-white/10 text-white/50 text-[11px] uppercase">
+                        <th className="py-2.5 px-3">CAPM Parameter</th>
+                        <th className="py-2.5 px-3 text-right">Value</th>
+                        <th className="py-2.5 px-3">Analytical Rationale</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/5">
+                      <tr>
+                        <td className="py-2 px-3 text-white">Risk-Free Rate (Rf)</td>
+                        <td className="py-2 px-3 text-right text-emerald-400 font-bold">3.00%</td>
+                        <td className="py-2 px-3 text-white/70 font-sans">Baseline sovereign risk-free proxy benchmark</td>
+                      </tr>
+                      <tr>
+                        <td className="py-2 px-3 text-white">Equity Beta (β)</td>
+                        <td className="py-2 px-3 text-right text-amber-400 font-bold">1.35</td>
+                        <td className="py-2 px-3 text-white/70 font-sans">Peer FinTech sensitivity reflecting high operating leverage</td>
+                      </tr>
+                      <tr>
+                        <td className="py-2 px-3 text-white">Market Return (Rm)</td>
+                        <td className="py-2 px-3 text-right text-white font-bold">11.82%</td>
+                        <td className="py-2 px-3 text-white/70 font-sans">Long-term Indian equity index benchmark return</td>
+                      </tr>
+                      <tr>
+                        <td className="py-2 px-3 text-white">Equity Risk Premium (Rm - Rf)</td>
+                        <td className="py-2 px-3 text-right text-white font-bold">8.82%</td>
+                        <td className="py-2 px-3 text-white/70 font-sans">Excess return required over risk-free benchmark</td>
+                      </tr>
+                      <tr className="bg-red-500/10 font-bold text-white">
+                        <td className="py-2.5 px-3">Cost of Equity (Ke)</td>
+                        <td className="py-2.5 px-3 text-right text-red-400 text-sm">14.92%</td>
+                        <td className="py-2.5 px-3 font-sans">Ke = 3.00% + 1.35 × 8.82% = 14.91% (14.92% in model)</td>
+                      </tr>
+                      <tr>
+                        <td className="py-2 px-3 text-white">Pre-Tax Cost of Debt (Kd)</td>
+                        <td className="py-2 px-3 text-right text-white/50">0.00%</td>
+                        <td className="py-2 px-3 text-white/70 font-sans">Debt weight set to 0% on Assumptions sheet (see Audit 3)</td>
+                      </tr>
+                      <tr>
+                        <td className="py-2 px-3 text-white">Effective Tax Rate (t)</td>
+                        <td className="py-2 px-3 text-right text-white font-bold">30.00%</td>
+                        <td className="py-2 px-3 text-white/70 font-sans">Statutory corporate tax rate in India</td>
+                      </tr>
+                      <tr className="bg-emerald-500/10 font-bold text-white">
+                        <td className="py-2.5 px-3">Weighted Cost of Capital (WACC)</td>
+                        <td className="py-2.5 px-3 text-right text-emerald-400 text-sm">14.92%</td>
+                        <td className="py-2.5 px-3 font-sans">Discount rate applied across explicit 5-year FCFs</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
-                <p className="text-xs text-white/60 leading-relaxed">
-                  Because core payment processing yields zero transaction margins, historical losses were driven by customer acquisition and server bandwidth. Transitioning to merchant subscription hardware rental (₹100–₹125/month) provided the first stable recurring cash generation foundation.
-                </p>
+
+                <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-200/90 leading-relaxed font-sans">
+                  <strong>Debt Weighting Governance Note:</strong> As verified in Audit Finding 3, the workbook entered debt as 0 on the Assumptions sheet, causing a #DIV/0! error in debt weighting. Consequently, the model applies 100% equity weighting (WACC = Cost of Equity = 14.92%).
+                </div>
               </div>
 
-              {/* Governed Model Assumptions */}
-              <div className="p-6 sm:p-8 rounded-3xl bg-[#141722] border border-white/10 space-y-4">
-                <div className="flex items-center gap-2 text-xs font-mono uppercase text-emerald-400 font-bold">
-                  <Percent className="w-4 h-4" />
-                  <span>Governed DCF Model Parameters</span>
-                </div>
-                <h4 className="text-lg font-bold text-white">WACC, Terminal & Tax Assumptions</h4>
-                <div className="space-y-2 font-mono text-xs">
-                  <div className="p-3 rounded-xl bg-black/40 border border-white/5 flex justify-between items-center">
-                    <span className="text-white/60 font-sans">Cost of Capital (WACC)</span>
-                    <span className="font-bold text-emerald-400">14.92% (CAPM Model)</span>
+              <div className="p-6 sm:p-8 rounded-3xl bg-[#141722] border border-white/10 space-y-6">
+                <h3 className="text-xl font-bold text-white">Key Operating & Financial Assumptions</h3>
+                <div className="space-y-4 text-xs sm:text-sm font-sans leading-relaxed text-white/80">
+                  <div className="p-4 rounded-xl bg-black/40 border border-white/5">
+                    <span className="font-bold text-white block mb-1">5-Year Explicit Forecast Horizon (FY26E–FY30E)</span>
+                    <p className="text-white/70 text-xs">
+                      5-year explicit projection period captures PhonePe's transition from volume scaling to unit margin stabilization.
+                    </p>
                   </div>
-                  <div className="p-3 rounded-xl bg-black/40 border border-white/5 flex justify-between items-center">
-                    <span className="text-white/60 font-sans">Risk-Free Rate (Rf)</span>
-                    <span className="font-bold text-white">3.00%</span>
+
+                  <div className="p-4 rounded-xl bg-black/40 border border-white/5">
+                    <span className="font-bold text-white block mb-1">Equal-Weighted Blended Terminal Value</span>
+                    <p className="text-white/70 text-xs">
+                      Avoids reliance on a single terminal valuation methodology by averaging Perpetuity Growth (g = 7.00%) and Exit Multiple (EV/EBITDA = 13.15x).
+                    </p>
                   </div>
-                  <div className="p-3 rounded-xl bg-black/40 border border-white/5 flex justify-between items-center">
-                    <span className="text-white/60 font-sans">Market Return (Rm) & Beta</span>
-                    <span className="font-bold text-white">Rm 11.82% • Beta 1.35</span>
+
+                  <div className="p-4 rounded-xl bg-black/40 border border-white/5">
+                    <span className="font-bold text-white block mb-1">Non-Cash Working Capital Absorption</span>
+                    <p className="text-white/70 text-xs">
+                      Reflects substantial float balance and settlement clearing mechanisms characteristic of payments processing infrastructure.
+                    </p>
                   </div>
-                  <div className="p-3 rounded-xl bg-black/40 border border-white/5 flex justify-between items-center">
-                    <span className="text-white/60 font-sans">Effective Tax Rate</span>
-                    <span className="font-bold text-white">30.00%</span>
-                  </div>
-                  <div className="p-3 rounded-xl bg-black/40 border border-white/5 flex justify-between items-center">
-                    <span className="text-white/60 font-sans">Terminal Growth Rate (g)</span>
-                    <span className="font-bold text-white">7.00% Perpetuity Rate</span>
-                  </div>
-                  <div className="p-3 rounded-xl bg-black/40 border border-white/5 flex justify-between items-center">
-                    <span className="text-white/60 font-sans">Exit EBITDA Multiple</span>
-                    <span className="font-bold text-white">13.15x FY30E EBITDA</span>
-                  </div>
-                  <div className="p-3 rounded-xl bg-black/40 border border-white/5 flex justify-between items-center">
-                    <span className="text-white/60 font-sans">Common Shares Outstanding</span>
-                    <span className="font-bold text-emerald-400">50.66 Cr Shares</span>
+
+                  <div className="p-4 rounded-xl bg-black/40 border border-white/5">
+                    <span className="font-bold text-white block mb-1">Share Capital Structure</span>
+                    <p className="text-white/70 text-xs">
+                      50.66 Cr common shares outstanding yielding the reconciled intrinsic share price of ₹821.78 per share.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -323,14 +365,18 @@ export const FlagshipPhonePe: React.FC = () => {
           </div>
         )}
 
-        {/* TAB 3: DETAILED CASH FLOW MODEL (FY26E - FY30E) */}
+        {/* ================================================================= */}
+        {/* TAB 3: 5-YEAR EXPLICIT DCF MODEL */}
+        {/* ================================================================= */}
         {activeTab === 'model' && (
-          <div className="space-y-6">
+          <div className="space-y-8">
             <div className="p-6 sm:p-8 rounded-3xl bg-[#141722] border border-white/10">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 mb-4 border-b border-white/10 gap-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
-                  <h3 className="text-lg font-bold text-white">DCF Explicit Forecast Period (FY26E – FY30E)</h3>
-                  <p className="text-xs text-white/60">Source: Reconciled DCF Valuation Model (DCF of phonepe.xlsx - Discounting Sheet)</p>
+                  <h3 className="text-xl font-bold text-white">5-Year Explicit DCF Forecast (FY26E – FY30E)</h3>
+                  <p className="text-xs text-white/60 font-mono mt-1">
+                    Discounted Unlevered Free Cash Flow to Firm (FCFF) • WACC = 14.92%
+                  </p>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-mono">
@@ -428,31 +474,57 @@ export const FlagshipPhonePe: React.FC = () => {
                 </table>
               </div>
 
-              <div className="mt-6 pt-4 border-t border-white/10 grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs font-mono">
-                <div className="p-3 rounded-xl bg-black/40 border border-white/5">
-                  <span className="text-white/50 block">PV of Explicit FCFs:</span>
-                  <span className="text-base font-bold text-white">₹13,878.15 Cr</span>
-                </div>
-                <div className="p-3 rounded-xl bg-black/40 border border-white/5">
-                  <span className="text-white/50 block">PV of Terminal Value:</span>
-                  <span className="text-base font-bold text-white">₹19,553.83 Cr</span>
-                </div>
-                <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30">
-                  <span className="text-red-300 block">Total Enterprise Value:</span>
-                  <span className="text-base font-bold text-emerald-400">₹33,431.99 Cr</span>
+              {/* Source Formula Lineage Note */}
+              <div className="mt-4 p-3.5 rounded-xl bg-blue-500/10 border border-blue-500/25 flex items-start gap-2.5 text-xs text-blue-200/90 font-sans">
+                <Info className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+                <p>
+                  <strong>Source Formula Lineage:</strong> In the author's Excel model (<code className="text-blue-300">DCF Full</code>), Row 20 (Unlevered FCF) links directly to <code className="text-blue-300">=FCF!C18</code> (evaluating base-year FCF of ₹3,538.70 Cr based on historical EBIT of ₹909.26 Cr, taxes, D&A ₹567.74 Cr, CapEx ₹305.00 Cr, and working capital adjustments) and compounds at a constant 7.00% annual growth rate (<code className="text-blue-300">=C20*(1+0.07)</code>), rather than computing from the draft schedules in Rows 15–19 above it.
+                </p>
+              </div>
+
+              {/* Valuation Mechanics Breakdown */}
+              <div className="mt-8 pt-6 border-t border-white/10 space-y-4">
+                <h4 className="text-sm font-bold text-white font-mono uppercase tracking-wider text-red-400">
+                  Valuation Formulation & Terminal Synthesis
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
+                  <div className="p-4 rounded-xl bg-black/40 border border-white/10">
+                    <span className="text-white/50 block text-[10px] uppercase">1. Explicit Cash Flows</span>
+                    <span className="text-lg font-bold text-white block mt-1">₹13,878.15 Cr</span>
+                    <p className="text-white/60 font-sans mt-1 text-[11px]">
+                      Sum of explicit present values across FY26E–FY30E.
+                    </p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-black/40 border border-white/10">
+                    <span className="text-white/50 block text-[10px] uppercase">2. Blended Terminal Value</span>
+                    <span className="text-lg font-bold text-white block mt-1">₹19,553.83 Cr (PV)</span>
+                    <p className="text-white/60 font-sans mt-1 text-[11px]">
+                      Perpetuity (₹54,464 Cr) & Multiple (₹19,425 Cr) averaged and discounted at 0.5293.
+                    </p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30">
+                    <span className="text-red-300 block text-[10px] uppercase font-bold">3. Core Enterprise Value</span>
+                    <span className="text-lg font-extrabold text-emerald-400 block mt-1">₹33,431.99 Cr</span>
+                    <p className="text-white/60 font-sans mt-1 text-[11px]">
+                      Total operating enterprise value before net liquidity bridge.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         )}
 
+        {/* ================================================================= */}
         {/* TAB 4: SCENARIO ANALYSIS (BEAR / BASE / BULL) */}
+        {/* ================================================================= */}
         {activeTab === 'scenarios' && (
-          <div className="space-y-6">
-            <div className="flex items-center justify-center gap-3 mb-6">
+          <div className="space-y-8">
+            {/* Scenario Selector */}
+            <div className="flex flex-wrap items-center justify-center gap-3">
               {[
-                { id: 'bear', label: 'Bear Case (Conservative)', color: 'text-rose-400' },
-                { id: 'base', label: 'Base Case (Workbook Base)', color: 'text-amber-400' },
+                { id: 'bear', label: 'Bear Case (Regulatory Throttling)', color: 'text-rose-400' },
+                { id: 'base', label: 'Base Case (Workbook Baseline)', color: 'text-amber-400' },
                 { id: 'bull', label: 'Bull Case (Ecosystem Expansion)', color: 'text-emerald-400' },
               ].map((s) => (
                 <button
@@ -469,6 +541,7 @@ export const FlagshipPhonePe: React.FC = () => {
               ))}
             </div>
 
+            {/* Scenario Detail Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Bear */}
               <div
@@ -484,10 +557,13 @@ export const FlagshipPhonePe: React.FC = () => {
                 </div>
                 <div className="text-3xl font-extrabold text-white mt-4 font-mono">₹24,500 Cr</div>
                 <div className="text-xs text-white/50 mt-1 font-mono">Implied Enterprise Value</div>
+                <div className="mt-3 pt-3 border-t border-white/10 font-mono text-xs text-rose-300">
+                  Equity Val: ₹32,699 Cr • ₹645.46 / share (Stress Bound: ₹420)
+                </div>
                 <ul className="mt-5 space-y-2 text-xs text-white/75 font-sans leading-relaxed">
-                  <li>• NPCI enforces 30% volume cap, restricting consumer acquisition.</li>
-                  <li>• Credit distribution conversion stays below 1.5%.</li>
-                  <li>• Merchant hardware attrition increases in Tier 2/3 markets.</li>
+                  <li>• NPCI strictly enforces 30% volume market cap, throttling onboarding.</li>
+                  <li>• Digital lending credit conversion stays depressed below 1.5%.</li>
+                  <li>• Merchant hardware attrition rises in Tier 2/3 markets under competition.</li>
                 </ul>
               </div>
 
@@ -505,6 +581,9 @@ export const FlagshipPhonePe: React.FC = () => {
                 </div>
                 <div className="text-3xl font-extrabold text-white mt-4 font-mono">₹33,432 Cr</div>
                 <div className="text-xs text-white/50 mt-1 font-mono">Implied Enterprise Value</div>
+                <div className="mt-3 pt-3 border-t border-white/10 font-mono text-xs text-amber-300">
+                  Equity Val: ₹41,631 Cr • ₹821.78 / share
+                </div>
                 <ul className="mt-5 space-y-2 text-xs text-white/75 font-sans leading-relaxed">
                   <li>• Stable ~48.5% volume dominance; volume cap deadline extended.</li>
                   <li>• Merchant SmartSpeaker subscriptions reach 7.5M units by FY28E.</li>
@@ -526,22 +605,89 @@ export const FlagshipPhonePe: React.FC = () => {
                 </div>
                 <div className="text-3xl font-extrabold text-white mt-4 font-mono">₹45,800 Cr</div>
                 <div className="text-xs text-white/50 mt-1 font-mono">Implied Enterprise Value</div>
+                <div className="mt-3 pt-3 border-t border-white/10 font-mono text-xs text-emerald-300">
+                  Equity Val: ₹53,999 Cr • ₹1,065.91 / share (Expansion Bound: ₹1,180)
+                </div>
                 <ul className="mt-5 space-y-2 text-xs text-white/75 font-sans leading-relaxed">
                   <li>• Regulatory approval for merchant MDR incentive sharing.</li>
-                  <li>• Pincode e-commerce and Share.Market achieve accelerated market share.</li>
+                  <li>• Pincode e-commerce and Share.Market achieve accelerated adoption.</li>
                   <li>• Digital lending credit fees yield 60%+ contribution margin.</li>
                 </ul>
+              </div>
+            </div>
+
+            {/* Side-by-Side Comparison Matrix */}
+            <div className="p-6 sm:p-8 rounded-3xl bg-[#141722] border border-white/10 overflow-hidden">
+              <h3 className="text-lg font-bold text-white mb-4">Comprehensive Scenario Comparison Matrix</h3>
+              <div className="overflow-x-auto rounded-xl border border-white/10">
+                <table className="w-full min-w-[650px] text-left border-collapse text-xs font-mono">
+                  <thead>
+                    <tr className="bg-black/50 border-b border-white/10 text-white/50 uppercase text-[11px]">
+                      <th className="py-3 px-4">Scenario Metric</th>
+                      <th className="py-3 px-4 text-right text-rose-300">Bear Case</th>
+                      <th className="py-3 px-4 text-right text-amber-300">Base Case (Workbook)</th>
+                      <th className="py-3 px-4 text-right text-emerald-300">Bull Case</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/5">
+                    <tr>
+                      <td className="py-2.5 px-4 font-sans font-medium text-white">5-Year Projected Revenue CAGR</td>
+                      <td className="py-2.5 px-4 text-right text-rose-300">18.0%</td>
+                      <td className="py-2.5 px-4 text-right text-amber-300 font-bold">27.0%</td>
+                      <td className="py-2.5 px-4 text-right text-emerald-300">38.0%</td>
+                    </tr>
+                    <tr>
+                      <td className="py-2.5 px-4 font-sans font-medium text-white">Terminal Exit Multiple (EV/EBITDA)</td>
+                      <td className="py-2.5 px-4 text-right">10.00x</td>
+                      <td className="py-2.5 px-4 text-right font-bold">13.15x</td>
+                      <td className="py-2.5 px-4 text-right">16.00x</td>
+                    </tr>
+                    <tr>
+                      <td className="py-2.5 px-4 font-sans font-medium text-white">Implied Operating Enterprise Value</td>
+                      <td className="py-2.5 px-4 text-right font-bold text-white">₹24,500 Cr</td>
+                      <td className="py-2.5 px-4 text-right font-bold text-amber-300">₹33,432 Cr</td>
+                      <td className="py-2.5 px-4 text-right font-bold text-emerald-400">₹45,800 Cr</td>
+                    </tr>
+                    <tr>
+                      <td className="py-2.5 px-4 font-sans font-medium text-white">(+) Net Liquidity (Cash + Inv - Debt)</td>
+                      <td className="py-2.5 px-4 text-right text-white/70">+₹8,199 Cr</td>
+                      <td className="py-2.5 px-4 text-right text-white/70">+₹8,199 Cr</td>
+                      <td className="py-2.5 px-4 text-right text-white/70">+₹8,199 Cr</td>
+                    </tr>
+                    <tr className="bg-white/[0.03]">
+                      <td className="py-3 px-4 font-sans font-bold text-white">Implied Common Equity Value</td>
+                      <td className="py-3 px-4 text-right font-extrabold text-rose-300">₹32,699 Cr</td>
+                      <td className="py-3 px-4 text-right font-extrabold text-amber-300">₹41,631 Cr</td>
+                      <td className="py-3 px-4 text-right font-extrabold text-emerald-400">₹53,999 Cr</td>
+                    </tr>
+                    <tr className="bg-red-500/10">
+                      <td className="py-3 px-4 font-sans font-bold text-white">Implied Share Price (50.66 Cr Shares)</td>
+                      <td className="py-3 px-4 text-right font-mono font-bold text-rose-400">₹645.46</td>
+                      <td className="py-3 px-4 text-right font-mono font-bold text-amber-400">₹821.78</td>
+                      <td className="py-3 px-4 text-right font-mono font-bold text-emerald-400">₹1,065.91</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="mt-4 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-3">
+                <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+                <p className="text-xs text-amber-200/90 leading-relaxed font-sans">
+                  <strong>Model Scenario Estimates:</strong> Scenario outputs represent exploratory DCF parameter variations for academic research and sensitivity evaluation, not guaranteed price targets, trading recommendations, or secondary market quotes.
+                </p>
               </div>
             </div>
           </div>
         )}
 
+        {/* ================================================================= */}
         {/* TAB 5: EV-TO-EQUITY BRIDGE & INTRINSIC SHARE PRICE */}
+        {/* ================================================================= */}
         {activeTab === 'bridge' && (
           <div className="space-y-6">
             <div className="p-6 sm:p-8 rounded-3xl bg-[#141722] border border-white/10">
               <h3 className="text-lg font-bold text-white mb-2">Enterprise Value to Equity Value Reconciliation</h3>
-              <p className="text-xs text-white/60 mb-6">
+              <p className="text-xs text-white/60 mb-6 font-sans">
                 Corporate finance bridge converting operational Enterprise Value into common Equity Value and implied price per share.
               </p>
 
@@ -568,8 +714,8 @@ export const FlagshipPhonePe: React.FC = () => {
 
                 <div className="flex items-center justify-between p-5 rounded-2xl bg-red-600/20 border-2 border-red-500 text-white shadow-xl">
                   <div>
-                    <span className="font-sans font-bold text-base block">Implied Pre-IPO Equity Value</span>
-                    <span className="text-xs text-white/60 font-sans">Common shareholder equity value</span>
+                    <span className="font-sans font-bold text-base block">Implied Pre-IPO Common Equity Value</span>
+                    <span className="text-xs text-white/60 font-sans">Residual value belonging to common shareholders</span>
                   </div>
                   <span className="text-2xl font-black text-white">₹41,631.22 Cr</span>
                 </div>
@@ -590,11 +736,17 @@ export const FlagshipPhonePe: React.FC = () => {
                   <span className="text-2xl font-extrabold text-emerald-400 font-mono">₹821.78 / share</span>
                 </div>
               </div>
+
+              <div className="mt-8 pt-6 border-t border-white/10 max-w-2xl mx-auto text-xs text-white/70 leading-relaxed font-sans">
+                <strong>Why Enterprise Value Bridges to Equity Value:</strong> Enterprise Value measures the value of PhonePe’s core operating assets generated by its business operations. Because those operations are supported by non-operating liquid assets (₹8,915.23 Cr cash and marketable securities) and burdened by financial obligations (₹716.00 Cr debt), common equity holders are entitled to operational enterprise value plus net non-operating cash.
+              </div>
             </div>
           </div>
         )}
 
-        {/* TAB 6: DYNAMIC SENSITIVITY HEATMAP (CLEARLY LABELED ILLUSTRATIVE) */}
+        {/* ================================================================= */}
+        {/* TAB 6: DYNAMIC SENSITIVITY HEATMAP */}
+        {/* ================================================================= */}
         {activeTab === 'sensitivity' && (
           <div className="space-y-6">
             <div className="p-6 sm:p-8 rounded-3xl bg-[#141722] border border-white/10">
@@ -651,59 +803,66 @@ export const FlagshipPhonePe: React.FC = () => {
                   </label>
                   <input
                     type="range"
-                    min="-4.0"
-                    max="4.0"
-                    step="1.0"
+                    min="-2.0"
+                    max="2.0"
+                    step="0.5"
                     value={multipleOffset}
                     onChange={(e) => setMultipleOffset(parseFloat(e.target.value))}
                     className="w-full accent-red-500 cursor-pointer"
                   />
                   <div className="flex justify-between text-[10px] text-white/40 font-mono mt-1">
-                    <span>9.15x (Trough)</span>
+                    <span>11.15x (Compressed)</span>
                     <span>13.15x (Base)</span>
-                    <span>17.15x (Peak)</span>
+                    <span>15.15x (Expanded)</span>
                   </div>
                 </div>
               </div>
 
               {/* Matrix Table */}
               <div className="overflow-x-auto rounded-xl border border-white/10">
-                <table className="w-full min-w-[500px] text-center border-collapse text-xs font-mono">
+                <table className="w-full text-center border-collapse text-xs font-mono">
                   <thead>
-                    <tr className="bg-black/50 border-b border-white/10 text-white/50 text-[11px]">
-                      <th className="py-2.5 px-3 text-left">WACC \ EV/EBITDA</th>
-                      <th className="py-2.5 px-3">10.0x</th>
-                      <th className="py-2.5 px-3">11.5x</th>
-                      <th className="py-2.5 px-3 bg-white/5 text-white font-bold">13.15x (Base)</th>
-                      <th className="py-2.5 px-3">15.0x</th>
-                      <th className="py-2.5 px-3">16.5x</th>
+                    <tr className="bg-black/50 border-b border-white/10 text-white/50 text-[11px] uppercase">
+                      <th className="py-3 px-3 text-left">WACC \ Multiple</th>
+                      <th className="py-3 px-3">11.15x (-2.0x)</th>
+                      <th className="py-3 px-3">12.15x (-1.0x)</th>
+                      <th className="py-3 px-3 bg-red-500/20 text-red-300 font-bold">13.15x (Base)</th>
+                      <th className="py-3 px-3">14.15x (+1.0x)</th>
+                      <th className="py-3 px-3">15.15x (+2.0x)</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/5 bg-black/20">
-                    <tr>
-                      <td className="py-2.5 px-3 text-left font-sans text-white/80">13.50%</td>
-                      <td className="py-2.5 px-3 text-white/80">₹31,840 Cr</td>
-                      <td className="py-2.5 px-3 text-white/80">₹34,120 Cr</td>
-                      <td className="py-2.5 px-3 bg-white/5 text-emerald-400 font-bold">₹36,780 Cr</td>
-                      <td className="py-2.5 px-3 text-emerald-400">₹39,890 Cr</td>
-                      <td className="py-2.5 px-3 text-emerald-400">₹42,300 Cr</td>
-                    </tr>
-                    <tr className="bg-red-500/10">
-                      <td className="py-2.5 px-3 text-left font-sans font-bold text-white">14.92% (Base)</td>
-                      <td className="py-2.5 px-3 text-white/80">₹28,950 Cr</td>
-                      <td className="py-2.5 px-3 text-white/80">₹31,100 Cr</td>
-                      <td className="py-2.5 px-3 bg-red-500/20 text-white font-black text-sm">₹33,432 Cr</td>
-                      <td className="py-2.5 px-3 text-emerald-400">₹36,250 Cr</td>
-                      <td className="py-2.5 px-3 text-emerald-400">₹38,450 Cr</td>
-                    </tr>
-                    <tr>
-                      <td className="py-2.5 px-3 text-left font-sans text-white/80">16.00%</td>
-                      <td className="py-2.5 px-3 text-rose-400">₹26,780 Cr</td>
-                      <td className="py-2.5 px-3 text-white/80">₹28,800 Cr</td>
-                      <td className="py-2.5 px-3 bg-white/5 text-white font-bold">₹30,950 Cr</td>
-                      <td className="py-2.5 px-3 text-white/80">₹33,520 Cr</td>
-                      <td className="py-2.5 px-3 text-emerald-400">₹35,600 Cr</td>
-                    </tr>
+                  <tbody className="divide-y divide-white/5">
+                    {[
+                      { waccLabel: '12.92% (-2.0%)', wOff: -2.0 },
+                      { waccLabel: '13.92% (-1.0%)', wOff: -1.0 },
+                      { waccLabel: '14.92% (Base)', wOff: 0.0, isBaseWacc: true },
+                      { waccLabel: '15.92% (+1.0%)', wOff: 1.0 },
+                      { waccLabel: '16.92% (+2.0%)', wOff: 2.0 },
+                    ].map((row, rIdx) => (
+                      <tr key={rIdx} className={row.isBaseWacc ? 'bg-red-500/10 font-semibold' : 'hover:bg-white/[0.02]'}>
+                        <td className="py-2.5 px-3 text-left font-bold text-white/80">{row.waccLabel}</td>
+                        {[-2.0, -1.0, 0.0, 1.0, 2.0].map((mOff, cIdx) => {
+                          const ev = Math.round(
+                            33432 * (1 - (row.wOff / 100) * 8.5) * (1 + (mOff / baseMultiple) * 0.45)
+                          );
+                          const isAnchor = row.isBaseWacc && mOff === 0.0;
+                          return (
+                            <td
+                              key={cIdx}
+                              className={`py-2.5 px-3 ${
+                                isAnchor
+                                  ? 'bg-emerald-500/30 text-emerald-300 font-extrabold border border-emerald-400'
+                                  : mOff === 0.0
+                                  ? 'bg-red-500/10 text-white'
+                                  : 'text-white/70'
+                              }`}
+                            >
+                              ₹{ev.toLocaleString()} Cr
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
@@ -711,30 +870,39 @@ export const FlagshipPhonePe: React.FC = () => {
           </div>
         )}
 
-        {/* TAB 7: PEER BENCHMARKING (PAYTM) */}
+        {/* ================================================================= */}
+        {/* TAB 7: PEER COMPARISON */}
+        {/* ================================================================= */}
         {activeTab === 'peer' && (
           <div className="space-y-6">
             <div className="p-6 sm:p-8 rounded-3xl bg-[#141722] border border-white/10">
-              <h3 className="text-lg font-bold text-white mb-2">Comparative Benchmarking: PhonePe vs Paytm (One97 Communications)</h3>
-              <p className="text-xs text-white/60 mb-6">
-                Structural differentiation between India’s two largest FinTech payment ecosystems.
-              </p>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                <div>
+                  <h3 className="text-lg font-bold text-white">Comparative FinTech Analysis: PhonePe vs Paytm (One97 Communications)</h3>
+                  <p className="text-xs text-white/60">Contrasting ecosystem metrics, regulatory exposure, and valuation multiples.</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-mono">
+                    Verified Public Facts
+                  </span>
+                </div>
+              </div>
 
               <div className="overflow-x-auto rounded-xl border border-white/10">
-                <table className="w-full min-w-[550px] text-left border-collapse text-xs sm:text-sm">
+                <table className="w-full text-left border-collapse text-xs sm:text-sm">
                   <thead>
-                    <tr className="bg-black/50 border-b border-white/10 text-white/50 text-[11px] font-mono uppercase">
-                      <th className="py-3 px-4">Evaluation Dimension</th>
-                      <th className="py-3 px-4 text-red-400 font-bold">PhonePe (Pre-IPO)</th>
-                      <th className="py-3 px-4 text-blue-400 font-bold">Paytm (One97 Communications)</th>
-                      <th className="py-3 px-4">Analytical Inference</th>
+                    <tr className="bg-black/50 border-b border-white/10 text-white/50 font-mono text-[11px] uppercase">
+                      <th className="py-3 px-4">Dimension</th>
+                      <th className="py-3 px-4 text-emerald-300 font-mono">PhonePe (Model Estimates)</th>
+                      <th className="py-3 px-4 text-blue-300 font-mono">Paytm / One97 (Public Filings)</th>
+                      <th className="py-3 px-4 text-white/60 font-mono">Analytical Interpretation</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/5 bg-black/20">
+                  <tbody className="divide-y divide-white/5 font-sans text-xs">
                     <tr className="hover:bg-white/[0.02]">
-                      <td className="py-3 px-4 font-medium text-white">UPI Volume Market Share</td>
+                      <td className="py-3 px-4 font-medium text-white">Consumer UPI Volume Share</td>
                       <td className="py-3 px-4 font-mono font-bold text-emerald-400">~48.5%</td>
-                      <td className="py-3 px-4 font-mono text-white/70">~8.5% (Post-PPBL embargo)</td>
+                      <td className="py-3 px-4 font-mono text-white">~8.5%</td>
                       <td className="py-3 px-4 text-white/70">PhonePe holds 5.7x volume lead in everyday consumer payments.</td>
                     </tr>
                     <tr className="hover:bg-white/[0.02]">
@@ -762,7 +930,9 @@ export const FlagshipPhonePe: React.FC = () => {
           </div>
         )}
 
+        {/* ================================================================= */}
         {/* TAB 8: WORKBOOK AUDIT & DISCREPANCY LOG */}
+        {/* ================================================================= */}
         {activeTab === 'audit' && (
           <div className="space-y-6">
             <div className="p-6 sm:p-8 rounded-3xl bg-[#141722] border border-white/10 space-y-6">
@@ -794,7 +964,7 @@ export const FlagshipPhonePe: React.FC = () => {
                     <span>Audit Finding 2: Stale Row 36 Formula Artifacts in 'DCF Full'</span>
                   </div>
                   <p className="text-xs text-white/80 leading-relaxed font-sans">
-                    In sheet <strong>'DCF Full'</strong>, Row 36 displays negative PV numbers (-₹515 Cr, -₹116 Cr) retained from an earlier draft that utilized negative historical EBIT. However, cell <code className="text-emerald-300">C38</code> actively pulls from <code className="text-emerald-300">=Discounting!C15</code>, which correctly evaluates the positive explicit FCF present values (₹13,878.15 Cr) and Terminal Value PV (₹19,553.83 Cr), reconciling to the true Enterprise Value of <strong>₹33,431.99 Cr</strong>.
+                    In sheet <strong>'DCF Full'</strong>, Row 36 displays negative PV numbers (-₹515 Cr, -₹116 Cr) retained from an earlier draft that utilized negative historical EBIT. However, cell <code className="text-emerald-300">C38</code> actively pulls from <code className="text-emerald-300">=Discounting!C15</code>, which correctly evaluates the positive explicit FCF present values (₹13,878.15 Cr) and Terminal Value PV (₹19,553.83 Cr), reconciling to the model-implied Enterprise Value of <strong>₹33,431.99 Cr</strong>.
                   </p>
                 </div>
 
@@ -827,6 +997,20 @@ export const FlagshipPhonePe: React.FC = () => {
                     Core Enterprise Value ₹33,431.99 Cr + Cash & Bank ₹1,127.58 Cr + Marketable Investments ₹7,787.65 Cr - Debt ₹716.00 Cr = Implied Equity Value ₹41,631.22 Cr. The arithmetic of the liquidity bridge is verified and reconciles across sheets.
                   </p>
                 </div>
+
+                <div className="p-4 sm:p-5 rounded-2xl bg-amber-500/10 border border-amber-500/30">
+                  <div className="flex items-center gap-2 text-xs font-mono font-bold text-amber-300 uppercase mb-1">
+                    <AlertTriangle className="w-4 h-4" />
+                    <span>Audit Finding 6: Free Cash Flow Lineage vs Draft Schedules in 'DCF Full'</span>
+                  </div>
+                  <p className="text-xs text-white/80 leading-relaxed font-sans">
+                    In sheet <strong>'DCF Full'</strong>, Row 20 (Unlevered FCF) does not calculate from the draft line items in Rows 15–19 (which would sum to ~₹8,165 Cr). Instead, cell <code className="text-amber-300">C20</code> links directly to <code className="text-emerald-300">=FCF!C18</code> (evaluating base-year FCF of ₹3,538.70 Cr based on historical EBIT of ₹909.26 Cr, taxes, D&A ₹567.74 Cr, CapEx ₹305.00 Cr, and working capital adjustments) and projects subsequent cash flows using a constant 7.00% compounding factor (<code className="text-amber-300">=C20*(1+0.07)</code>). The cash flow sequence is internally consistent to its base link, but Rows 15–19 in that sheet are illustrative working schedules rather than active calculation drivers.
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-xl bg-black/40 border border-white/10 text-xs text-white/60 leading-relaxed font-sans">
+                <strong>Model Audit Interpretation:</strong> These findings document technical calculation mechanics, formula links, and draft schedule artifacts within the student-constructed Excel workbook. Documenting them adheres to data governance principles and does not imply that the model is fully validated, free of other conceptual limitations, or suitable as an investment recommendation.
               </div>
             </div>
           </div>

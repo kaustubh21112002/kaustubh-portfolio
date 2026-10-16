@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { X, ArrowRight, ShieldAlert, CheckCircle2, FileText, ChevronDown, ChevronUp, Layers, HelpCircle, Activity } from 'lucide-react';
+import { X, ArrowRight, ShieldAlert, CheckCircle2, FileText, ChevronDown, ChevronUp, Layers, HelpCircle, Activity, Info, AlertTriangle } from 'lucide-react';
 import { Project } from '../../data/projects';
 
 interface CaseStudyModalProps {
@@ -8,7 +8,13 @@ interface CaseStudyModalProps {
 }
 
 export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose }) => {
-  const [expandedSection, setExpandedSection] = useState<number | null>(0);
+  // Allow multiple sections to be expanded simultaneously
+  const [expandedSections, setExpandedSections] = useState<Set<number>>(new Set([0]));
+
+  useEffect(() => {
+    // Reset to expand first section when project changes
+    setExpandedSections(new Set([0]));
+  }, [project?.id]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -25,6 +31,26 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
   }, [project, onClose]);
 
   if (!project) return null;
+
+  const toggleSection = (index: number) => {
+    setExpandedSections((prev) => {
+      const next = new Set(prev);
+      if (next.has(index)) {
+        next.delete(index);
+      } else {
+        next.add(index);
+      }
+      return next;
+    });
+  };
+
+  const toggleAllSections = () => {
+    if (expandedSections.size === project.caseStudy.sections.length) {
+      setExpandedSections(new Set());
+    } else {
+      setExpandedSections(new Set(project.caseStudy.sections.map((_, i) => i)));
+    }
+  };
 
   return (
     <div
@@ -67,15 +93,15 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
         {/* Top Storytelling Framework: Problem -> Approach -> Finding -> Implication */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
           <div className="p-5 rounded-2xl bg-[#141722] border border-white/10">
-            <span className="text-[11px] font-mono uppercase text-red-400 font-bold block mb-1.5">
-              1. Business Problem
+            <span className="text-[11px] font-mono uppercase text-amber-400 font-bold block mb-1.5">
+              1. Commercial Problem / Question
             </span>
             <p className="text-white/80 text-xs sm:text-sm leading-relaxed">{project.problemStatement}</p>
           </div>
 
           <div className="p-5 rounded-2xl bg-[#141722] border border-white/10">
             <span className="text-[11px] font-mono uppercase text-blue-400 font-bold block mb-1.5">
-              2. Analytical Approach
+              2. Analytical Approach & Architecture
             </span>
             <p className="text-white/80 text-xs sm:text-sm leading-relaxed">{project.approach}</p>
           </div>
@@ -88,7 +114,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
           </div>
 
           <div className="p-5 rounded-2xl bg-[#141722] border border-white/10">
-            <span className="text-[11px] font-mono uppercase text-amber-400 font-bold block mb-1.5">
+            <span className="text-[11px] font-mono uppercase text-red-400 font-bold block mb-1.5">
               4. Business Implication
             </span>
             <p className="text-white/80 text-xs sm:text-sm leading-relaxed">{project.businessImplication}</p>
@@ -111,7 +137,17 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
 
         {/* Methods, Assumptions & Limitations Panels */}
         <div className="space-y-4 mb-8">
-          <div className="text-xs font-mono text-white/50 uppercase tracking-wider">Detailed Analytical Findings & Methodology</div>
+          <div className="flex items-center justify-between pb-2 border-b border-white/10">
+            <div className="text-xs font-mono text-white/50 uppercase tracking-wider">
+              Case Study Architecture ({project.caseStudy.sections.length} Governed Sections)
+            </div>
+            <button
+              onClick={toggleAllSections}
+              className="text-xs font-mono text-red-400 hover:text-red-300 font-semibold transition-colors cursor-pointer"
+            >
+              {expandedSections.size === project.caseStudy.sections.length ? 'Collapse All Sections' : 'Expand All Sections'}
+            </button>
+          </div>
 
           {/* Grouped Methods and Assumptions Panel */}
           {project.methodsAndAssumptions && project.methodsAndAssumptions.length > 0 && (
@@ -135,14 +171,20 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
 
           {/* Expandable Case Study Sections */}
           {project.caseStudy.sections.map((section, sIdx) => {
-            const isExpanded = expandedSection === sIdx;
+            const isExpanded = expandedSections.has(sIdx);
             return (
-              <div key={sIdx} className="rounded-2xl bg-white/[0.02] border border-white/10 overflow-hidden">
+              <div key={sIdx} className="rounded-2xl bg-white/[0.02] border border-white/10 overflow-hidden transition-colors">
                 <button
-                  onClick={() => setExpandedSection(isExpanded ? null : sIdx)}
-                  className="w-full p-5 flex items-center justify-between text-left hover:bg-white/[0.02] transition-colors cursor-pointer"
+                  onClick={() => toggleSection(sIdx)}
+                  aria-expanded={isExpanded}
+                  className="w-full p-5 flex items-center justify-between text-left hover:bg-white/[0.03] transition-colors cursor-pointer"
                 >
-                  <span className="text-sm sm:text-base font-bold text-white font-mono">{section.title}</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs font-mono px-2 py-0.5 rounded bg-white/5 border border-white/10 text-red-400 font-bold">
+                      {String(sIdx + 1).padStart(2, '0')}
+                    </span>
+                    <span className="text-sm sm:text-base font-bold text-white font-mono">{section.title}</span>
+                  </div>
                   <div className="p-1.5 rounded-full bg-white/5 text-white/70">
                     {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                   </div>
@@ -186,9 +228,23 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
 
                     {/* Callout if present */}
                     {section.callout && (
-                      <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-3">
-                        <ShieldAlert className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-                        <p className="text-xs text-amber-200/90 leading-relaxed font-sans">{section.callout.text}</p>
+                      <div
+                        className={`p-4 rounded-xl border flex items-start gap-3 ${
+                          section.callout.type === 'warning'
+                            ? 'bg-amber-500/10 border-amber-500/30 text-amber-200'
+                            : section.callout.type === 'insight'
+                            ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-200'
+                            : 'bg-blue-500/10 border-blue-500/30 text-blue-200'
+                        }`}
+                      >
+                        {section.callout.type === 'warning' ? (
+                          <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                        ) : section.callout.type === 'insight' ? (
+                          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                        ) : (
+                          <Info className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+                        )}
+                        <p className="text-xs leading-relaxed font-sans">{section.callout.text}</p>
                       </div>
                     )}
                   </div>
@@ -206,7 +262,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
               </div>
               <div className="space-y-1.5">
                 {project.limitations.map((lim, idx) => (
-                  <p key={idx} className="text-xs text-amber-200/80 leading-relaxed">
+                  <p key={idx} className="text-xs text-amber-200/80 leading-relaxed font-sans">
                     • {lim}
                   </p>
                 ))}
