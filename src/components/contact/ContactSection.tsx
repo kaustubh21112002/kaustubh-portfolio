@@ -210,7 +210,7 @@ export const ContactSection: React.FC = () => {
                 type="submit"
                 className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-white text-black font-bold text-sm tracking-wide transition-all hover:bg-white/90 shadow-[0_0_20px_rgba(255,255,255,0.25)] active:scale-95"
               >
-                <span>Dispatch Email Message</span>
+                <span>Send Message</span>
                 <Send className="w-4 h-4" />
               </button>
 

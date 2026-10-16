@@ -91,7 +91,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
           {/* Evidence-Based Short Description (3 lines) */}
           <p className="text-white/90 sm:text-white/85 text-xs sm:text-base leading-relaxed font-normal mb-5 sm:mb-6 max-w-xl">
-            Evaluating commercial decisions through quantitative valuation (<span className="text-white font-semibold">PhonePe Pre-IPO DCF</span>), relational SQL & Power BI analytics pipelines, and governed transaction architecture (<span className="text-white font-semibold">STRATOS AI</span>).
+            Evaluating commercial decisions through quantitative valuation, relational analytics, and governed data pipelines.
           </p>
 
           {/* Recruiter Quick Proof Signals - Guaranteed No-Overflow */}
