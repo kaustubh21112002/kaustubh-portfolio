@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { ArrowDown, Download, Mail, ChevronRight } from 'lucide-react';
 import { portfolioConfig } from '../../config/portfolio';
 
@@ -26,6 +26,51 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
     }
   };
 
+  // Safe playback trigger handling browser autoplay policy and user gesture requirements
+  const attemptPlay = useCallback(() => {
+    const video = videoRef.current;
+    if (!video || isReducedMotion) return;
+
+    video.playbackRate = 0.7;
+    video.defaultMuted = true;
+    video.muted = true;
+
+    if (video.paused) {
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((err: unknown) => {
+          // If browser policy deferred autoplay pending interaction, resume on first gesture
+          const isPolicyRestriction =
+            err instanceof Error &&
+            (err.name === 'NotAllowedError' || err.name === 'AbortError');
+
+          if (isPolicyRestriction && typeof window !== 'undefined') {
+            const onUserInteraction = () => {
+              window.removeEventListener('pointerdown', onUserInteraction);
+              window.removeEventListener('touchstart', onUserInteraction);
+              window.removeEventListener('keydown', onUserInteraction);
+              window.removeEventListener('scroll', onUserInteraction);
+
+              const currentVideo = videoRef.current;
+              if (currentVideo && !isReducedMotion && currentVideo.paused) {
+                currentVideo.play().catch((playbackErr) => {
+                  console.warn('Hero video playback deferred on gesture:', playbackErr);
+                });
+              }
+            };
+
+            window.addEventListener('pointerdown', onUserInteraction, { once: true, passive: true });
+            window.addEventListener('touchstart', onUserInteraction, { once: true, passive: true });
+            window.addEventListener('keydown', onUserInteraction, { once: true, passive: true });
+            window.addEventListener('scroll', onUserInteraction, { once: true, passive: true });
+          } else if (err instanceof Error) {
+            console.warn('Hero video playback notice:', err.message);
+          }
+        });
+      }
+    }
+  }, [isReducedMotion]);
+
   // Listen for dynamic changes to prefers-reduced-motion
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -39,7 +84,7 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
     return () => mediaQuery.removeEventListener('change', handleMotionChange);
   }, []);
 
-  // Initialize playback with smooth slow-motion (0.7x speed) and continuous looping
+  // Initialize and synchronize playback state with slow-motion (0.7x speed)
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -51,19 +96,19 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
     // Respect reduced-motion preferences
     if (isReducedMotion) {
       video.pause();
-    } else if (video.paused) {
-      const playPromise = video.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(() => {});
-      }
+    } else {
+      attemptPlay();
     }
-  }, [isReducedMotion]);
+  }, [isReducedMotion, attemptPlay]);
 
-  // Set 0.7x playback speed once metadata loads (fires only once on initial load, never on loop)
+  // Set 0.7x playback speed and verify playback once metadata loads
   const handleLoadedMetadata = () => {
     const video = videoRef.current;
     if (!video) return;
     video.playbackRate = 0.7;
+    if (!isReducedMotion && video.paused) {
+      attemptPlay();
+    }
   };
 
   return (
