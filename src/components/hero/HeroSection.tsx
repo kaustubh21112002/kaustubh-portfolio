@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { ArrowDown, Download, Mail, ChevronRight, Play, Pause } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { ArrowDown, Download, Mail, ChevronRight } from 'lucide-react';
 import { portfolioConfig } from '../../config/portfolio';
 
 interface HeroSectionProps {
@@ -14,9 +14,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   onContactClick,
 }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [isReducedMotion, setIsReducedMotion] = useState<boolean>(false);
-  const [hasInteracted, setHasInteracted] = useState<boolean>(false);
+  const [isReducedMotion, setIsReducedMotion] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  });
 
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
@@ -25,74 +26,54 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     }
   };
 
-  // Check prefers-reduced-motion
+  // Listen for dynamic changes to prefers-reduced-motion
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setIsReducedMotion(mediaQuery.matches);
-
     const handleMotionChange = (e: MediaQueryListEvent) => {
       setIsReducedMotion(e.matches);
-      const video = videoRef.current;
-      if (!video) return;
-
-      if (e.matches) {
-        video.pause();
-        setIsPlaying(false);
-      } else if (!hasInteracted) {
-        video.playbackRate = 0.7;
-        video.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
-      }
     };
 
     mediaQuery.addEventListener('change', handleMotionChange);
     return () => mediaQuery.removeEventListener('change', handleMotionChange);
-  }, [hasInteracted]);
+  }, []);
 
-  // Initialize playback with smooth slow-motion (0.7x speed)
+  // Initialize playback with smooth slow-motion (0.7x speed) and continuous looping
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
     video.playbackRate = 0.7;
+    video.defaultMuted = true;
+    video.muted = true;
 
     // Respect reduced-motion preferences
     if (isReducedMotion) {
       video.pause();
-      setIsPlaying(false);
-      return;
-    }
-
-    video.muted = true;
-    const playPromise = video.play();
-    if (playPromise !== undefined) {
-      playPromise
-        .then(() => setIsPlaying(true))
-        .catch((err) => {
-          console.log('Autoplay deferred:', err);
-          setIsPlaying(false);
+    } else {
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((err) => {
+          if (err.name !== 'AbortError') {
+            console.log('Autoplay deferred:', err);
+          }
         });
+      }
     }
   }, [isReducedMotion]);
 
-  const togglePlayPause = useCallback(() => {
+  // Ensure continuous playback at 0.7x speed once ready
+  const handleCanPlay = () => {
     const video = videoRef.current;
-    if (!video) return;
-
-    setHasInteracted(true);
-
-    if (video.paused || video.ended) {
-      video.playbackRate = 0.7;
-      video
-        .play()
-        .then(() => setIsPlaying(true))
-        .catch(() => setIsPlaying(false));
-    } else {
-      video.pause();
-      setIsPlaying(false);
+    if (!video || isReducedMotion) return;
+    video.playbackRate = 0.7;
+    video.defaultMuted = true;
+    video.muted = true;
+    if (video.paused) {
+      video.play().catch(() => {});
     }
-  }, []);
+  };
 
   return (
     <section
@@ -105,12 +86,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           ref={videoRef}
           src="/videos/intro.mp4"
           poster="/videos/intro-poster.jpg"
-          preload="metadata"
-          muted
+          autoPlay
           loop
+          muted
           playsInline
-          onPlay={() => setIsPlaying(true)}
-          onPause={() => setIsPlaying(false)}
+          preload="metadata"
+          onCanPlay={handleCanPlay}
           className="w-full h-full object-cover object-[50%_18%] lg:object-[60%_30%] lg:translate-x-[10%] lg:translate-y-[2%] lg:scale-[1.04] transition-transform duration-700"
           aria-hidden="true"
         />
@@ -239,31 +220,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           </div>
         </div>
 
-        {/* Bottom Status & Playback Control Bar */}
-        <div className="w-full flex items-center justify-between pt-3 sm:pt-4 border-t border-white/10 text-white/60 text-xs font-mono">
-          {/* Discreet, accessible playback indicator & toggle */}
-          <button
-            type="button"
-            onClick={togglePlayPause}
-            className="group inline-flex items-center gap-2 text-white/50 hover:text-white/90 text-xs font-mono transition-colors focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:outline-none rounded px-1.5 py-0.5 cursor-pointer select-none"
-            aria-label={isPlaying ? 'Pause background video' : 'Play background video'}
-          >
-            <span
-              className={`w-1.5 h-1.5 rounded-full transition-colors ${
-                isPlaying ? 'bg-red-500' : 'bg-white/40'
-              }`}
-              aria-hidden="true"
-            />
-            {isPlaying ? (
-              <Pause className="w-2.5 h-2.5 text-white/50 group-hover:text-red-400 transition-colors" fill="currentColor" aria-hidden="true" />
-            ) : (
-              <Play className="w-2.5 h-2.5 text-white/50 group-hover:text-white transition-colors translate-x-0.5" fill="currentColor" aria-hidden="true" />
-            )}
-            <span className="uppercase tracking-wider text-xs text-white/50 group-hover:text-white/80 transition-colors">
-              {isPlaying ? 'Motion (0.7×)' : 'Motion Paused'}
-            </span>
-          </button>
-
+        {/* Bottom Status & Navigation Bar */}
+        <div className="w-full flex items-center justify-end pt-3 sm:pt-4 border-t border-white/10 text-white/60 text-xs font-mono">
           {/* Section Navigation Link */}
           <button
             onClick={() => scrollTo('flagship')}
