@@ -8,7 +8,7 @@ interface HeroSectionProps {
   onContactClick?: () => void;
 }
 
-export const HeroSection: React.FC<HeroSectionProps> = ({
+export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
   onExploreClick,
   onResumeClick,
   onContactClick,
@@ -51,28 +51,19 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     // Respect reduced-motion preferences
     if (isReducedMotion) {
       video.pause();
-    } else {
+    } else if (video.paused) {
       const playPromise = video.play();
       if (playPromise !== undefined) {
-        playPromise.catch((err) => {
-          if (err.name !== 'AbortError') {
-            console.log('Autoplay deferred:', err);
-          }
-        });
+        playPromise.catch(() => {});
       }
     }
   }, [isReducedMotion]);
 
-  // Ensure continuous playback at 0.7x speed once ready
-  const handleCanPlay = () => {
+  // Set 0.7x playback speed once metadata loads (fires only once on initial load, never on loop)
+  const handleLoadedMetadata = () => {
     const video = videoRef.current;
-    if (!video || isReducedMotion) return;
+    if (!video) return;
     video.playbackRate = 0.7;
-    video.defaultMuted = true;
-    video.muted = true;
-    if (video.paused) {
-      video.play().catch(() => {});
-    }
   };
 
   return (
@@ -90,8 +81,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           loop
           muted
           playsInline
-          preload="metadata"
-          onCanPlay={handleCanPlay}
+          preload="auto"
+          onLoadedMetadata={handleLoadedMetadata}
           className="w-full h-full object-cover object-[50%_18%] lg:object-[60%_30%] lg:translate-x-[10%] lg:translate-y-[2%] lg:scale-[1.04] transition-transform duration-700"
           aria-hidden="true"
         />
@@ -234,4 +225,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       </div>
     </section>
   );
-};
+});
+
+HeroSection.displayName = 'HeroSection';
