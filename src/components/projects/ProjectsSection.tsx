@@ -53,6 +53,7 @@ export const ProjectsSection: React.FC = () => {
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
+                  aria-pressed={selectedCategory === cat}
                   className={`px-3.5 py-1.5 rounded-full text-xs font-mono tracking-wide transition-all cursor-pointer ${
                     selectedCategory === cat
                       ? 'bg-white text-black font-bold shadow-md'
@@ -60,7 +61,7 @@ export const ProjectsSection: React.FC = () => {
                   }`}
                 >
                   <span>{cat}</span>
-                  <span className={`ml-1.5 text-[10px] ${selectedCategory === cat ? 'text-black/80' : 'text-white/65'}`}>
+                  <span className={`ml-1.5 text-xs ${selectedCategory === cat ? 'text-black/80' : 'text-white/65'}`}>
                     ({count})
                   </span>
                 </button>
@@ -83,7 +84,7 @@ export const ProjectsSection: React.FC = () => {
                     <span className="px-3 py-0.5 rounded-full bg-white/5 border border-white/15 text-xs font-mono text-red-400 font-medium">
                       {project.category}
                     </span>
-                    <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-mono border ${getStatusBadge(project.status)}`}>
+                    <span className={`px-2.5 py-0.5 rounded-full text-xs font-mono border ${getStatusBadge(project.status)}`}>
                       {project.status}
                     </span>
                   </div>
@@ -102,7 +103,7 @@ export const ProjectsSection: React.FC = () => {
                 <div className="space-y-3 text-xs sm:text-sm leading-relaxed mb-6 font-sans">
                   {/* 1. Problem Statement */}
                   <div className="p-3.5 rounded-2xl bg-black/40 border border-white/5 border-l-2 border-l-amber-400">
-                    <span className="text-[10px] font-mono uppercase text-amber-400 font-bold block mb-1">
+                    <span className="text-xs font-mono uppercase text-amber-400 font-bold block mb-1">
                       01. Commercial Problem / Question
                     </span>
                     <p className="text-white/80 line-clamp-3 leading-relaxed">{project.problemStatement}</p>
@@ -110,7 +111,7 @@ export const ProjectsSection: React.FC = () => {
 
                   {/* 2. Analytical Approach */}
                   <div className="p-3.5 rounded-2xl bg-blue-500/[0.03] border border-white/5 border-l-2 border-l-blue-400">
-                    <span className="text-[10px] font-mono uppercase text-blue-400 font-bold block mb-1">
+                    <span className="text-xs font-mono uppercase text-blue-400 font-bold block mb-1">
                       02. Analytical Approach & Architecture
                     </span>
                     <p className="text-white/80 line-clamp-3 leading-relaxed">{project.approach}</p>
@@ -118,7 +119,7 @@ export const ProjectsSection: React.FC = () => {
 
                   {/* 3. Key Verified Finding */}
                   <div className="p-3.5 rounded-2xl bg-emerald-500/[0.04] border border-white/5 border-l-2 border-l-emerald-400">
-                    <span className="text-[10px] font-mono uppercase text-emerald-400 font-bold block mb-1">
+                    <span className="text-xs font-mono uppercase text-emerald-400 font-bold block mb-1">
                       03. Key Verified Finding
                     </span>
                     <p className="text-white/85 line-clamp-3 leading-relaxed">{project.keyFinding}</p>
@@ -126,7 +127,7 @@ export const ProjectsSection: React.FC = () => {
 
                   {/* 4. Business Implication */}
                   <div className="p-3.5 rounded-2xl bg-red-500/[0.03] border border-white/5 border-l-2 border-l-red-400">
-                    <span className="text-[10px] font-mono uppercase text-red-400 font-bold block mb-1">
+                    <span className="text-xs font-mono uppercase text-red-400 font-bold block mb-1">
                       04. Business Implication
                     </span>
                     <p className="text-white/80 line-clamp-2 leading-relaxed">{project.businessImplication}</p>
@@ -137,9 +138,9 @@ export const ProjectsSection: React.FC = () => {
                 <div className="grid grid-cols-2 gap-3 mb-6">
                   {project.keyMetrics.slice(0, 2).map((m, idx) => (
                     <div key={idx} className="p-4 rounded-2xl bg-black/30 border border-white/5">
-                      <div className="text-[10px] uppercase font-mono text-white/50 tracking-wider">{m.label}</div>
+                      <div className="text-xs uppercase font-mono text-white/65 tracking-wider">{m.label}</div>
                       <div className="text-xl sm:text-2xl font-extrabold text-white font-mono mt-1">{m.value}</div>
-                      {m.subtext && <div className="text-[11px] text-white/65 mt-0.5 truncate font-mono">{m.subtext}</div>}
+                      {m.subtext && <div className="text-xs text-white/65 mt-0.5 truncate font-mono">{m.subtext}</div>}
                     </div>
                   ))}
                 </div>
@@ -147,7 +148,7 @@ export const ProjectsSection: React.FC = () => {
                 {/* Verified Tools Pill Box */}
                 <div className="flex flex-wrap gap-1.5 mb-6">
                   {project.tools.slice(0, 4).map((tool, idx) => (
-                    <span key={idx} className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-white/70 text-[11px] font-mono">
+                    <span key={idx} className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-white/70 text-xs font-mono">
                       {tool}
                     </span>
                   ))}

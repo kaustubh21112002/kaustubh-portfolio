@@ -138,6 +138,7 @@ export const SkillsSection: React.FC = () => {
           <div className="flex flex-wrap gap-2 mt-8">
             <button
               onClick={() => setSelectedGroup('all')}
+              aria-pressed={selectedGroup === 'all'}
               className={`px-4 py-1.5 rounded-full text-xs font-mono transition-all duration-200 cursor-pointer ${
                 selectedGroup === 'all'
                   ? 'bg-white text-black font-bold shadow-md'
@@ -150,6 +151,7 @@ export const SkillsSection: React.FC = () => {
               <button
                 key={g.id}
                 onClick={() => setSelectedGroup(g.id)}
+                aria-pressed={selectedGroup === g.id}
                 className={`px-3.5 py-1.5 rounded-full text-xs font-mono transition-all duration-200 cursor-pointer ${
                   selectedGroup === g.id
                     ? 'bg-white text-black font-bold shadow-md'
@@ -178,7 +180,7 @@ export const SkillsSection: React.FC = () => {
                   <h3 className="text-base sm:text-lg font-bold text-white tracking-tight">
                     {group.title}
                   </h3>
-                  <p className="text-xs text-white/50 font-sans mt-0.5">
+                  <p className="text-xs text-white/65 font-sans mt-0.5">
                     {group.subtitle}
                   </p>
                 </div>
@@ -191,15 +193,15 @@ export const SkillsSection: React.FC = () => {
                     key={sIdx}
                     className="p-3.5 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-white/15 transition-colors"
                   >
-                    <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 mb-1">
+                    <div className="flex flex-wrap items-center gap-2 mb-1.5">
                       <span className="font-bold text-white text-sm font-sans">
                         {skill.name}
                       </span>
-                      <span className="text-[10px] font-mono text-red-400 bg-red-500/10 px-2 py-0.5 rounded-full border border-red-500/20 w-fit">
+                      <span className="text-xs font-mono text-red-400 bg-red-500/10 px-2.5 py-0.5 rounded-full border border-red-500/20">
                         {skill.evidence}
                       </span>
                     </div>
-                    <p className="text-xs text-white/60 leading-relaxed font-sans">
+                    <p className="text-xs text-white/80 leading-relaxed font-sans">
                       {skill.context}
                     </p>
                   </div>

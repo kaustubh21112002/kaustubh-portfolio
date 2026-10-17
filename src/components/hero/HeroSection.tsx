@@ -259,7 +259,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             ) : (
               <Play className="w-2.5 h-2.5 text-white/50 group-hover:text-white transition-colors translate-x-0.5" fill="currentColor" aria-hidden="true" />
             )}
-            <span className="uppercase tracking-wider text-[10px] sm:text-[11px] text-white/50 group-hover:text-white/80 transition-colors">
+            <span className="uppercase tracking-wider text-xs text-white/50 group-hover:text-white/80 transition-colors">
               {isPlaying ? 'Motion (0.7×)' : 'Motion Paused'}
             </span>
           </button>
@@ -269,7 +269,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             onClick={() => scrollTo('flagship')}
             className="flex items-center gap-1.5 sm:gap-2 text-white/50 hover:text-white transition-colors group cursor-pointer"
           >
-            <span className="uppercase tracking-wider text-[10px] sm:text-[11px]">Flagship DCF</span>
+            <span className="uppercase tracking-wider text-xs">Flagship DCF</span>
             <ArrowDown className="w-3 h-3 sm:w-3.5 sm:h-3.5 animate-bounce group-hover:text-white" />
           </button>
         </div>

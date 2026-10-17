@@ -182,7 +182,7 @@ export const JourneySection: React.FC = () => {
                   {item.skills.map((skill, sIdx) => (
                     <span
                       key={sIdx}
-                      className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-white/70 text-[11px] font-mono tracking-wide"
+                      className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-white/70 text-xs font-mono tracking-wide"
                     >
                       {skill}
                     </span>

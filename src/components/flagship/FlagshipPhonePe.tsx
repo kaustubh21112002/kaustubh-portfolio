@@ -95,50 +95,54 @@ export const FlagshipPhonePe: React.FC = () => {
         {/* High-Level Financial Metrics Ribbon */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
           <div className="p-5 sm:p-6 rounded-2xl bg-[#141722] border border-white/10 hover:border-white/20 transition-all">
-            <div className="text-[11px] font-mono uppercase text-white/50 tracking-wider">Implied Enterprise Value (EV)</div>
+            <div className="text-xs font-mono uppercase text-white/65 tracking-wider">Implied Enterprise Value (EV)</div>
             <div className="text-2xl sm:text-3xl font-extrabold text-white mt-1.5 font-mono">₹33,432 Cr</div>
             <div className="text-xs text-emerald-400 mt-1 font-mono">Verified Model Output</div>
-            <div className="text-[10px] text-white/65 mt-1 font-mono">PV FCF ₹13,878 Cr + PV TV ₹19,554 Cr</div>
+            <div className="text-xs text-white/65 mt-1 font-mono">PV FCF ₹13,878 Cr + PV TV ₹19,554 Cr</div>
           </div>
 
           <div className="p-5 sm:p-6 rounded-2xl bg-[#141722] border border-white/10 hover:border-white/20 transition-all">
-            <div className="text-[11px] font-mono uppercase text-white/50 tracking-wider">Implied Equity Value</div>
+            <div className="text-xs font-mono uppercase text-white/65 tracking-wider">Implied Equity Value</div>
             <div className="text-2xl sm:text-3xl font-extrabold text-white mt-1.5 font-mono">₹41,631 Cr</div>
             <div className="text-xs text-emerald-400 mt-1 font-mono">+₹8,199 Cr Net Liquidity</div>
-            <div className="text-[10px] text-white/65 mt-1 font-mono">Cash + Investments - Debt</div>
+            <div className="text-xs text-white/65 mt-1 font-mono">Cash + Investments - Debt</div>
           </div>
 
           <div className="p-5 sm:p-6 rounded-2xl bg-[#141722] border border-white/10 hover:border-white/20 transition-all">
-            <div className="text-[11px] font-mono uppercase text-white/50 tracking-wider">Implied Price Per Share</div>
+            <div className="text-xs font-mono uppercase text-white/65 tracking-wider">Implied Price Per Share</div>
             <div className="text-2xl sm:text-3xl font-extrabold text-white mt-1.5 font-mono">₹821.78</div>
             <div className="text-xs text-emerald-400 mt-1 font-mono">50.66 Cr Common Shares</div>
-            <div className="text-[10px] text-white/65 mt-1 font-mono">Reconciled after Audit Finding 1</div>
+            <div className="text-xs text-white/65 mt-1 font-mono">Reconciled after Audit Finding 1</div>
           </div>
 
           <div className="p-5 sm:p-6 rounded-2xl bg-[#141722] border border-white/10 hover:border-white/20 transition-all">
-            <div className="text-[11px] font-mono uppercase text-white/50 tracking-wider">WACC Benchmark</div>
+            <div className="text-xs font-mono uppercase text-white/65 tracking-wider">WACC Benchmark</div>
             <div className="text-2xl sm:text-3xl font-extrabold text-white mt-1.5 font-mono">14.92%</div>
             <div className="text-xs text-amber-300 mt-1 font-mono">CAPM Derived Cost of Capital</div>
-            <div className="text-[10px] text-white/65 mt-1 font-mono">Rf: 3.0% | Beta: 1.35 | Rm: 11.82%</div>
+            <div className="text-xs text-white/65 mt-1 font-mono">Rf: 3.0% | Beta: 1.35 | Rm: 11.82%</div>
           </div>
         </div>
 
-        {/* Tab Navigation Pill Bar */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-8 border-b border-white/10 scrollbar-thin">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-mono tracking-wider transition-all whitespace-nowrap cursor-pointer ${
-                activeTab === tab.id
-                  ? 'bg-red-600 text-white font-bold shadow-lg shadow-red-600/25 border border-red-500'
-                  : 'bg-[#141722] text-white/70 hover:bg-white/10 hover:text-white border border-white/5'
-              }`}
-            >
-              {tab.icon}
-              <span>{tab.label}</span>
-            </button>
-          ))}
+        {/* Tab Navigation Pill Bar with visible scrollbar & overflow indicator */}
+        <div className="relative mb-8">
+          <div className="phonepe-nav-scroll flex items-center gap-2 overflow-x-auto pb-3 border-b border-white/10">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                aria-pressed={activeTab === tab.id}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-mono tracking-wider transition-all whitespace-nowrap cursor-pointer ${
+                  activeTab === tab.id
+                    ? 'bg-red-600 text-white font-bold shadow-lg shadow-red-600/25 border border-red-500'
+                    : 'bg-[#141722] text-white/70 hover:bg-white/10 hover:text-white border border-white/10'
+                }`}
+              >
+                {tab.icon}
+                <span>{tab.label}</span>
+              </button>
+            ))}
+          </div>
+          <div aria-hidden="true" className="pointer-events-none absolute right-0 top-0 bottom-3 w-8 bg-gradient-to-l from-[#0b0d13] to-transparent sm:hidden" />
         </div>
 
         {/* ================================================================= */}
@@ -270,55 +274,55 @@ export const FlagshipPhonePe: React.FC = () => {
                   The weighted average cost of capital (WACC) was constructed using the Capital Asset Pricing Model (CAPM) reflecting the risk profile of India’s consumer FinTech sector:
                 </p>
 
-                <div className="overflow-x-auto rounded-xl border border-white/10">
+                <div className="overflow-x-auto rounded-2xl border border-white/10">
                   <table className="w-full text-left border-collapse text-xs font-mono">
                     <thead>
-                      <tr className="bg-black/50 border-b border-white/10 text-white/50 text-[11px] uppercase">
-                        <th className="py-2.5 px-3">CAPM Parameter</th>
-                        <th className="py-2.5 px-3 text-right">Value</th>
-                        <th className="py-2.5 px-3">Analytical Rationale</th>
+                      <tr className="bg-black/50 border-b border-white/10 text-white/65 text-xs uppercase">
+                        <th className="py-3 px-3.5">CAPM Parameter</th>
+                        <th className="py-3 px-3.5 text-right">Value</th>
+                        <th className="py-3 px-3.5">Analytical Rationale</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5">
                       <tr>
-                        <td className="py-2 px-3 text-white">Risk-Free Rate (Rf)</td>
-                        <td className="py-2 px-3 text-right text-emerald-400 font-bold">3.00%</td>
-                        <td className="py-2 px-3 text-white/70 font-sans">Baseline sovereign risk-free proxy benchmark</td>
+                        <td className="py-2.5 px-3.5 text-white">Risk-Free Rate (Rf)</td>
+                        <td className="py-2.5 px-3.5 text-right text-emerald-400 font-bold">3.00%</td>
+                        <td className="py-2.5 px-3.5 text-white/80 font-sans">Baseline sovereign risk-free proxy benchmark</td>
                       </tr>
                       <tr>
-                        <td className="py-2 px-3 text-white">Equity Beta (β)</td>
-                        <td className="py-2 px-3 text-right text-amber-400 font-bold">1.35</td>
-                        <td className="py-2 px-3 text-white/70 font-sans">Peer FinTech sensitivity reflecting high operating leverage</td>
+                        <td className="py-2.5 px-3.5 text-white">Equity Beta (β)</td>
+                        <td className="py-2.5 px-3.5 text-right text-amber-400 font-bold">1.35</td>
+                        <td className="py-2.5 px-3.5 text-white/80 font-sans">Peer FinTech sensitivity reflecting high operating leverage</td>
                       </tr>
                       <tr>
-                        <td className="py-2 px-3 text-white">Market Return (Rm)</td>
-                        <td className="py-2 px-3 text-right text-white font-bold">11.82%</td>
-                        <td className="py-2 px-3 text-white/70 font-sans">Long-term Indian equity index benchmark return</td>
+                        <td className="py-2.5 px-3.5 text-white">Market Return (Rm)</td>
+                        <td className="py-2.5 px-3.5 text-right text-white font-bold">11.82%</td>
+                        <td className="py-2.5 px-3.5 text-white/80 font-sans">Long-term Indian equity index benchmark return</td>
                       </tr>
                       <tr>
-                        <td className="py-2 px-3 text-white">Equity Risk Premium (Rm - Rf)</td>
-                        <td className="py-2 px-3 text-right text-white font-bold">8.82%</td>
-                        <td className="py-2 px-3 text-white/70 font-sans">Excess return required over risk-free benchmark</td>
+                        <td className="py-2.5 px-3.5 text-white">Equity Risk Premium (Rm - Rf)</td>
+                        <td className="py-2.5 px-3.5 text-right text-white font-bold">8.82%</td>
+                        <td className="py-2.5 px-3.5 text-white/80 font-sans">Excess return required over risk-free benchmark</td>
                       </tr>
                       <tr className="bg-red-500/10 font-bold text-white">
-                        <td className="py-2.5 px-3">Cost of Equity (Ke)</td>
-                        <td className="py-2.5 px-3 text-right text-red-400 text-sm">14.92%</td>
-                        <td className="py-2.5 px-3 font-sans">Ke = 3.00% + 1.35 × 8.82% = 14.91% (14.92% in model)</td>
+                        <td className="py-3 px-3.5">Cost of Equity (Ke)</td>
+                        <td className="py-3 px-3.5 text-right text-red-400 text-sm">14.92%</td>
+                        <td className="py-3 px-3.5 font-sans">Ke = 3.00% + 1.35 × 8.82% = 14.91% (14.92% in model)</td>
                       </tr>
                       <tr>
-                        <td className="py-2 px-3 text-white">Pre-Tax Cost of Debt (Kd)</td>
-                        <td className="py-2 px-3 text-right text-white/50">0.00%</td>
-                        <td className="py-2 px-3 text-white/70 font-sans">Debt weight set to 0% on Assumptions sheet (see Audit 3)</td>
+                        <td className="py-2.5 px-3.5 text-white">Pre-Tax Cost of Debt (Kd)</td>
+                        <td className="py-2.5 px-3.5 text-right text-white/65">0.00%</td>
+                        <td className="py-2.5 px-3.5 text-white/80 font-sans">Debt weight set to 0% on Assumptions sheet (see Audit 3)</td>
                       </tr>
                       <tr>
-                        <td className="py-2 px-3 text-white">Effective Tax Rate (t)</td>
-                        <td className="py-2 px-3 text-right text-white font-bold">30.00%</td>
-                        <td className="py-2 px-3 text-white/70 font-sans">Statutory corporate tax rate in India</td>
+                        <td className="py-2.5 px-3.5 text-white">Effective Tax Rate (t)</td>
+                        <td className="py-2.5 px-3.5 text-right text-white font-bold">30.00%</td>
+                        <td className="py-2.5 px-3.5 text-white/80 font-sans">Statutory corporate tax rate in India</td>
                       </tr>
                       <tr className="bg-emerald-500/10 font-bold text-white">
-                        <td className="py-2.5 px-3">Weighted Cost of Capital (WACC)</td>
-                        <td className="py-2.5 px-3 text-right text-emerald-400 text-sm">14.92%</td>
-                        <td className="py-2.5 px-3 font-sans">Discount rate applied across explicit 5-year FCFs</td>
+                        <td className="py-3 px-3.5">Weighted Cost of Capital (WACC)</td>
+                        <td className="py-3 px-3.5 text-right text-emerald-400 text-sm">14.92%</td>
+                        <td className="py-3 px-3.5 font-sans">Discount rate applied across explicit 5-year FCFs</td>
                       </tr>
                     </tbody>
                   </table>
@@ -389,14 +393,14 @@ export const FlagshipPhonePe: React.FC = () => {
               </div>
 
               {/* Mobile Swipe Cue */}
-              <div className="flex items-center justify-between text-[11px] font-mono text-white/50 mb-2 sm:hidden">
+              <div className="flex items-center justify-between text-xs font-mono text-white/65 mb-2 sm:hidden">
                 <span>← Swipe horizontally to inspect all 5 forecast periods →</span>
               </div>
 
-              <div className="overflow-x-auto rounded-xl border border-white/10">
+              <div className="overflow-x-auto rounded-2xl border border-white/10">
                 <table className="w-full min-w-[620px] text-left border-collapse text-xs sm:text-sm">
                   <thead>
-                    <tr className="bg-black/50 border-b border-white/10 text-white/50 font-mono text-[11px] uppercase">
+                    <tr className="bg-black/50 border-b border-white/10 text-white/65 font-mono text-xs uppercase">
                       <th className="py-3.5 px-4">Line Item (₹ Crores)</th>
                       <th className="py-3.5 px-4 text-right">FY26E (Year 0)</th>
                       <th className="py-3.5 px-4 text-right">FY27E (Year 1)</th>
@@ -488,24 +492,24 @@ export const FlagshipPhonePe: React.FC = () => {
                   Valuation Formulation & Terminal Synthesis
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
-                  <div className="p-4 rounded-xl bg-black/40 border border-white/10">
-                    <span className="text-white/50 block text-[10px] uppercase">1. Explicit Cash Flows</span>
+                  <div className="p-4 rounded-2xl bg-black/40 border border-white/10">
+                    <span className="text-white/65 block text-xs uppercase">1. Explicit Cash Flows</span>
                     <span className="text-lg font-bold text-white block mt-1">₹13,878.15 Cr</span>
-                    <p className="text-white/60 font-sans mt-1 text-[11px]">
+                    <p className="text-white/80 font-sans mt-1 text-xs leading-relaxed">
                       Sum of explicit present values across FY26E–FY30E.
                     </p>
                   </div>
-                  <div className="p-4 rounded-xl bg-black/40 border border-white/10">
-                    <span className="text-white/50 block text-[10px] uppercase">2. Blended Terminal Value</span>
+                  <div className="p-4 rounded-2xl bg-black/40 border border-white/10">
+                    <span className="text-white/65 block text-xs uppercase">2. Blended Terminal Value</span>
                     <span className="text-lg font-bold text-white block mt-1">₹19,553.83 Cr (PV)</span>
-                    <p className="text-white/60 font-sans mt-1 text-[11px]">
+                    <p className="text-white/80 font-sans mt-1 text-xs leading-relaxed">
                       Perpetuity (₹54,464 Cr) & Multiple (₹19,425 Cr) averaged and discounted at 0.5293.
                     </p>
                   </div>
-                  <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30">
-                    <span className="text-red-300 block text-[10px] uppercase font-bold">3. Core Enterprise Value</span>
+                  <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/30">
+                    <span className="text-red-300 block text-xs uppercase font-bold">3. Core Enterprise Value</span>
                     <span className="text-lg font-extrabold text-emerald-400 block mt-1">₹33,431.99 Cr</span>
-                    <p className="text-white/60 font-sans mt-1 text-[11px]">
+                    <p className="text-white/80 font-sans mt-1 text-xs leading-relaxed">
                       Total operating enterprise value before net liquidity bridge.
                     </p>
                   </div>
@@ -619,10 +623,10 @@ export const FlagshipPhonePe: React.FC = () => {
             {/* Side-by-Side Comparison Matrix */}
             <div className="p-6 sm:p-8 rounded-3xl bg-[#141722] border border-white/10 overflow-hidden">
               <h3 className="text-lg font-bold text-white mb-4">Comprehensive Scenario Comparison Matrix</h3>
-              <div className="overflow-x-auto rounded-xl border border-white/10">
+              <div className="overflow-x-auto rounded-2xl border border-white/10">
                 <table className="w-full min-w-[650px] text-left border-collapse text-xs font-mono">
                   <thead>
-                    <tr className="bg-black/50 border-b border-white/10 text-white/50 uppercase text-[11px]">
+                    <tr className="bg-black/50 border-b border-white/10 text-white/65 uppercase text-xs">
                       <th className="py-3 px-4">Scenario Metric</th>
                       <th className="py-3 px-4 text-right text-rose-300">Bear Case</th>
                       <th className="py-3 px-4 text-right text-amber-300">Base Case (Workbook)</th>
@@ -720,10 +724,10 @@ export const FlagshipPhonePe: React.FC = () => {
                   <span className="text-2xl font-black text-white">₹41,631.22 Cr</span>
                 </div>
 
-                <div className="flex items-center justify-between p-4 rounded-xl bg-black/40 border border-white/10">
+                <div className="flex items-center justify-between p-4 rounded-2xl bg-black/40 border border-white/10">
                   <div>
                     <span className="font-sans font-medium text-white/80 block">Common Shares Outstanding</span>
-                    <span className="text-[10px] text-white/50 font-sans">Cell C12 in workbook model</span>
+                    <span className="text-xs text-white/65 font-sans">Cell C12 in workbook model</span>
                   </div>
                   <span className="text-base font-bold text-white">50.66 Cr Shares</span>
                 </div>
@@ -761,15 +765,15 @@ export const FlagshipPhonePe: React.FC = () => {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
                   <h3 className="text-lg font-bold text-white">Valuation Sensitivity Heatmap (WACC vs Exit Multiple)</h3>
-                  <p className="text-xs text-white/60">Simulate macroeconomic interest rates and exit multiples.</p>
+                  <p className="text-xs text-white/65">Simulate macroeconomic interest rates and exit multiples.</p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="p-3 rounded-xl bg-black/40 border border-white/10 text-right">
-                    <span className="text-[10px] text-white/50 uppercase block font-mono">Dynamic EV</span>
+                  <div className="p-3 rounded-2xl bg-black/40 border border-white/10 text-right">
+                    <span className="text-xs text-white/65 uppercase block font-mono">Dynamic EV</span>
                     <span className="text-xl font-bold text-red-400 font-mono">₹{calculatedEV.toLocaleString()} Cr</span>
                   </div>
-                  <div className="p-3 rounded-xl bg-black/40 border border-white/10 text-right">
-                    <span className="text-[10px] text-white/50 uppercase block font-mono">Dynamic Equity Val</span>
+                  <div className="p-3 rounded-2xl bg-black/40 border border-white/10 text-right">
+                    <span className="text-xs text-white/65 uppercase block font-mono">Dynamic Equity Val</span>
                     <span className="text-xl font-bold text-emerald-400 font-mono">₹{calculatedEquityValue.toLocaleString()} Cr</span>
                   </div>
                 </div>
@@ -790,7 +794,7 @@ export const FlagshipPhonePe: React.FC = () => {
                     onChange={(e) => setWaccOffset(parseFloat(e.target.value))}
                     className="w-full accent-red-500 cursor-pointer"
                   />
-                  <div className="flex justify-between text-[10px] text-white/65 font-mono mt-1">
+                  <div className="flex justify-between text-xs text-white/65 font-mono mt-1">
                     <span>12.92% (Low rate)</span>
                     <span>14.92% (Base)</span>
                     <span>16.92% (Tightening)</span>
@@ -810,7 +814,7 @@ export const FlagshipPhonePe: React.FC = () => {
                     onChange={(e) => setMultipleOffset(parseFloat(e.target.value))}
                     className="w-full accent-red-500 cursor-pointer"
                   />
-                  <div className="flex justify-between text-[10px] text-white/65 font-mono mt-1">
+                  <div className="flex justify-between text-xs text-white/65 font-mono mt-1">
                     <span>11.15x (Compressed)</span>
                     <span>13.15x (Base)</span>
                     <span>15.15x (Expanded)</span>
@@ -819,10 +823,10 @@ export const FlagshipPhonePe: React.FC = () => {
               </div>
 
               {/* Matrix Table */}
-              <div className="overflow-x-auto rounded-xl border border-white/10">
+              <div className="overflow-x-auto rounded-2xl border border-white/10">
                 <table className="w-full text-center border-collapse text-xs font-mono">
                   <thead>
-                    <tr className="bg-black/50 border-b border-white/10 text-white/50 text-[11px] uppercase">
+                    <tr className="bg-black/50 border-b border-white/10 text-white/65 text-xs uppercase">
                       <th className="py-3 px-3 text-left">WACC \ Multiple</th>
                       <th className="py-3 px-3">11.15x (-2.0x)</th>
                       <th className="py-3 px-3">12.15x (-1.0x)</th>
@@ -888,14 +892,14 @@ export const FlagshipPhonePe: React.FC = () => {
                 </div>
               </div>
 
-              <div className="overflow-x-auto rounded-xl border border-white/10">
+              <div className="overflow-x-auto rounded-2xl border border-white/10">
                 <table className="w-full text-left border-collapse text-xs sm:text-sm">
                   <thead>
-                    <tr className="bg-black/50 border-b border-white/10 text-white/50 font-mono text-[11px] uppercase">
+                    <tr className="bg-black/50 border-b border-white/10 text-white/65 font-mono text-xs uppercase">
                       <th className="py-3 px-4">Dimension</th>
                       <th className="py-3 px-4 text-emerald-300 font-mono">PhonePe (Model Estimates)</th>
                       <th className="py-3 px-4 text-blue-300 font-mono">Paytm / One97 (Public Filings)</th>
-                      <th className="py-3 px-4 text-white/60 font-mono">Analytical Interpretation</th>
+                      <th className="py-3 px-4 text-white/65 font-mono">Analytical Interpretation</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/5 font-sans text-xs">
@@ -903,7 +907,7 @@ export const FlagshipPhonePe: React.FC = () => {
                       <td className="py-3 px-4 font-medium text-white">Consumer UPI Volume Share</td>
                       <td className="py-3 px-4 font-mono font-bold text-emerald-400">~48.5%</td>
                       <td className="py-3 px-4 font-mono text-white">~8.5%</td>
-                      <td className="py-3 px-4 text-white/70">PhonePe holds 5.7x volume lead in everyday consumer payments.</td>
+                      <td className="py-3 px-4 text-white/80">PhonePe holds 5.7x volume lead in everyday consumer payments.</td>
                     </tr>
                     <tr className="hover:bg-white/[0.02]">
                       <td className="py-3 px-4 font-medium text-white">Merchant Soundbox Devices</td>
@@ -1009,7 +1013,7 @@ export const FlagshipPhonePe: React.FC = () => {
                 </div>
               </div>
 
-              <div className="p-4 rounded-xl bg-black/40 border border-white/10 text-xs text-white/60 leading-relaxed font-sans">
+              <div className="p-4 rounded-2xl bg-black/40 border border-white/10 text-xs text-white/65 leading-relaxed font-sans">
                 <strong>Model Audit Interpretation:</strong> These findings document technical calculation mechanics, formula links, and draft schedule artifacts within the student-constructed Excel workbook. Documenting them adheres to data governance principles and does not imply that the model is fully validated, free of other conceptual limitations, or suitable as an investment recommendation.
               </div>
             </div>
@@ -1017,7 +1021,7 @@ export const FlagshipPhonePe: React.FC = () => {
         )}
 
         {/* Academic / Research Disclaimer */}
-        <div className="mt-8 p-4 rounded-2xl bg-black/40 border border-white/5 text-[11px] text-white/50 leading-relaxed font-mono">
+        <div className="mt-8 p-4 sm:p-5 rounded-2xl bg-black/40 border border-white/10 text-xs sm:text-sm text-white/65 leading-relaxed font-mono">
           <p>
             <strong>DISCLAIMER & METHODOLOGICAL DISCLOSURE:</strong> This pre-IPO valuation is an independent academic research project conducted by Kaustubh as part of MBA Business Analytics studies. This analysis does not constitute investment advice, equity research recommendations, or a solicitation to buy or sell securities. Projections, WACC assumptions, and segment forecasts reflect student-constructed financial models based on public disclosures.
           </p>

@@ -37,7 +37,7 @@ export const ResumeSection: React.FC = () => {
                   className="flex items-center gap-2 px-7 py-3.5 rounded-full bg-white text-black font-bold text-sm tracking-wide transition-all hover:bg-white/90 shadow-[0_0_25px_rgba(255,255,255,0.35)] active:scale-95"
                 >
                   <Download className="w-4 h-4" />
-                  <span>Download Verified Resume (PDF)</span>
+                  <span>Download Resume (PDF)</span>
                 </a>
 
                 <a
@@ -170,14 +170,14 @@ export const ResumeSection: React.FC = () => {
               <span>Core Toolset & Competencies</span>
             </h4>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono">
-              <div className="p-3 rounded-xl bg-white/5 text-white/80">Power BI & DAX</div>
-              <div className="p-3 rounded-xl bg-white/5 text-white/80">SQL (PostgreSQL, MySQL)</div>
-              <div className="p-3 rounded-xl bg-white/5 text-white/80">Python (Pandas, Scikit)</div>
-              <div className="p-3 rounded-xl bg-white/5 text-white/80">DCF & Financial Modeling</div>
-              <div className="p-3 rounded-xl bg-white/5 text-white/80">Supabase & REST APIs</div>
-              <div className="p-3 rounded-xl bg-white/5 text-white/80">Data Pipeline Management</div>
-              <div className="p-3 rounded-xl bg-white/5 text-white/80">Data Quality Governance</div>
-              <div className="p-3 rounded-xl bg-white/5 text-white/80">React 18 & TypeScript</div>
+              <div className="p-3 rounded-lg bg-white/5 text-white/80">Power BI & DAX</div>
+              <div className="p-3 rounded-lg bg-white/5 text-white/80">SQL (PostgreSQL, MySQL)</div>
+              <div className="p-3 rounded-lg bg-white/5 text-white/80">Python (Pandas, Scikit)</div>
+              <div className="p-3 rounded-lg bg-white/5 text-white/80">DCF & Financial Modeling</div>
+              <div className="p-3 rounded-lg bg-white/5 text-white/80">Supabase & REST APIs</div>
+              <div className="p-3 rounded-lg bg-white/5 text-white/80">Data Pipeline Management</div>
+              <div className="p-3 rounded-lg bg-white/5 text-white/80">Data Quality Governance</div>
+              <div className="p-3 rounded-lg bg-white/5 text-white/80">React 18 & TypeScript</div>
             </div>
           </div>
         </div>

@@ -54,4 +54,28 @@
   ::-webkit-scrollbar-thumb:hover {
     background: #363c4f;
   }
+
+  /* Visible scrollbar for PhonePe section navigation tabs */
+  .phonepe-nav-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.25) rgba(255, 255, 255, 0.06);
+  }
+
+  .phonepe-nav-scroll::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .phonepe-nav-scroll::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 9999px;
+  }
+
+  .phonepe-nav-scroll::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 9999px;
+  }
+
+  .phonepe-nav-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.4);
+  }
 }

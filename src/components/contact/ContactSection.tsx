@@ -57,10 +57,10 @@ export const ContactSection: React.FC = () => {
                     <Mail className="w-5 h-5" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className="text-[10px] font-mono text-white/65 uppercase">Email Address</div>
+                    <div className="text-xs font-mono text-white/65 uppercase">Email Address</div>
                     <a
                       href={`mailto:${portfolioConfig.socials.email}`}
-                      className="text-[11px] sm:text-xs xl:text-sm font-mono text-white hover:text-red-400 transition-colors block break-all"
+                      className="text-xs xl:text-sm font-mono text-white hover:text-red-400 transition-colors block break-all"
                     >
                       {portfolioConfig.socials.email}
                     </a>
@@ -69,7 +69,7 @@ export const ContactSection: React.FC = () => {
 
                 <button
                   onClick={handleCopyEmail}
-                  className="p-2 rounded-xl bg-white/5 hover:bg-white/15 text-white/70 hover:text-white transition-all shrink-0"
+                  className="p-2 rounded-full bg-white/5 hover:bg-white/15 text-white/70 hover:text-white transition-all shrink-0"
                   title="Copy email"
                 >
                   {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
@@ -83,7 +83,7 @@ export const ContactSection: React.FC = () => {
                     <Phone className="w-5 h-5" />
                   </div>
                   <div>
-                    <div className="text-[10px] font-mono text-white/65 uppercase">Direct Phone</div>
+                    <div className="text-xs font-mono text-white/65 uppercase">Direct Phone</div>
                     <a
                       href={`tel:${portfolioConfig.socials.phone}`}
                       className="text-xs sm:text-sm font-mono text-white hover:text-emerald-400 transition-colors block"
@@ -110,7 +110,7 @@ export const ContactSection: React.FC = () => {
                       <div className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors">
                         LinkedIn Profile
                       </div>
-                      <div className="text-[10px] font-mono text-white/65">linkedin.com/in/kaustubhnandurkar</div>
+                      <div className="text-xs font-mono text-white/65">linkedin.com/in/kaustubhnandurkar</div>
                     </div>
                   </div>
                   <span className="text-xs font-mono text-white/50 group-hover:text-white transition-colors">
@@ -132,7 +132,7 @@ export const ContactSection: React.FC = () => {
                       <div className="text-xs font-bold text-white group-hover:text-purple-400 transition-colors">
                         GitHub Profile
                       </div>
-                      <div className="text-[10px] font-mono text-white/65">github.com/kaustubh21112002</div>
+                      <div className="text-xs font-mono text-white/65">github.com/kaustubh21112002</div>
                     </div>
                   </div>
                   <span className="text-xs font-mono text-white/50 group-hover:text-white transition-colors">

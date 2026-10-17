@@ -62,19 +62,19 @@ export const ResearchSection: React.FC = () => {
                   <div className="px-6 pb-7 sm:px-7 sm:pb-8 pt-2 border-t border-white/10 space-y-6 text-sm">
                     {/* Abstract */}
                     <div>
-                      <h4 className="text-xs uppercase font-mono text-white/50 mb-1.5 font-semibold">Abstract</h4>
+                      <h4 className="text-xs font-mono text-white/65 mb-1.5 font-semibold">Abstract</h4>
                       <p className="text-white/80 leading-relaxed">{paper.abstract}</p>
                     </div>
 
                     {/* Methodology */}
                     <div>
-                      <h4 className="text-xs uppercase font-mono text-white/50 mb-1.5 font-semibold">Analytical Methodology</h4>
+                      <h4 className="text-xs font-mono text-white/65 mb-1.5 font-semibold">Analytical methodology</h4>
                       <p className="text-white/80 leading-relaxed font-mono text-xs">{paper.methodology}</p>
                     </div>
 
                     {/* Principal Findings */}
                     <div>
-                      <h4 className="text-xs uppercase font-mono text-white/50 mb-2 font-semibold">Principal Observed Findings</h4>
+                      <h4 className="text-xs font-mono text-white/65 mb-2 font-semibold">Principal observed findings</h4>
                       <div className="space-y-2">
                         {paper.principalFindings.map((finding, idx) => (
                           <div key={idx} className="flex items-start gap-2.5 text-white/80 text-xs sm:text-sm">

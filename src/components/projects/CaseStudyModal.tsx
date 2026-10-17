@@ -93,28 +93,28 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
         {/* Top Storytelling Framework: Problem -> Approach -> Finding -> Implication */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
           <div className="p-5 rounded-2xl bg-[#141722] border border-white/10">
-            <span className="text-[11px] font-mono uppercase text-amber-400 font-bold block mb-1.5">
+            <span className="text-xs font-mono uppercase text-amber-400 font-bold block mb-1.5">
               1. Commercial Problem / Question
             </span>
             <p className="text-white/80 text-xs sm:text-sm leading-relaxed">{project.problemStatement}</p>
           </div>
 
           <div className="p-5 rounded-2xl bg-[#141722] border border-white/10">
-            <span className="text-[11px] font-mono uppercase text-blue-400 font-bold block mb-1.5">
+            <span className="text-xs font-mono uppercase text-blue-400 font-bold block mb-1.5">
               2. Analytical Approach & Architecture
             </span>
             <p className="text-white/80 text-xs sm:text-sm leading-relaxed">{project.approach}</p>
           </div>
 
           <div className="p-5 rounded-2xl bg-[#141722] border border-white/10">
-            <span className="text-[11px] font-mono uppercase text-emerald-400 font-bold block mb-1.5">
+            <span className="text-xs font-mono uppercase text-emerald-400 font-bold block mb-1.5">
               3. Key Verified Finding
             </span>
             <p className="text-white/80 text-xs sm:text-sm leading-relaxed">{project.keyFinding}</p>
           </div>
 
           <div className="p-5 rounded-2xl bg-[#141722] border border-white/10">
-            <span className="text-[11px] font-mono uppercase text-red-400 font-bold block mb-1.5">
+            <span className="text-xs font-mono uppercase text-red-400 font-bold block mb-1.5">
               4. Business Implication
             </span>
             <p className="text-white/80 text-xs sm:text-sm leading-relaxed">{project.businessImplication}</p>
@@ -123,13 +123,13 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
 
         {/* Key Metrics Grid */}
         <div className="mb-8">
-          <div className="text-xs font-mono text-white/50 uppercase tracking-wider mb-3">Verified Project Metrics</div>
+          <div className="text-xs font-mono text-white/65 uppercase tracking-wider mb-3">Verified Project Metrics</div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {project.keyMetrics.map((m, idx) => (
-              <div key={idx} className="p-4 rounded-xl bg-black/40 border border-white/10">
-                <div className="text-[10px] text-white/50 font-mono uppercase tracking-wider">{m.label}</div>
+              <div key={idx} className="p-4 rounded-2xl bg-black/40 border border-white/10">
+                <div className="text-xs text-white/65 font-mono uppercase tracking-wider">{m.label}</div>
                 <div className="text-xl sm:text-2xl font-extrabold text-white font-mono mt-1">{m.value}</div>
-                {m.subtext && <div className="text-[11px] text-white/65 mt-1 font-mono">{m.subtext}</div>}
+                {m.subtext && <div className="text-xs text-white/65 mt-1 font-mono">{m.subtext}</div>}
               </div>
             ))}
           </div>
@@ -203,7 +203,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
                       <div className="mt-4 overflow-x-auto rounded-xl border border-white/10">
                         <table className="w-full text-left border-collapse text-xs font-mono">
                           <thead>
-                            <tr className="bg-black/50 border-b border-white/10 text-white/50 text-[11px] uppercase">
+                            <tr className="bg-black/50 border-b border-white/10 text-white/65 text-xs uppercase">
                               {section.table.headers.map((h, hIdx) => (
                                 <th key={hIdx} className="py-2.5 px-3">
                                   {h}
@@ -274,10 +274,10 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
         {/* Tools and Stack */}
         <div className="pt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
           <div>
-            <div className="text-[10px] font-mono text-white/65 uppercase mb-2">Verified Technology Stack</div>
+            <div className="text-xs font-mono text-white/65 uppercase mb-2">Verified Technology Stack</div>
             <div className="flex flex-wrap gap-1.5">
               {project.tools.map((t, idx) => (
-                <span key={idx} className="px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-white/70 text-xs font-mono">
+                <span key={idx} className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-white/70 text-xs font-mono">
                   {t}
                 </span>
               ))}
@@ -294,7 +294,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
 
         {/* Disclaimer */}
         {project.caseStudy.disclaimer && (
-          <div className="mt-6 p-4 rounded-xl bg-black/50 border border-white/5 text-[11px] text-white/50 font-mono leading-relaxed">
+          <div className="mt-6 p-4 rounded-2xl bg-black/50 border border-white/5 text-xs text-white/65 font-mono leading-relaxed">
             <strong>Disclosure:</strong> {project.caseStudy.disclaimer}
           </div>
         )}

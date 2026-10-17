@@ -88,7 +88,7 @@ export const Header: React.FC<HeaderProps> = ({ activeSection = 'hero' }) => {
                 <button
                   key={item.label}
                   onClick={() => handleNavClick(item.href)}
-                  className={`px-2.5 py-1.5 rounded-full transition-all duration-200 uppercase font-mono text-[11px] cursor-pointer ${
+                  className={`px-2.5 py-1.5 rounded-full transition-all duration-200 uppercase font-mono text-xs cursor-pointer ${
                     isActive
                       ? 'bg-white text-black font-bold shadow-sm'
                       : 'text-white/80 hover:text-white hover:bg-white/10'
