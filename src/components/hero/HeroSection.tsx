@@ -1,6 +1,5 @@
-import React from 'react';
-import { ArrowDown, ArrowUpRight, Download, Mail, ChevronRight, CheckCircle2 } from 'lucide-react';
-import { CharacterCanvas } from './CharacterCanvas';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { ArrowDown, Download, Mail, ChevronRight, Play, Pause } from 'lucide-react';
 import { portfolioConfig } from '../../config/portfolio';
 
 interface HeroSectionProps {
@@ -14,6 +13,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   onResumeClick,
   onContactClick,
 }) => {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [isReducedMotion, setIsReducedMotion] = useState<boolean>(false);
+  const [hasInteracted, setHasInteracted] = useState<boolean>(false);
+
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
     if (el) {
@@ -21,43 +25,130 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     }
   };
 
+  // Check prefers-reduced-motion
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setIsReducedMotion(mediaQuery.matches);
+
+    const handleMotionChange = (e: MediaQueryListEvent) => {
+      setIsReducedMotion(e.matches);
+      const video = videoRef.current;
+      if (!video) return;
+
+      if (e.matches) {
+        video.pause();
+        setIsPlaying(false);
+      } else if (!hasInteracted) {
+        video.playbackRate = 0.7;
+        video.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
+      }
+    };
+
+    mediaQuery.addEventListener('change', handleMotionChange);
+    return () => mediaQuery.removeEventListener('change', handleMotionChange);
+  }, [hasInteracted]);
+
+  // Initialize playback with smooth slow-motion (0.7x speed)
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.playbackRate = 0.7;
+
+    // Respect reduced-motion preferences
+    if (isReducedMotion) {
+      video.pause();
+      setIsPlaying(false);
+      return;
+    }
+
+    video.muted = true;
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => setIsPlaying(true))
+        .catch((err) => {
+          console.log('Autoplay deferred:', err);
+          setIsPlaying(false);
+        });
+    }
+  }, [isReducedMotion]);
+
+  const togglePlayPause = useCallback(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    setHasInteracted(true);
+
+    if (video.paused || video.ended) {
+      video.playbackRate = 0.7;
+      video
+        .play()
+        .then(() => setIsPlaying(true))
+        .catch(() => setIsPlaying(false));
+    } else {
+      video.pause();
+      setIsPlaying(false);
+    }
+  }, []);
+
   return (
     <section
       id="hero"
-      className="relative w-full h-screen max-h-[1080px] min-h-[640px] overflow-hidden select-none"
-      style={{ backgroundColor: portfolioConfig.characterBgColor }}
+      className="relative w-full h-screen max-h-[1080px] min-h-[640px] overflow-hidden select-none bg-[#0b0d13]"
     >
-      {/* 1. Full Viewport Canvas Character (Hardware-Accelerated Directional Tracking) */}
-      <CharacterCanvas className="absolute inset-0 z-0" />
+      {/* 1. Full Cinematic Background Video */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
+        <video
+          ref={videoRef}
+          src="/videos/intro.mp4"
+          poster="/videos/intro-poster.jpg"
+          preload="metadata"
+          muted
+          loop
+          playsInline
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
+          className="w-full h-full object-cover object-[50%_18%] lg:object-[60%_30%] lg:translate-x-[10%] lg:translate-y-[2%] lg:scale-[1.04] transition-transform duration-700"
+          aria-hidden="true"
+        />
+      </div>
 
-      {/* 2. Editorial Overlays for High Readability */}
-      {/* Mobile Scrim Overlay for 100% Text Readability over centered character */}
-      <div className="md:hidden absolute inset-0 pointer-events-none z-10 bg-black/70 backdrop-blur-[1px]" />
-
-      {/* Desktop Left-to-Right Editorial Gradient */}
+      {/* 2. Editorial Overlays: Strong Dark Gradient for Text, Clean Natural Skin Tones on Portrait */}
+      {/* Desktop Left-to-Right Editorial Gradient (100% dark behind text, transparent on portrait) */}
       <div
         className="hidden md:block absolute inset-0 pointer-events-none z-10"
         style={{
           background:
-            'linear-gradient(90deg, rgba(11,13,19,0.94) 0%, rgba(11,13,19,0.80) 42%, rgba(11,13,19,0.25) 68%, rgba(11,13,19,0.05) 100%)',
+            'linear-gradient(90deg, #0b0d13 0%, #0b0d13 28%, rgba(11,13,19,0.96) 44%, rgba(11,13,19,0.60) 58%, rgba(11,13,19,0) 70%, rgba(11,13,19,0) 86%, rgba(11,13,19,0.35) 100%)',
         }}
+        aria-hidden="true"
       />
 
-      {/* Subtle Bottom & Top Vignette */}
+      {/* Top & Bottom Cinematic Edge Vignette (Anchors navigation & footer without washing face) */}
       <div
-        className="absolute inset-0 pointer-events-none z-10"
+        className="hidden md:block absolute inset-0 pointer-events-none z-10"
         style={{
           background:
-            'radial-gradient(circle at 65% 50%, rgba(0,0,0,0) 45%, rgba(11,13,19,0.65) 100%)',
+            'linear-gradient(180deg, rgba(11,13,19,0.65) 0%, rgba(11,13,19,0) 16%, rgba(11,13,19,0) 82%, rgba(11,13,19,0.85) 100%)',
         }}
+        aria-hidden="true"
+      />
+
+      {/* Mobile Top-to-Bottom Scrim Overlay */}
+      <div
+        className="md:hidden absolute inset-0 pointer-events-none z-10 bg-gradient-to-b from-[#0b0d13]/80 via-[#0b0d13]/55 to-[#0b0d13]/88 backdrop-blur-[0.5px]"
+        aria-hidden="true"
       />
 
       {/* 3. Hero Content Container */}
-      <div className="relative z-20 h-full max-w-7xl mx-auto px-4 sm:px-10 lg:px-14 flex flex-col justify-between pt-20 sm:pt-28 pb-6 sm:pb-10">
+      <div className="relative z-20 h-full max-w-7xl mx-auto px-4 sm:px-10 lg:px-14 flex flex-col justify-between pt-20 sm:pt-28 pb-6 sm:pb-10 w-full min-w-0">
         
         {/* Top Eyebrow / Direct Contact Touchpoint */}
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="inline-flex max-w-full min-w-0 items-center gap-2 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/20 text-white/95 text-[10px] sm:text-xs font-mono uppercase tracking-wider shadow-lg">
+          <div className="inline-flex max-w-full min-w-0 items-center gap-2 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/20 text-white/95 text-xs font-mono tracking-wider shadow-lg">
             <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 shrink-0 rounded-full bg-emerald-400 animate-pulse" />
             <span className="truncate min-w-0">MBA Business Analytics • Sandip University</span>
           </div>
@@ -72,46 +163,46 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         </div>
 
         {/* Core Editorial Identity & CTAs */}
-        <div className="max-w-xl lg:max-w-xl xl:max-w-2xl my-auto py-5 sm:py-6 max-md:bg-[#0b0d13]/85 max-md:backdrop-blur-xl max-md:border max-md:border-white/15 max-md:rounded-3xl max-md:p-5 sm:max-md:p-6 max-md:shadow-2xl">
-          {/* Candidate Name & Positioning: Immediate Readability */}
+        <div className="w-full max-w-xl lg:max-w-xl xl:max-w-2xl my-auto py-5 sm:py-6 max-md:bg-[#0b0d13]/85 max-md:backdrop-blur-xl max-md:border max-md:border-white/15 max-md:rounded-3xl max-md:p-4 sm:max-md:p-6 max-md:shadow-2xl min-w-0">
+          {/* Candidate Name & Positioning */}
           <div className="flex flex-wrap items-center gap-2 mb-2">
             <span className="text-white font-mono text-xs sm:text-base font-bold tracking-widest uppercase">
               Kaustubh K. Nandurkar
             </span>
             <span className="hidden sm:inline-block w-1.5 h-1.5 rounded-full bg-red-400" />
-            <span className="hidden sm:inline-block text-white/75 font-mono text-xs uppercase tracking-wider">
+            <span className="hidden sm:inline-block text-white/75 font-mono text-xs tracking-wider">
               MBA Business Analytics • Sandip University
             </span>
           </div>
 
-          {/* Concise Headline as requested */}
+          {/* Concise Headline */}
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.12] mb-3 sm:mb-4">
             Business Analytics <br className="sm:hidden" />& Research.
           </h1>
 
-          {/* Evidence-Based Short Description (3 lines) */}
+          {/* Evidence-Based Short Description */}
           <p className="text-white/90 sm:text-white/85 text-xs sm:text-base leading-relaxed font-normal mb-5 sm:mb-6 max-w-xl">
             Evaluating commercial decisions through quantitative valuation, relational analytics, and governed data pipelines.
           </p>
 
-          {/* Recruiter Quick Proof Signals - Guaranteed No-Overflow */}
-          <div className="flex flex-col sm:flex-row sm:flex-wrap items-start gap-1.5 sm:gap-2 mb-6 sm:mb-8 text-[10px] sm:text-[11px] font-mono">
-            <span className="w-fit px-2.5 py-1 rounded-md bg-black/60 backdrop-blur-md border border-white/20 text-white/95 flex items-center gap-1.5">
+          {/* Recruiter Quick Proof Signals */}
+          <div className="flex flex-col sm:flex-row sm:flex-wrap items-start gap-1.5 sm:gap-2 mb-6 sm:mb-8 text-xs sm:text-sm font-mono">
+            <span className="w-fit px-2.5 py-1 rounded-lg bg-black/60 backdrop-blur-md border border-white/20 text-white/95 flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
               <span>SPIIDEO Match Analytics Intern</span>
             </span>
-            <span className="w-fit px-2.5 py-1 rounded-md bg-black/60 backdrop-blur-md border border-white/20 text-white/95 flex items-center gap-1.5">
+            <span className="w-fit px-2.5 py-1 rounded-lg bg-black/60 backdrop-blur-md border border-white/20 text-white/95 flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
               <span>₹41,631 Cr Pre-IPO Valuation</span>
             </span>
-            <span className="w-fit px-2.5 py-1 rounded-md bg-black/60 backdrop-blur-md border border-white/20 text-white/95 flex items-center gap-1.5">
+            <span className="w-fit px-2.5 py-1 rounded-lg bg-black/60 backdrop-blur-md border border-white/20 text-white/95 flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0" />
               <span>50,000 Order Governed System</span>
             </span>
           </div>
 
-          {/* Action Buttons: Primary "Explore My Work", Secondary "Download Résumé", Tertiary "Contact" */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 max-w-xs sm:max-w-none">
+          {/* Action Buttons: Primary "Explore My Work", Secondary "Download Resume (PDF)", Tertiary "Contact" */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 w-full sm:w-auto max-w-xs sm:max-w-none">
             {/* Primary CTA */}
             <button
               onClick={() => {
@@ -128,10 +219,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <a
               href={portfolioConfig.resumePath}
               download="Kaustubh_Nandurkar_Resume.pdf"
-              className="flex items-center justify-center gap-2 px-6 sm:px-7 py-3 rounded-full bg-black/60 hover:bg-black/80 backdrop-blur-md border border-white/30 text-white font-semibold text-sm tracking-wide transition-all duration-200 hover:border-white hover:shadow-[0_0_20px_rgba(255,255,255,0.2)] active:scale-95 shadow-md"
+              className="flex items-center justify-center gap-2 px-6 sm:px-7 py-3 rounded-full bg-white/10 hover:bg-white text-white hover:text-black border border-white/20 hover:border-transparent font-semibold text-sm tracking-wide transition-all duration-200 active:scale-95 shadow-md"
             >
               <Download className="w-4 h-4 transition-transform group-hover:-translate-y-0.5" />
-              <span>Download Résumé</span>
+              <span>Download Resume (PDF)</span>
             </a>
 
             {/* Quick Contact CTA in Hero */}
@@ -148,16 +239,35 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           </div>
         </div>
 
-        {/* Bottom Status & Scroll Indicator */}
-        <div className="flex items-center justify-between pt-3 sm:pt-4 border-t border-white/15 text-white/75 text-[11px] sm:text-xs font-mono">
-          <div className="flex items-center gap-1.5 sm:gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
-            <span className="uppercase tracking-wider text-[10px] sm:text-[11px]">3D Model</span>
-          </div>
+        {/* Bottom Status & Playback Control Bar */}
+        <div className="w-full flex items-center justify-between pt-3 sm:pt-4 border-t border-white/10 text-white/60 text-xs font-mono">
+          {/* Discreet, accessible playback indicator & toggle */}
+          <button
+            type="button"
+            onClick={togglePlayPause}
+            className="group inline-flex items-center gap-2 text-white/50 hover:text-white/90 text-xs font-mono transition-colors focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:outline-none rounded px-1.5 py-0.5 cursor-pointer select-none"
+            aria-label={isPlaying ? 'Pause background video' : 'Play background video'}
+          >
+            <span
+              className={`w-1.5 h-1.5 rounded-full transition-colors ${
+                isPlaying ? 'bg-red-500' : 'bg-white/40'
+              }`}
+              aria-hidden="true"
+            />
+            {isPlaying ? (
+              <Pause className="w-2.5 h-2.5 text-white/50 group-hover:text-red-400 transition-colors" fill="currentColor" aria-hidden="true" />
+            ) : (
+              <Play className="w-2.5 h-2.5 text-white/50 group-hover:text-white transition-colors translate-x-0.5" fill="currentColor" aria-hidden="true" />
+            )}
+            <span className="uppercase tracking-wider text-[10px] sm:text-[11px] text-white/50 group-hover:text-white/80 transition-colors">
+              {isPlaying ? 'Motion (0.7×)' : 'Motion Paused'}
+            </span>
+          </button>
 
+          {/* Section Navigation Link */}
           <button
             onClick={() => scrollTo('flagship')}
-            className="flex items-center gap-1.5 sm:gap-2 hover:text-white transition-colors group cursor-pointer"
+            className="flex items-center gap-1.5 sm:gap-2 text-white/50 hover:text-white transition-colors group cursor-pointer"
           >
             <span className="uppercase tracking-wider text-[10px] sm:text-[11px]">Flagship DCF</span>
             <ArrowDown className="w-3 h-3 sm:w-3.5 sm:h-3.5 animate-bounce group-hover:text-white" />
