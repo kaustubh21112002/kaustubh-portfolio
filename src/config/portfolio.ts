@@ -18,6 +18,7 @@ export interface PortfolioConfig {
   role: string;
   headline: string;
   shortBio: string;
+  objective?: string;
   location: string;
   socials: SocialLinks;
   resumePath: string;
@@ -37,6 +38,11 @@ export interface PortfolioConfig {
     responsibilities: string[];
   }[];
   skills: SkillCategory[];
+  certifications: {
+    name: string;
+    issuer: string;
+    year: string;
+  }[];
   governancePrinciples: {
     id: string;
     title: string;
@@ -51,13 +57,14 @@ export const portfolioConfig: PortfolioConfig = {
   role: "Business Analytics & Financial Valuation",
   headline: "Turning Business Questions into Analytical Insights.",
   shortBio: "MBA in Business Analytics candidate connecting quantitative valuation, SQL & Power BI analytics pipelines, and governed data architecture.",
+  objective: "To begin my career as a Business Analyst or Data Analyst by applying my skills in SQL, Power BI, Python, PostgreSQL, and business analytics to solve real-world business problems, generate actionable insights, and support data-driven decision-making in a growth-oriented organization.",
   location: "Nagpur / Nashik, India",
   socials: {
     email: "kaustubhnandurkar21@gmail.com",
     linkedIn: "https://www.linkedin.com/in/kaustubhnandurkar",
     github: "https://github.com/kaustubh21112002",
     phone: "+91 8080001550",
-    location: "India"
+    location: "Nagpur, India"
   },
   resumePath: "/Kaustubh_Nandurkar_Resume.pdf",
   resumeAvailable: true,
@@ -111,6 +118,23 @@ export const portfolioConfig: PortfolioConfig = {
     {
       title: "Technology & Front-End",
       skills: ["React 18", "TypeScript", "Vite", "Canvas 2D Graphics", "REST APIs", "Modern Editorial UI"]
+    }
+  ],
+  certifications: [
+    {
+      name: "Generative AI Fundamentals",
+      issuer: "Sixladderss",
+      year: "2026"
+    },
+    {
+      name: "Machine Learning Using Orange for Data Mining",
+      issuer: "TheSSML",
+      year: "2026"
+    },
+    {
+      name: "Stock Market Analysis Using AI",
+      issuer: "United Latino Students Association",
+      year: "2025"
     }
   ],
   governancePrinciples: [

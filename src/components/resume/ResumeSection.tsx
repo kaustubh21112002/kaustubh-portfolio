@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { Download, FileText, CheckCircle, ExternalLink, Eye, Award, Briefcase, GraduationCap, Mail } from 'lucide-react';
+import { Download, FileText, CheckCircle, Eye, Award, Briefcase, GraduationCap, Mail } from 'lucide-react';
 import { portfolioConfig } from '../../config/portfolio';
+import { projects } from '../../data/projects';
+import { getCoreResumeSkills } from '../../data/skills';
 
 export const ResumeSection: React.FC = () => {
   const [copied, setCopied] = useState(false);
@@ -10,6 +12,14 @@ export const ResumeSection: React.FC = () => {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
+
+  // Content-driven: only completed/verified projects flagged for resume
+  const resumeProjects = projects
+    .filter((p) => p.includeInResume && p.status !== 'In Progress' && p.resumeHighlight)
+    .sort((a, b) => (a.resumeHighlight?.order ?? 99) - (b.resumeHighlight?.order ?? 99));
+
+  // Single-source core technical competencies
+  const coreSkills = getCoreResumeSkills();
 
   return (
     <section id="resume" className="py-28 sm:py-36 px-4 sm:px-6 lg:px-8 bg-[#0b0d13] text-white border-t border-white/10">
@@ -132,52 +142,41 @@ export const ResumeSection: React.FC = () => {
             </div>
           </div>
 
-          {/* Highlighted Analytical Projects */}
+          {/* Highlighted Analytical Projects (Single Source of Truth from projects.ts) */}
           <div>
             <h4 className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-red-400 font-bold mb-4">
               <Award className="w-4 h-4" />
               <span>Featured Analytical Projects</span>
             </h4>
             <div className="space-y-4 text-xs">
-              <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 space-y-2">
-                <div className="flex justify-between items-baseline">
-                  <span className="text-sm font-bold text-white">STRATOS AI | Controlled Business Analytics & KPI Governance</span>
-                  <span className="font-mono text-white/50">Production Architecture</span>
+              {resumeProjects.map((p) => (
+                <div key={p.id} className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 space-y-2">
+                  <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
+                    <span className="text-sm font-bold text-white">{p.title}</span>
+                    <span className="font-mono text-white/50 text-xs">{p.resumeHighlight?.role || p.status}</span>
+                  </div>
+                  <div className="text-white/75 leading-relaxed space-y-1">
+                    {p.resumeHighlight?.bulletPoints.map((bp, bIdx) => (
+                      <p key={bIdx}>{bp}</p>
+                    ))}
+                  </div>
                 </div>
-                <p className="text-white/75 leading-relaxed">
-                  Built a controlled analytical dataset of 50,000 orders and designed a 30-KPI framework across financial, customer, campaign, sales, and delivery analytics.
-                  Implemented 11 validation controls and reconciled 14,465 financial exception occurrences across 12,787 affected orders.
-                </p>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 space-y-2">
-                <div className="flex justify-between items-baseline">
-                  <span className="text-sm font-bold text-white">PhonePe Pre-IPO Equity Research & DCF Valuation</span>
-                  <span className="font-mono text-white/50">Independent Valuation Research</span>
-                </div>
-                <p className="text-white/75 leading-relaxed">
-                  Constructed 5-year explicit revenue segment forecasts (FY26E–FY30E) and DCF model (WACC 14.92%, Exit Multiple 13.15x).
-                  Derived Core Enterprise Value ₹33,432 Cr and Implied Equity Value ₹41,631 Cr with balance sheet liquidity adjustments.
-                </p>
-              </div>
+              ))}
             </div>
           </div>
 
-          {/* Technical Toolbox */}
+          {/* Technical Toolbox (Single Source of Truth from skills.ts) */}
           <div>
             <h4 className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-red-400 font-bold mb-4">
               <FileText className="w-4 h-4" />
               <span>Core Toolset & Competencies</span>
             </h4>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono">
-              <div className="p-3 rounded-lg bg-white/5 text-white/80">Power BI & DAX</div>
-              <div className="p-3 rounded-lg bg-white/5 text-white/80">SQL (PostgreSQL, MySQL)</div>
-              <div className="p-3 rounded-lg bg-white/5 text-white/80">Python (Pandas, Scikit)</div>
-              <div className="p-3 rounded-lg bg-white/5 text-white/80">DCF & Financial Modeling</div>
-              <div className="p-3 rounded-lg bg-white/5 text-white/80">Supabase & REST APIs</div>
-              <div className="p-3 rounded-lg bg-white/5 text-white/80">Data Pipeline Management</div>
-              <div className="p-3 rounded-lg bg-white/5 text-white/80">Data Quality Governance</div>
-              <div className="p-3 rounded-lg bg-white/5 text-white/80">React 18 & TypeScript</div>
+              {coreSkills.map((skill, sIdx) => (
+                <div key={sIdx} className="p-3 rounded-lg bg-white/5 text-white/80">
+                  {skill}
+                </div>
+              ))}
             </div>
           </div>
         </div>

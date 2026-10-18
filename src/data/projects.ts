@@ -19,13 +19,19 @@ export interface CaseStudySection {
   };
 }
 
+export interface ResumeHighlight {
+  role?: string;
+  bulletPoints: string[];
+  order?: number;
+}
+
 export interface Project {
   id: string;
   title: string;
   tagline: string;
   category: "Equity Research" | "Financial Analytics" | "Business Analytics" | "Data Governance" | "FinTech Strategy" | "Sports Analytics";
   featured: boolean;
-  status: "Completed Independent Research" | "Production Architecture" | "Academic Dissertation" | "Professional Internship";
+  status: "Completed Independent Research" | "Production Architecture" | "Academic Dissertation" | "Professional Internship" | "In Progress";
   date: string;
   summary: string;
   problemStatement: string;
@@ -42,6 +48,8 @@ export interface Project {
     sections: CaseStudySection[];
     disclaimer?: string;
   };
+  includeInResume?: boolean;
+  resumeHighlight?: ResumeHighlight;
 }
 
 export const projects: Project[] = [
@@ -53,6 +61,16 @@ export const projects: Project[] = [
     featured: true,
     status: "Completed Independent Research",
     date: "Q3 2026",
+    includeInResume: true,
+    resumeHighlight: {
+      role: "Pre-IPO Equity Research & Valuation",
+      order: 2,
+      bulletPoints: [
+        "Built an independent equity research model analyzing PhonePe's financial performance, UPI market position, business segments, regulatory risks, and profitability trajectory.",
+        "Constructed 5-year explicit revenue segment forecasts (FY26E–FY30E), DCF model (WACC 14.92%, Exit Multiple 13.15x), and Bull/Base/Bear scenario analysis.",
+        "Derived Core Enterprise Value ₹33,432 Cr and Implied Equity Value ₹41,631 Cr, adjusting for ₹8,915 Cr cash/investments and ₹716 Cr debt."
+      ]
+    },
     summary: "Pre-IPO equity valuation model with explicit 5-year forecasts (FY26E–FY30E), blended terminal valuation, balance-sheet liquidity bridge, and forensic workbook formula audit.",
     problemStatement: "Consumer UPI operates under a mandated 0% Merchant Discount Rate (zero MDR), making transaction volume alone structurally unmonetized. Can PhonePe transition from ~48.5% volume dominance to sustainable cash generation at an implied pre-IPO valuation of ₹41,631 Cr?",
     approach: "Built an explicit 5-year financial forecast model (FY26E–FY30E) across four revenue segments (Merchant Soundbox subscriptions, lending/insurance distribution, consumer recharges, and new platforms). Discounted unlevered free cash flows using CAPM WACC (14.92%) and blended terminal value (7.0% perpetuity growth and 13.15x exit EBITDA multiple).",
@@ -242,6 +260,16 @@ export const projects: Project[] = [
     featured: true,
     status: "Production Architecture",
     date: "Q4 2025",
+    includeInResume: true,
+    resumeHighlight: {
+      role: "Controlled Business Analytics & KPI Governance",
+      order: 1,
+      bulletPoints: [
+        "Built a controlled analytical dataset of 50,000 orders and designed a 30-KPI framework spanning financial, customer, promotion, campaign, sales, and delivery analytics.",
+        "Implemented 11 validation controls and a DQ governance framework, including forensic reconciliation of 14,465 financial exception occurrences across 12,787 unique affected orders.",
+        "Developed executive KPI reporting, dashboard insights, and management recommendations with 30/30 KPI traceability and QA coverage."
+      ]
+    },
     summary: "Controlled analytical system built upon a 50,000-order retail dataset, implementing 10 automated validation controls (DQ-01 to DQ-10), forensic reconciliation of 15,630 exception occurrences across 14,156 unique affected orders, and 30/30 KPI lineage traceability.",
     problemStatement: "Enterprise business intelligence pipelines routinely corrupt analytical truth by silently dropping non-conforming rows or imputing missing attributes, obscuring underlying balance-sheet and revenue irregularities from executive oversight.",
     approach: "Built a governed business analytics engine on a 50,000-order retail transactional dataset, implementing 10 automated validation controls (DQ-01 through DQ-10) and enforcing the operational protocol PRESERVE → DOCUMENT → FLAG → GOVERN.",
