@@ -379,12 +379,21 @@ export function buildResumeHtml() {
 }
 
 export async function generateResumePdf(outputPath, screenshotPath = null) {
+  // Vercel cloud environment check: Vercel build containers lack Chromium.
+  // Use the verified, committed PDF and proceed with TypeScript check and Vite build.
+  if (process.env.VERCEL === '1' || process.env.NOW_BUILDER === '1') {
+    if (fs.existsSync(outputPath)) {
+      console.log(`[Resume PDF] Vercel cloud build environment detected (VERCEL=1). Using verified committed resume at: ${outputPath}`);
+      return outputPath;
+    }
+  }
+
   const browserPath = findBrowser();
   if (!browserPath) {
     throw new Error(
       `[Resume PDF] Generation Failed: No Chromium-based browser (Chrome or Edge) was detected.\n` +
       `The downloadable resume PDF must be compiled from verified portfolio data using a Chromium headless browser.\n` +
-      `Please ensure Google Chrome or Microsoft Edge is installed in the environment.`
+      `Please ensure Google Chrome or Microsoft Edge is installed in the local environment.`
     );
   }
 
