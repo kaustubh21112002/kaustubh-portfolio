@@ -51,7 +51,7 @@ export const SkillsSection: React.FC = () => {
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white">
             Analytical Toolkit & Applied Evidence
           </h2>
-          <p className="text-white/60 text-sm sm:text-base mt-2 max-w-2xl leading-relaxed">
+          <p className="text-white/75 text-sm sm:text-base mt-2 max-w-2xl leading-relaxed">
             Every listed competency is grounded in verified coursework, internship deliverables, financial workbooks, or database implementations. No arbitrary percentage bars—only real technical applications.
           </p>
 
@@ -60,10 +60,10 @@ export const SkillsSection: React.FC = () => {
             <button
               onClick={() => setSelectedGroup('all')}
               aria-pressed={selectedGroup === 'all'}
-              className={`px-4 py-1.5 rounded-full text-xs font-mono transition-all duration-200 cursor-pointer ${
+              className={`px-4 py-1.5 rounded-full text-xs font-mono transition-all duration-200 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 ${
                 selectedGroup === 'all'
                   ? 'bg-white text-black font-bold shadow-md'
-                  : 'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white border border-white/10'
+                  : 'bg-white/5 text-white/75 hover:bg-white/10 hover:text-white border border-white/10'
               }`}
             >
               All Domains ({skillGroups.length})
@@ -73,10 +73,10 @@ export const SkillsSection: React.FC = () => {
                 key={g.id}
                 onClick={() => setSelectedGroup(g.id)}
                 aria-pressed={selectedGroup === g.id}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-mono transition-all duration-200 cursor-pointer ${
+                className={`px-3.5 py-1.5 rounded-full text-xs font-mono transition-all duration-200 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 ${
                   selectedGroup === g.id
                     ? 'bg-white text-black font-bold shadow-md'
-                    : 'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white border border-white/10'
+                    : 'bg-white/5 text-white/75 hover:bg-white/10 hover:text-white border border-white/10'
                 }`}
               >
                 {g.title.split('&')[0].trim()}
@@ -101,7 +101,7 @@ export const SkillsSection: React.FC = () => {
                   <h3 className="text-base sm:text-lg font-bold text-white tracking-tight">
                     {group.title}
                   </h3>
-                  <p className="text-xs text-white/65 font-sans mt-0.5">
+                  <p className="text-xs text-white/75 font-sans mt-0.5">
                     {group.subtitle}
                   </p>
                 </div>

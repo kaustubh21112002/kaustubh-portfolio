@@ -53,6 +53,30 @@ export const FlagshipPhonePe: React.FC = () => {
     { id: 'audit', label: '8. Workbook Audit & Discrepancy Log', icon: <FileSearch className="w-3.5 h-3.5" /> },
   ];
 
+  const handleTabKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
+    let targetIndex = index;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      targetIndex = (index + 1) % tabs.length;
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      targetIndex = (index - 1 + tabs.length) % tabs.length;
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      targetIndex = 0;
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      targetIndex = tabs.length - 1;
+    } else {
+      return;
+    }
+    const targetTab = tabs[targetIndex];
+    setActiveTab(targetTab.id);
+    requestAnimationFrame(() => {
+      document.getElementById(`phonepe-tab-${targetTab.id}`)?.focus();
+    });
+  };
+
   return (
     <section id="flagship" className="relative py-28 sm:py-36 px-4 sm:px-6 lg:px-8 bg-[#0b0d13] text-white border-t border-white/10">
       {/* Background ambient accents */}
@@ -98,43 +122,52 @@ export const FlagshipPhonePe: React.FC = () => {
             <div className="text-xs font-mono uppercase text-white/65 tracking-wider">Implied Enterprise Value (EV)</div>
             <div className="text-2xl sm:text-3xl font-extrabold text-white mt-1.5 font-mono">₹33,432 Cr</div>
             <div className="text-xs text-emerald-400 mt-1 font-mono">Verified Model Output</div>
-            <div className="text-xs text-white/65 mt-1 font-mono">PV FCF ₹13,878 Cr + PV TV ₹19,554 Cr</div>
+            <div className="text-xs text-white/75 mt-1 font-mono">PV FCF ₹13,878 Cr + PV TV ₹19,554 Cr</div>
           </div>
 
           <div className="p-5 sm:p-6 rounded-2xl bg-[#141722] border border-white/10 hover:border-white/20 transition-all">
-            <div className="text-xs font-mono uppercase text-white/65 tracking-wider">Implied Equity Value</div>
+            <div className="text-xs font-mono uppercase text-white/75 tracking-wider">Implied Equity Value</div>
             <div className="text-2xl sm:text-3xl font-extrabold text-white mt-1.5 font-mono">₹41,631 Cr</div>
             <div className="text-xs text-emerald-400 mt-1 font-mono">+₹8,199 Cr Net Liquidity</div>
-            <div className="text-xs text-white/65 mt-1 font-mono">Cash + Investments - Debt</div>
+            <div className="text-xs text-white/75 mt-1 font-mono">Cash + Investments - Debt</div>
           </div>
 
           <div className="p-5 sm:p-6 rounded-2xl bg-[#141722] border border-white/10 hover:border-white/20 transition-all">
-            <div className="text-xs font-mono uppercase text-white/65 tracking-wider">Implied Price Per Share</div>
+            <div className="text-xs font-mono uppercase text-white/75 tracking-wider">Implied Price Per Share</div>
             <div className="text-2xl sm:text-3xl font-extrabold text-white mt-1.5 font-mono">₹821.78</div>
             <div className="text-xs text-emerald-400 mt-1 font-mono">50.66 Cr Common Shares</div>
-            <div className="text-xs text-white/65 mt-1 font-mono">Reconciled after Audit Finding 1</div>
+            <div className="text-xs text-white/75 mt-1 font-mono">Reconciled after Audit Finding 1</div>
           </div>
 
           <div className="p-5 sm:p-6 rounded-2xl bg-[#141722] border border-white/10 hover:border-white/20 transition-all">
-            <div className="text-xs font-mono uppercase text-white/65 tracking-wider">WACC Benchmark</div>
+            <div className="text-xs font-mono uppercase text-white/75 tracking-wider">WACC Benchmark</div>
             <div className="text-2xl sm:text-3xl font-extrabold text-white mt-1.5 font-mono">14.92%</div>
             <div className="text-xs text-amber-300 mt-1 font-mono">CAPM Derived Cost of Capital</div>
-            <div className="text-xs text-white/65 mt-1 font-mono">Rf: 3.0% | Beta: 1.35 | Rm: 11.82%</div>
+            <div className="text-xs text-white/75 mt-1 font-mono">Rf: 3.0% | Beta: 1.35 | Rm: 11.82%</div>
           </div>
         </div>
 
         {/* Tab Navigation Pill Bar with visible scrollbar & overflow indicator */}
         <div className="relative mb-8">
-          <div className="phonepe-nav-scroll flex items-center gap-2 overflow-x-auto pb-3 border-b border-white/10">
-            {tabs.map((tab) => (
+          <div
+            role="tablist"
+            aria-label="PhonePe valuation analysis modules"
+            className="phonepe-nav-scroll flex items-center gap-2 overflow-x-auto pb-3 border-b border-white/10"
+          >
+            {tabs.map((tab, idx) => (
               <button
                 key={tab.id}
+                role="tab"
+                id={`phonepe-tab-${tab.id}`}
+                aria-controls={`phonepe-panel-${tab.id}`}
+                aria-selected={activeTab === tab.id}
+                tabIndex={activeTab === tab.id ? 0 : -1}
+                onKeyDown={(e) => handleTabKeyDown(e, idx)}
                 onClick={() => setActiveTab(tab.id)}
-                aria-pressed={activeTab === tab.id}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-mono tracking-wider transition-all whitespace-nowrap cursor-pointer ${
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-mono tracking-wider transition-all whitespace-nowrap cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 ${
                   activeTab === tab.id
                     ? 'bg-red-600 text-white font-bold shadow-lg shadow-red-600/25 border border-red-500'
-                    : 'bg-[#141722] text-white/70 hover:bg-white/10 hover:text-white border border-white/10'
+                    : 'bg-[#141722] text-white/80 hover:bg-white/10 hover:text-white border border-white/10'
                 }`}
               >
                 {tab.icon}
@@ -145,10 +178,18 @@ export const FlagshipPhonePe: React.FC = () => {
           <div aria-hidden="true" className="pointer-events-none absolute right-0 top-0 bottom-3 w-8 bg-gradient-to-l from-[#0b0d13] to-transparent sm:hidden" />
         </div>
 
-        {/* ================================================================= */}
-        {/* TAB 1: EXECUTIVE THESIS & MONETIZATION ARCHITECTURE */}
-        {/* ================================================================= */}
-        {activeTab === 'overview' && (
+        {/* Active Tabpanel Container */}
+        <div
+          role="tabpanel"
+          id={`phonepe-panel-${activeTab}`}
+          aria-labelledby={`phonepe-tab-${activeTab}`}
+          tabIndex={0}
+          className="focus:outline-none"
+        >
+          {/* ================================================================= */}
+          {/* TAB 1: EXECUTIVE THESIS & MONETIZATION ARCHITECTURE */}
+          {/* ================================================================= */}
+          {activeTab === 'overview' && (
           <div className="space-y-8">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               <div className="lg:col-span-2 space-y-6">
@@ -274,10 +315,15 @@ export const FlagshipPhonePe: React.FC = () => {
                   The weighted average cost of capital (WACC) was constructed using the Capital Asset Pricing Model (CAPM) reflecting the risk profile of India’s consumer FinTech sector:
                 </p>
 
-                <div className="overflow-x-auto rounded-2xl border border-white/10">
+                <div
+                  tabIndex={0}
+                  role="region"
+                  aria-label="WACC CAPM parameters table"
+                  className="overflow-x-auto rounded-2xl border border-white/10 focus:outline-none focus:ring-1 focus:ring-red-400"
+                >
                   <table className="w-full text-left border-collapse text-xs font-mono">
                     <thead>
-                      <tr className="bg-black/50 border-b border-white/10 text-white/65 text-xs uppercase">
+                      <tr className="bg-black/50 border-b border-white/10 text-white/75 text-xs uppercase">
                         <th className="py-3 px-3.5">CAPM Parameter</th>
                         <th className="py-3 px-3.5 text-right">Value</th>
                         <th className="py-3 px-3.5">Analytical Rationale</th>
@@ -397,10 +443,15 @@ export const FlagshipPhonePe: React.FC = () => {
                 <span>← Swipe horizontally to inspect all 5 forecast periods →</span>
               </div>
 
-              <div className="overflow-x-auto rounded-2xl border border-white/10">
+              <div
+                tabIndex={0}
+                role="region"
+                aria-label="Explicit 5-year forecast model FY26E to FY30E table"
+                className="overflow-x-auto rounded-2xl border border-white/10 focus:outline-none focus:ring-1 focus:ring-red-400"
+              >
                 <table className="w-full min-w-[620px] text-left border-collapse text-xs sm:text-sm">
                   <thead>
-                    <tr className="bg-black/50 border-b border-white/10 text-white/65 font-mono text-xs uppercase">
+                    <tr className="bg-black/50 border-b border-white/10 text-white/75 font-mono text-xs uppercase">
                       <th className="py-3.5 px-4">Line Item (₹ Crores)</th>
                       <th className="py-3.5 px-4 text-right">FY26E (Year 0)</th>
                       <th className="py-3.5 px-4 text-right">FY27E (Year 1)</th>
@@ -623,10 +674,15 @@ export const FlagshipPhonePe: React.FC = () => {
             {/* Side-by-Side Comparison Matrix */}
             <div className="p-6 sm:p-8 rounded-3xl bg-[#141722] border border-white/10 overflow-hidden">
               <h3 className="text-lg font-bold text-white mb-4">Comprehensive Scenario Comparison Matrix</h3>
-              <div className="overflow-x-auto rounded-2xl border border-white/10">
+              <div
+                tabIndex={0}
+                role="region"
+                aria-label="Comprehensive scenario comparison matrix table"
+                className="overflow-x-auto rounded-2xl border border-white/10 focus:outline-none focus:ring-1 focus:ring-red-400"
+              >
                 <table className="w-full min-w-[650px] text-left border-collapse text-xs font-mono">
                   <thead>
-                    <tr className="bg-black/50 border-b border-white/10 text-white/65 uppercase text-xs">
+                    <tr className="bg-black/50 border-b border-white/10 text-white/75 uppercase text-xs">
                       <th className="py-3 px-4">Scenario Metric</th>
                       <th className="py-3 px-4 text-right text-rose-300">Bear Case</th>
                       <th className="py-3 px-4 text-right text-amber-300">Base Case (Workbook)</th>
@@ -823,10 +879,15 @@ export const FlagshipPhonePe: React.FC = () => {
               </div>
 
               {/* Matrix Table */}
-              <div className="overflow-x-auto rounded-2xl border border-white/10">
+              <div
+                tabIndex={0}
+                role="region"
+                aria-label="WACC versus EV Multiple sensitivity matrix table"
+                className="overflow-x-auto rounded-2xl border border-white/10 focus:outline-none focus:ring-1 focus:ring-red-400"
+              >
                 <table className="w-full text-center border-collapse text-xs font-mono">
                   <thead>
-                    <tr className="bg-black/50 border-b border-white/10 text-white/65 text-xs uppercase">
+                    <tr className="bg-black/50 border-b border-white/10 text-white/75 text-xs uppercase">
                       <th className="py-3 px-3 text-left">WACC \ Multiple</th>
                       <th className="py-3 px-3">11.15x (-2.0x)</th>
                       <th className="py-3 px-3">12.15x (-1.0x)</th>
@@ -892,14 +953,19 @@ export const FlagshipPhonePe: React.FC = () => {
                 </div>
               </div>
 
-              <div className="overflow-x-auto rounded-2xl border border-white/10">
+              <div
+                tabIndex={0}
+                role="region"
+                aria-label="PhonePe versus Paytm peer benchmarking table"
+                className="overflow-x-auto rounded-2xl border border-white/10 focus:outline-none focus:ring-1 focus:ring-red-400"
+              >
                 <table className="w-full text-left border-collapse text-xs sm:text-sm">
                   <thead>
-                    <tr className="bg-black/50 border-b border-white/10 text-white/65 font-mono text-xs uppercase">
+                    <tr className="bg-black/50 border-b border-white/10 text-white/75 font-mono text-xs uppercase">
                       <th className="py-3 px-4">Dimension</th>
                       <th className="py-3 px-4 text-emerald-300 font-mono">PhonePe (Model Estimates)</th>
                       <th className="py-3 px-4 text-blue-300 font-mono">Paytm / One97 (Public Filings)</th>
-                      <th className="py-3 px-4 text-white/65 font-mono">Analytical Interpretation</th>
+                      <th className="py-3 px-4 text-white/75 font-mono">Analytical Interpretation</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/5 font-sans text-xs">
@@ -1019,6 +1085,7 @@ export const FlagshipPhonePe: React.FC = () => {
             </div>
           </div>
         )}
+        </div>
 
         {/* Academic / Research Disclaimer */}
         <div className="mt-8 p-4 sm:p-5 rounded-2xl bg-black/40 border border-white/10 text-xs sm:text-sm text-white/65 leading-relaxed font-mono">

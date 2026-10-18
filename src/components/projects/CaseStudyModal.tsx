@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { X, ArrowRight, ShieldAlert, CheckCircle2, FileText, ChevronDown, ChevronUp, Layers, HelpCircle, Activity, Info, AlertTriangle } from 'lucide-react';
 import { Project } from '../../data/projects';
 
@@ -10,6 +10,9 @@ interface CaseStudyModalProps {
 export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose }) => {
   // Allow multiple sections to be expanded simultaneously
   const [expandedSections, setExpandedSections] = useState<Set<number>>(new Set([0]));
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+  const modalCardRef = useRef<HTMLDivElement | null>(null);
+  const triggerElementRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     // Reset to expand first section when project changes
@@ -17,17 +20,62 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
   }, [project?.id]);
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
     if (project) {
+      triggerElementRef.current = document.activeElement as HTMLElement;
       document.body.style.overflow = 'hidden';
+
+      // Move focus into the modal for screen-reader and keyboard accessibility
+      requestAnimationFrame(() => {
+        closeButtonRef.current?.focus();
+      });
+
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          onClose();
+          return;
+        }
+
+        if (e.key === 'Tab') {
+          const dialog = modalCardRef.current;
+          if (!dialog) return;
+
+          const focusableElements = Array.from(
+            dialog.querySelectorAll<HTMLElement>(
+              'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+            )
+          ).filter((el) => el.offsetParent !== null || el === closeButtonRef.current);
+
+          if (focusableElements.length === 0) {
+            e.preventDefault();
+            return;
+          }
+
+          const firstElement = focusableElements[0];
+          const lastElement = focusableElements[focusableElements.length - 1];
+
+          if (e.shiftKey) {
+            if (document.activeElement === firstElement || !dialog.contains(document.activeElement)) {
+              e.preventDefault();
+              lastElement.focus();
+            }
+          } else {
+            if (document.activeElement === lastElement || !dialog.contains(document.activeElement)) {
+              e.preventDefault();
+              firstElement.focus();
+            }
+          }
+        }
+      };
       window.addEventListener('keydown', handleKeyDown);
+
+      return () => {
+        document.body.style.overflow = 'unset';
+        window.removeEventListener('keydown', handleKeyDown);
+        // Restore focus to original triggering button
+        triggerElementRef.current?.focus?.();
+      };
     }
-    return () => {
-      document.body.style.overflow = 'unset';
-      window.removeEventListener('keydown', handleKeyDown);
-    };
   }, [project, onClose]);
 
   if (!project) return null;
@@ -66,11 +114,15 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
       />
 
       {/* Modal Card */}
-      <div className="relative w-full max-w-4xl max-h-[90vh] bg-[#10121a] border border-white/20 rounded-3xl shadow-2xl overflow-y-auto z-10 text-white p-6 sm:p-10 my-auto">
+      <div
+        ref={modalCardRef}
+        className="relative w-full max-w-4xl max-h-[90vh] bg-[#10121a] border border-white/20 rounded-3xl shadow-2xl overflow-y-auto z-10 text-white p-6 sm:p-10 my-auto"
+      >
         {/* Close Button */}
         <button
+          ref={closeButtonRef}
           onClick={onClose}
-          className="absolute top-6 right-6 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+          className="absolute top-6 right-6 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
           aria-label="Close case study"
         >
           <X className="w-5 h-5" />
@@ -87,7 +139,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
           <h2 id="case-study-title" className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
             {project.title}
           </h2>
-          <p className="text-white/70 text-sm sm:text-base mt-2 font-mono">{project.tagline}</p>
+          <p className="text-white/75 text-sm sm:text-base mt-2 font-mono">{project.tagline}</p>
         </div>
 
         {/* Top Storytelling Framework: Problem -> Approach -> Finding -> Implication */}
@@ -123,13 +175,13 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
 
         {/* Key Metrics Grid */}
         <div className="mb-8">
-          <div className="text-xs font-mono text-white/65 uppercase tracking-wider mb-3">Verified Project Metrics</div>
+          <div className="text-xs font-mono text-white/75 uppercase tracking-wider mb-3">Verified Project Metrics</div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {project.keyMetrics.map((m, idx) => (
               <div key={idx} className="p-4 rounded-2xl bg-black/40 border border-white/10">
-                <div className="text-xs text-white/65 font-mono uppercase tracking-wider">{m.label}</div>
+                <div className="text-xs text-white/75 font-mono uppercase tracking-wider">{m.label}</div>
                 <div className="text-xl sm:text-2xl font-extrabold text-white font-mono mt-1">{m.value}</div>
-                {m.subtext && <div className="text-xs text-white/65 mt-1 font-mono">{m.subtext}</div>}
+                {m.subtext && <div className="text-xs text-white/75 mt-1 font-mono">{m.subtext}</div>}
               </div>
             ))}
           </div>
@@ -138,12 +190,12 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
         {/* Methods, Assumptions & Limitations Panels */}
         <div className="space-y-4 mb-8">
           <div className="flex items-center justify-between pb-2 border-b border-white/10">
-            <div className="text-xs font-mono text-white/50 uppercase tracking-wider">
+            <div className="text-xs font-mono text-white/75 uppercase tracking-wider">
               Case Study Architecture ({project.caseStudy.sections.length} Governed Sections)
             </div>
             <button
               onClick={toggleAllSections}
-              className="text-xs font-mono text-red-400 hover:text-red-300 font-semibold transition-colors cursor-pointer"
+              className="text-xs font-mono text-red-400 hover:text-red-300 font-semibold transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 rounded-md px-1"
             >
               {expandedSections.size === project.caseStudy.sections.length ? 'Collapse All Sections' : 'Expand All Sections'}
             </button>
@@ -177,7 +229,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
                 <button
                   onClick={() => toggleSection(sIdx)}
                   aria-expanded={isExpanded}
-                  className="w-full p-5 flex items-center justify-between text-left hover:bg-white/[0.03] transition-colors cursor-pointer"
+                  className="w-full p-5 flex items-center justify-between text-left hover:bg-white/[0.03] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
                 >
                   <div className="flex items-center gap-3">
                     <span className="text-xs font-mono px-2 py-0.5 rounded bg-white/5 border border-white/10 text-red-400 font-bold">
@@ -200,29 +252,40 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
 
                     {/* Table if present */}
                     {section.table && (
-                      <div className="mt-4 overflow-x-auto rounded-xl border border-white/10">
-                        <table className="w-full text-left border-collapse text-xs font-mono">
-                          <thead>
-                            <tr className="bg-black/50 border-b border-white/10 text-white/65 text-xs uppercase">
-                              {section.table.headers.map((h, hIdx) => (
-                                <th key={hIdx} className="py-2.5 px-3">
-                                  {h}
-                                </th>
-                              ))}
-                            </tr>
-                          </thead>
-                          <tbody className="divide-y divide-white/5 bg-black/20">
-                            {section.table.rows.map((row, rIdx) => (
-                              <tr key={rIdx} className="hover:bg-white/[0.02]">
-                                {row.map((cell, cIdx) => (
-                                  <td key={cIdx} className={`py-2 px-3 ${cIdx === 0 ? 'font-sans font-medium text-white' : 'text-white/80'}`}>
-                                    {cell}
-                                  </td>
+                      <div className="mt-4 space-y-1">
+                        <div className="flex items-center justify-between text-[11px] font-mono text-white/75 px-1">
+                          <span>Data Table ({section.title})</span>
+                          <span className="sm:hidden text-white/70 text-[10px]">(Pan table horizontally →)</span>
+                        </div>
+                        <div
+                          tabIndex={0}
+                          role="region"
+                          aria-label={`${section.title} data table`}
+                          className="overflow-x-auto rounded-xl border border-white/10 focus:outline-none focus:ring-1 focus:ring-red-400"
+                        >
+                          <table className="w-full text-left border-collapse text-xs font-mono">
+                            <thead>
+                              <tr className="bg-black/50 border-b border-white/10 text-white/75 text-xs uppercase">
+                                {section.table.headers.map((h, hIdx) => (
+                                  <th key={hIdx} className="py-2.5 px-3 whitespace-nowrap">
+                                    {h}
+                                  </th>
                                 ))}
                               </tr>
-                            ))}
-                          </tbody>
-                        </table>
+                            </thead>
+                            <tbody className="divide-y divide-white/5 bg-black/20">
+                              {section.table.rows.map((row, rIdx) => (
+                                <tr key={rIdx} className="hover:bg-white/[0.02]">
+                                  {row.map((cell, cIdx) => (
+                                    <td key={cIdx} className={`py-2 px-3 whitespace-nowrap ${cIdx === 0 ? 'font-sans font-medium text-white' : 'text-white/80'}`}>
+                                      {cell}
+                                    </td>
+                                  ))}
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
                       </div>
                     )}
 
@@ -262,7 +325,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
               </div>
               <div className="space-y-1.5">
                 {project.limitations.map((lim, idx) => (
-                  <p key={idx} className="text-xs text-amber-200/80 leading-relaxed font-sans">
+                  <p key={idx} className="text-xs text-amber-200/90 leading-relaxed font-sans">
                     • {lim}
                   </p>
                 ))}
@@ -274,10 +337,10 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
         {/* Tools and Stack */}
         <div className="pt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
           <div>
-            <div className="text-xs font-mono text-white/65 uppercase mb-2">Verified Technology Stack</div>
+            <div className="text-xs font-mono text-white/75 uppercase mb-2">Verified Technology Stack</div>
             <div className="flex flex-wrap gap-1.5">
               {project.tools.map((t, idx) => (
-                <span key={idx} className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-white/70 text-xs font-mono">
+                <span key={idx} className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-white/80 text-xs font-mono">
                   {t}
                 </span>
               ))}
@@ -286,7 +349,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
 
           <button
             onClick={onClose}
-            className="px-6 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-mono uppercase tracking-wider transition-colors cursor-pointer"
+            className="px-6 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-mono uppercase tracking-wider transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
           >
             Close Overview
           </button>
@@ -294,7 +357,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
 
         {/* Disclaimer */}
         {project.caseStudy.disclaimer && (
-          <div className="mt-6 p-4 rounded-2xl bg-black/50 border border-white/5 text-xs text-white/65 font-mono leading-relaxed">
+          <div className="mt-6 p-4 rounded-2xl bg-black/50 border border-white/5 text-xs text-white/75 font-mono leading-relaxed">
             <strong>Disclosure:</strong> {project.caseStudy.disclaimer}
           </div>
         )}

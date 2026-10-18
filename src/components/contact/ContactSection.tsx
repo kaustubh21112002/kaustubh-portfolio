@@ -34,7 +34,7 @@ export const ContactSection: React.FC = () => {
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white">
             Let’s Discuss Analytics & Research
           </h2>
-          <p className="text-white/60 text-base mt-2 max-w-xl mx-auto">
+          <p className="text-white/75 text-base mt-2 max-w-xl mx-auto">
             Available for Business Analyst, Data Analyst, and Valuation roles.
           </p>
         </div>
@@ -45,7 +45,7 @@ export const ContactSection: React.FC = () => {
             <div className="p-8 rounded-3xl bg-[#141722] border border-white/10 space-y-6 shadow-xl">
               <div>
                 <h3 className="text-xl font-bold text-white mb-2">Direct Contact Channels</h3>
-                <p className="text-xs text-white/60 leading-relaxed">
+                <p className="text-xs text-white/75 leading-relaxed">
                   Connect directly via verified email, phone, or professional networks.
                 </p>
               </div>
@@ -57,10 +57,10 @@ export const ContactSection: React.FC = () => {
                     <Mail className="w-5 h-5" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className="text-xs font-mono text-white/65 uppercase">Email Address</div>
+                    <div className="text-xs font-mono text-white/75 uppercase">Email Address</div>
                     <a
                       href={`mailto:${portfolioConfig.socials.email}`}
-                      className="text-xs xl:text-sm font-mono text-white hover:text-red-400 transition-colors block break-all"
+                      className="text-xs xl:text-sm font-mono text-white hover:text-red-400 transition-colors block break-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-400"
                     >
                       {portfolioConfig.socials.email}
                     </a>
@@ -69,8 +69,9 @@ export const ContactSection: React.FC = () => {
 
                 <button
                   onClick={handleCopyEmail}
-                  className="p-2 rounded-full bg-white/5 hover:bg-white/15 text-white/70 hover:text-white transition-all shrink-0"
+                  className="p-2 rounded-full bg-white/5 hover:bg-white/15 text-white/75 hover:text-white transition-all shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
                   title="Copy email"
+                  aria-label="Copy direct email address to clipboard"
                 >
                   {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
                 </button>
@@ -83,10 +84,10 @@ export const ContactSection: React.FC = () => {
                     <Phone className="w-5 h-5" />
                   </div>
                   <div>
-                    <div className="text-xs font-mono text-white/65 uppercase">Direct Phone</div>
+                    <div className="text-xs font-mono text-white/75 uppercase">Direct Phone</div>
                     <a
                       href={`tel:${portfolioConfig.socials.phone}`}
-                      className="text-xs sm:text-sm font-mono text-white hover:text-emerald-400 transition-colors block"
+                      className="text-xs sm:text-sm font-mono text-white hover:text-emerald-400 transition-colors block focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-400"
                     >
                       {portfolioConfig.socials.phone}
                     </a>
@@ -100,7 +101,7 @@ export const ContactSection: React.FC = () => {
                   href={portfolioConfig.socials.linkedIn}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-white/20 transition-all group"
+                  className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-white/20 transition-all group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
                 >
                   <div className="flex items-center gap-3">
                     <div className="p-2 rounded-xl bg-blue-500/10 text-blue-400">
@@ -110,10 +111,10 @@ export const ContactSection: React.FC = () => {
                       <div className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors">
                         LinkedIn Profile
                       </div>
-                      <div className="text-xs font-mono text-white/65">linkedin.com/in/kaustubhnandurkar</div>
+                      <div className="text-xs font-mono text-white/75">linkedin.com/in/kaustubhnandurkar</div>
                     </div>
                   </div>
-                  <span className="text-xs font-mono text-white/50 group-hover:text-white transition-colors">
+                  <span className="text-xs font-mono text-white/75 group-hover:text-white transition-colors">
                     ↗
                   </span>
                 </a>
@@ -122,7 +123,7 @@ export const ContactSection: React.FC = () => {
                   href={portfolioConfig.socials.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-white/20 transition-all group"
+                  className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-white/20 transition-all group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
                 >
                   <div className="flex items-center gap-3">
                     <div className="p-2 rounded-xl bg-purple-500/10 text-purple-400">
@@ -132,16 +133,16 @@ export const ContactSection: React.FC = () => {
                       <div className="text-xs font-bold text-white group-hover:text-purple-400 transition-colors">
                         GitHub Profile
                       </div>
-                      <div className="text-xs font-mono text-white/65">github.com/kaustubh21112002</div>
+                      <div className="text-xs font-mono text-white/75">github.com/kaustubh21112002</div>
                     </div>
                   </div>
-                  <span className="text-xs font-mono text-white/50 group-hover:text-white transition-colors">
+                  <span className="text-xs font-mono text-white/75 group-hover:text-white transition-colors">
                     ↗
                   </span>
                 </a>
               </div>
 
-              <div className="flex items-center gap-2 text-xs font-mono text-white/50 pt-2 border-t border-white/5">
+              <div className="flex items-center gap-2 text-xs font-mono text-white/75 pt-2 border-t border-white/5">
                 <MapPin className="w-3.5 h-3.5 text-red-400" />
                 <span>Location: {portfolioConfig.location}</span>
               </div>
@@ -158,57 +159,62 @@ export const ContactSection: React.FC = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-mono uppercase text-white/60 mb-1.5">Your Name</label>
+                  <label htmlFor="contact-name" className="block text-xs font-mono uppercase text-white/75 mb-1.5">Your Name</label>
                   <input
+                    id="contact-name"
                     type="text"
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder="e.g. Hiring Manager / Team Lead"
-                    className="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/10 text-white placeholder:text-white/60 text-sm focus:border-red-500 focus:outline-none transition-colors"
+                    className="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/10 text-white placeholder:text-white/60 text-sm focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500 transition-colors"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-mono uppercase text-white/60 mb-1.5">Your Email</label>
+                  <label htmlFor="contact-email" className="block text-xs font-mono uppercase text-white/75 mb-1.5">Your Email</label>
                   <input
+                    id="contact-email"
                     type="email"
                     required
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     placeholder="e.g. contact@company.com"
-                    className="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/10 text-white placeholder:text-white/60 text-sm focus:border-red-500 focus:outline-none transition-colors"
+                    className="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/10 text-white placeholder:text-white/60 text-sm focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500 transition-colors"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-mono uppercase text-white/60 mb-1.5">Inquiry Subject</label>
+                <label htmlFor="contact-subject" className="block text-xs font-mono uppercase text-white/75 mb-1.5">Inquiry Subject</label>
                 <input
+                  id="contact-subject"
                   type="text"
                   required
                   value={formData.subject}
                   onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                   placeholder="e.g. Role Opportunity / Valuation Model Inquiry"
-                  className="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/10 text-white placeholder:text-white/60 text-sm focus:border-red-500 focus:outline-none transition-colors"
+                  className="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/10 text-white placeholder:text-white/60 text-sm focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500 transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono uppercase text-white/60 mb-1.5">Message / Details</label>
+                <label htmlFor="contact-message" className="block text-xs font-mono uppercase text-white/75 mb-1.5">Message / Details</label>
                 <textarea
+                  id="contact-message"
                   rows={4}
                   required
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   placeholder="Please specify role scope, analytical questions, or discussion topics..."
-                  className="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/10 text-white placeholder:text-white/60 text-sm focus:border-red-500 focus:outline-none transition-colors resize-none"
+                  className="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/10 text-white placeholder:text-white/60 text-sm focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500 transition-colors resize-none"
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-white text-black font-bold text-sm tracking-wide transition-all hover:bg-white/90 shadow-[0_0_20px_rgba(255,255,255,0.25)] active:scale-95"
+                aria-label="Send message via mail client"
+                className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-white text-black font-bold text-sm tracking-wide transition-all hover:bg-white/90 shadow-[0_0_20px_rgba(255,255,255,0.25)] active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
               >
                 <span>Send Message</span>
                 <Send className="w-4 h-4" />
@@ -224,7 +230,7 @@ export const ContactSection: React.FC = () => {
         </div>
 
         {/* Footer */}
-        <div className="mt-20 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-white/65">
+        <div className="mt-20 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-white/75">
           <div>
             © {new Date().getFullYear()} {portfolioConfig.fullName}. All analytical methodologies preserved.
           </div>

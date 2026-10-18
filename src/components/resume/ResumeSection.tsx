@@ -33,7 +33,7 @@ export const ResumeSection: React.FC = () => {
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white">
             Resume & Professional Experience
           </h2>
-          <p className="text-white/60 text-base mt-2 max-w-xl mx-auto">
+          <p className="text-white/75 text-base mt-2 max-w-xl mx-auto">
             Available for Business Analyst, Data Analyst, and Valuation roles.
           </p>
 
@@ -44,7 +44,8 @@ export const ResumeSection: React.FC = () => {
                 <a
                   href={portfolioConfig.resumePath}
                   download="Kaustubh_Nandurkar_Resume.pdf"
-                  className="flex items-center gap-2 px-7 py-3.5 rounded-full bg-white text-black font-bold text-sm tracking-wide transition-all hover:bg-white/90 shadow-[0_0_25px_rgba(255,255,255,0.35)] active:scale-95"
+                  aria-label="Download verified resume PDF"
+                  className="flex items-center gap-2 px-7 py-3.5 rounded-full bg-white text-black font-bold text-sm tracking-wide transition-all hover:bg-white/90 shadow-[0_0_25px_rgba(255,255,255,0.35)] active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
                 >
                   <Download className="w-4 h-4" />
                   <span>Download Resume (PDF)</span>
@@ -54,16 +55,18 @@ export const ResumeSection: React.FC = () => {
                   href={portfolioConfig.resumePath}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-6 py-3.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/20 text-white font-medium text-sm transition-all active:scale-95"
+                  aria-label="View verified resume PDF in browser window"
+                  className="flex items-center gap-2 px-6 py-3.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/20 text-white font-medium text-sm transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
                 >
-                  <Eye className="w-4 h-4 text-white/70" />
+                  <Eye className="w-4 h-4 text-white/75" />
                   <span>View PDF in Browser</span>
                 </a>
               </>
             ) : (
               <button
                 onClick={handleCopyEmail}
-                className="flex items-center gap-2 px-7 py-3.5 rounded-full bg-white text-black font-bold text-sm tracking-wide"
+                aria-label="Request resume via direct email"
+                className="flex items-center gap-2 px-7 py-3.5 rounded-full bg-white text-black font-bold text-sm tracking-wide focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
               >
                 <Mail className="w-4 h-4" />
                 <span>Request Resume via Email</span>
@@ -72,9 +75,10 @@ export const ResumeSection: React.FC = () => {
 
             <button
               onClick={handleCopyEmail}
-              className="flex items-center gap-2 px-6 py-3.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/20 text-white font-medium text-sm transition-all active:scale-95"
+              aria-label="Copy direct email address to clipboard"
+              className="flex items-center gap-2 px-6 py-3.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/20 text-white font-medium text-sm transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
             >
-              <CheckCircle className={`w-4 h-4 ${copied ? 'text-emerald-400' : 'text-white/70'}`} />
+              <CheckCircle className={`w-4 h-4 ${copied ? 'text-emerald-400' : 'text-white/75'}`} />
               <span>{copied ? 'Email Copied!' : 'Copy Direct Email'}</span>
             </button>
           </div>
@@ -87,12 +91,12 @@ export const ResumeSection: React.FC = () => {
             <div>
               <h3 className="text-3xl font-extrabold text-white">{portfolioConfig.fullName}</h3>
               <p className="text-red-400 font-mono text-sm mt-1">{portfolioConfig.role}</p>
-              <p className="text-white/50 text-xs mt-1">{portfolioConfig.location} • {portfolioConfig.socials.phone}</p>
+              <p className="text-white/75 text-xs mt-1">{portfolioConfig.location} • {portfolioConfig.socials.phone}</p>
             </div>
-            <div className="text-xs font-mono text-white/60 space-y-1">
+            <div className="text-xs font-mono text-white/75 space-y-1">
               <div>Email: {portfolioConfig.socials.email}</div>
-              <div>LinkedIn: <a href={portfolioConfig.socials.linkedIn} target="_blank" rel="noopener noreferrer" className="text-white hover:underline">/in/kaustubhnandurkar</a></div>
-              <div>GitHub: <a href={portfolioConfig.socials.github} target="_blank" rel="noopener noreferrer" className="text-white hover:underline">/kaustubh21112002</a></div>
+              <div>LinkedIn: <a href={portfolioConfig.socials.linkedIn} target="_blank" rel="noopener noreferrer" className="text-white hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-400">/in/kaustubhnandurkar</a></div>
+              <div>GitHub: <a href={portfolioConfig.socials.github} target="_blank" rel="noopener noreferrer" className="text-white hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-400">/kaustubh21112002</a></div>
             </div>
           </div>
 
@@ -108,11 +112,11 @@ export const ResumeSection: React.FC = () => {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between">
                     <div>
                       <span className="font-bold text-white text-base">{exp.role}</span>
-                      <span className="text-white/60 font-mono text-xs block sm:inline sm:ml-2">| {exp.organization}</span>
+                      <span className="text-white/75 font-mono text-xs block sm:inline sm:ml-2">| {exp.organization}</span>
                     </div>
-                    <span className="text-xs font-mono text-white/50">{exp.period}</span>
+                    <span className="text-xs font-mono text-white/75">{exp.period}</span>
                   </div>
-                  <ul className="mt-2 space-y-1.5 text-xs text-white/75">
+                  <ul className="mt-2 space-y-1.5 text-xs text-white/80">
                     {exp.responsibilities.map((r, rIdx) => (
                       <li key={rIdx}>• {r}</li>
                     ))}
@@ -133,10 +137,10 @@ export const ResumeSection: React.FC = () => {
                 <div key={idx} className="p-4 rounded-2xl bg-white/[0.02] border border-white/5">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between">
                     <span className="font-bold text-white text-base">{edu.degree}</span>
-                    <span className="text-xs font-mono text-white/50">{edu.period}</span>
+                    <span className="text-xs font-mono text-white/75">{edu.period}</span>
                   </div>
-                  <p className="text-xs text-white/70 mt-1">{edu.institution}</p>
-                  <p className="text-xs text-white/50 font-mono mt-1">{edu.details}</p>
+                  <p className="text-xs text-white/80 mt-1">{edu.institution}</p>
+                  <p className="text-xs text-white/75 font-mono mt-1">{edu.details}</p>
                 </div>
               ))}
             </div>
@@ -153,9 +157,9 @@ export const ResumeSection: React.FC = () => {
                 <div key={p.id} className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 space-y-2">
                   <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
                     <span className="text-sm font-bold text-white">{p.title}</span>
-                    <span className="font-mono text-white/50 text-xs">{p.resumeHighlight?.role || p.status}</span>
+                    <span className="font-mono text-white/75 text-xs">{p.resumeHighlight?.role || p.status}</span>
                   </div>
-                  <div className="text-white/75 leading-relaxed space-y-1">
+                  <div className="text-white/80 leading-relaxed space-y-1">
                     {p.resumeHighlight?.bulletPoints.map((bp, bIdx) => (
                       <p key={bIdx}>{bp}</p>
                     ))}
@@ -173,7 +177,7 @@ export const ResumeSection: React.FC = () => {
             </h4>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono">
               {coreSkills.map((skill, sIdx) => (
-                <div key={sIdx} className="p-3 rounded-lg bg-white/5 text-white/80">
+                <div key={sIdx} className="p-3 rounded-lg bg-white/5 text-white/90">
                   {skill}
                 </div>
               ))}

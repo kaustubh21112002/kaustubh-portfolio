@@ -38,10 +38,63 @@
     <meta name="twitter:image" content="https://kaustubh-portfolio-six.vercel.app/og-image.png" />
     <meta name="twitter:image:alt" content="Kaustubh K. Nandurkar — Business Analytics & Financial Valuation Portfolio preview showing PhonePe Valuation and STRATOS AI analytical case studies." />
     
+    <!-- Preload Hero Poster Image for Instant Visual Paint -->
+    <link rel="preload" as="image" href="/videos/intro-poster.jpg" fetchpriority="high" />
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Structured Data (Schema.org JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Person",
+          "@id": "https://kaustubh-portfolio-six.vercel.app/#person",
+          "name": "Kaustubh K. Nandurkar",
+          "jobTitle": "Business Analytics & Financial Valuation Specialist",
+          "alumniOf": [
+            {
+              "@type": "CollegeOrUniversity",
+              "name": "Sandip University, Nashik"
+            },
+            {
+              "@type": "CollegeOrUniversity",
+              "name": "Kamla Nehru Mahavidyalaya, Nagpur"
+            }
+          ],
+          "url": "https://kaustubh-portfolio-six.vercel.app/",
+          "image": "https://kaustubh-portfolio-six.vercel.app/profile.png",
+          "sameAs": [
+            "https://www.linkedin.com/in/kaustubhnandurkar",
+            "https://github.com/kaustubh21112002"
+          ],
+          "knowsAbout": [
+            "Business Analytics",
+            "DCF Valuation",
+            "Financial Modeling",
+            "Data Governance",
+            "SQL",
+            "Power BI",
+            "Python"
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://kaustubh-portfolio-six.vercel.app/#website",
+          "url": "https://kaustubh-portfolio-six.vercel.app/",
+          "name": "Kaustubh K. Nandurkar Portfolio",
+          "description": "Business Analytics, DCF Valuation & Research Portfolio of Kaustubh K. Nandurkar",
+          "author": {
+            "@id": "https://kaustubh-portfolio-six.vercel.app/#person"
+          }
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -202,20 +202,35 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
             Evaluating commercial decisions through quantitative valuation, relational analytics, and governed data pipelines.
           </p>
 
-          {/* Recruiter Quick Proof Signals */}
+          {/* Recruiter Quick Proof Signals (Interactive Direct Evidence Jumps) */}
           <div className="flex flex-col sm:flex-row sm:flex-wrap items-start gap-1.5 sm:gap-2 mb-6 sm:mb-8 text-xs sm:text-sm font-mono">
-            <span className="w-fit px-2.5 py-1 rounded-lg bg-black/60 backdrop-blur-md border border-white/20 text-white/95 flex items-center gap-1.5">
+            <button
+              onClick={() => scrollTo('journey')}
+              aria-label="Jump to SPIIDEO Match Analytics internship in journey section"
+              className="w-fit px-2.5 py-1 rounded-lg bg-black/60 hover:bg-black/90 backdrop-blur-md border border-white/20 hover:border-emerald-400/50 text-white/95 flex items-center gap-1.5 transition-all cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+            >
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
               <span>SPIIDEO Match Analytics Intern</span>
-            </span>
-            <span className="w-fit px-2.5 py-1 rounded-lg bg-black/60 backdrop-blur-md border border-white/20 text-white/95 flex items-center gap-1.5">
+              <span className="text-white/50 group-hover:text-emerald-400 transition-colors text-[10px]">↗</span>
+            </button>
+            <button
+              onClick={() => scrollTo('flagship')}
+              aria-label="Jump to ₹41,631 Cr PhonePe Pre-IPO valuation model"
+              className="w-fit px-2.5 py-1 rounded-lg bg-black/60 hover:bg-black/90 backdrop-blur-md border border-white/20 hover:border-red-400/50 text-white/95 flex items-center gap-1.5 transition-all cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+            >
               <span className="w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
               <span>₹41,631 Cr Pre-IPO Valuation</span>
-            </span>
-            <span className="w-fit px-2.5 py-1 rounded-lg bg-black/60 backdrop-blur-md border border-white/20 text-white/95 flex items-center gap-1.5">
+              <span className="text-white/50 group-hover:text-red-400 transition-colors text-[10px]">↗</span>
+            </button>
+            <button
+              onClick={() => scrollTo('projects')}
+              aria-label="Jump to 50,000 Order STRATOS governed analytics system"
+              className="w-fit px-2.5 py-1 rounded-lg bg-black/60 hover:bg-black/90 backdrop-blur-md border border-white/20 hover:border-blue-400/50 text-white/95 flex items-center gap-1.5 transition-all cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+            >
               <span className="w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0" />
               <span>50,000 Order Governed System</span>
-            </span>
+              <span className="text-white/50 group-hover:text-blue-400 transition-colors text-[10px]">↗</span>
+            </button>
           </div>
 
           {/* Action Buttons: Primary "Explore My Work", Secondary "Download Resume (PDF)", Tertiary "Contact" */}
@@ -226,7 +241,8 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
                 scrollTo('flagship');
                 if (onExploreClick) onExploreClick();
               }}
-              className="flex items-center justify-center gap-2 px-6 sm:px-7 py-3 rounded-full bg-white text-black font-bold text-sm tracking-wide transition-all duration-200 hover:bg-white/95 hover:shadow-[0_0_25px_rgba(255,255,255,0.45)] active:scale-95 cursor-pointer shadow-md"
+              aria-label="Explore flagship valuation model and analytical case studies"
+              className="flex items-center justify-center gap-2 px-6 sm:px-7 py-3 rounded-full bg-white text-black font-bold text-sm tracking-wide transition-all duration-200 hover:bg-white/95 hover:shadow-[0_0_25px_rgba(255,255,255,0.45)] active:scale-95 cursor-pointer shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
             >
               <span>Explore My Work</span>
               <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
@@ -236,7 +252,8 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
             <a
               href={portfolioConfig.resumePath}
               download="Kaustubh_Nandurkar_Resume.pdf"
-              className="flex items-center justify-center gap-2 px-6 sm:px-7 py-3 rounded-full bg-white/10 hover:bg-white text-white hover:text-black border border-white/20 hover:border-transparent font-semibold text-sm tracking-wide transition-all duration-200 active:scale-95 shadow-md"
+              aria-label="Download verified resume PDF"
+              className="flex items-center justify-center gap-2 px-6 sm:px-7 py-3 rounded-full bg-white/10 hover:bg-white text-white hover:text-black border border-white/20 hover:border-transparent font-semibold text-sm tracking-wide transition-all duration-200 active:scale-95 shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
             >
               <Download className="w-4 h-4 transition-transform group-hover:-translate-y-0.5" />
               <span>Download Resume (PDF)</span>
@@ -248,7 +265,8 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
                 scrollTo('contact');
                 if (onContactClick) onContactClick();
               }}
-              className="flex items-center justify-center gap-1.5 px-5 py-3 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white/90 hover:text-white font-medium text-sm tracking-wide transition-all active:scale-95 cursor-pointer"
+              aria-label="Scroll to direct contact channels"
+              className="flex items-center justify-center gap-1.5 px-5 py-3 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white/90 hover:text-white font-medium text-sm tracking-wide transition-all active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
             >
               <Mail className="w-3.5 h-3.5 text-red-400" />
               <span>Contact</span>
@@ -257,14 +275,15 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
         </div>
 
         {/* Bottom Status & Navigation Bar */}
-        <div className="w-full flex items-center justify-end pt-3 sm:pt-4 border-t border-white/10 text-white/60 text-xs font-mono">
+        <div className="w-full flex items-center justify-end pt-3 sm:pt-4 border-t border-white/10 text-white/70 text-xs font-mono">
           {/* Section Navigation Link */}
           <button
             onClick={() => scrollTo('flagship')}
-            className="flex items-center gap-1.5 sm:gap-2 text-white/50 hover:text-white transition-colors group cursor-pointer"
+            aria-label="Scroll down to Flagship DCF Valuation section"
+            className="flex items-center gap-1.5 sm:gap-2 text-white/70 hover:text-white transition-colors group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 rounded-full px-2 py-1"
           >
-            <span className="uppercase tracking-wider text-xs">Flagship DCF</span>
-            <ArrowDown className="w-3 h-3 sm:w-3.5 sm:h-3.5 animate-bounce group-hover:text-white" />
+            <span className="uppercase tracking-wider text-xs font-semibold">Flagship DCF</span>
+            <ArrowDown className="w-3 h-3 sm:w-3.5 sm:h-3.5 animate-bounce group-hover:text-white text-red-400" />
           </button>
         </div>
       </div>

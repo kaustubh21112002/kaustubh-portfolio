@@ -54,14 +54,14 @@ export const ProjectsSection: React.FC = () => {
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
                   aria-pressed={selectedCategory === cat}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-mono tracking-wide transition-all cursor-pointer ${
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-mono tracking-wide transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 ${
                     selectedCategory === cat
                       ? 'bg-white text-black font-bold shadow-md'
-                      : 'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white border border-white/5'
+                      : 'bg-white/5 text-white/75 hover:bg-white/10 hover:text-white border border-white/5'
                   }`}
                 >
                   <span>{cat}</span>
-                  <span className={`ml-1.5 text-xs ${selectedCategory === cat ? 'text-black/80' : 'text-white/65'}`}>
+                  <span className={`ml-1.5 text-xs ${selectedCategory === cat ? 'text-black/80' : 'text-white/75'}`}>
                     ({count})
                   </span>
                 </button>
@@ -88,14 +88,14 @@ export const ProjectsSection: React.FC = () => {
                       {project.status}
                     </span>
                   </div>
-                  <span className="text-xs font-mono text-white/65">{project.date}</span>
+                  <span className="text-xs font-mono text-white/75">{project.date}</span>
                 </div>
 
                 {/* Project Title */}
                 <h3 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-snug group-hover:text-red-400 transition-colors">
                   {project.title}
                 </h3>
-                <p className="text-white/60 text-xs sm:text-sm mt-1.5 font-mono mb-6">
+                <p className="text-white/75 text-xs sm:text-sm mt-1.5 font-mono mb-6">
                   {project.tagline}
                 </p>
 
@@ -138,9 +138,9 @@ export const ProjectsSection: React.FC = () => {
                 <div className="grid grid-cols-2 gap-3 mb-6">
                   {project.keyMetrics.slice(0, 2).map((m, idx) => (
                     <div key={idx} className="p-4 rounded-2xl bg-black/30 border border-white/5">
-                      <div className="text-xs uppercase font-mono text-white/65 tracking-wider">{m.label}</div>
+                      <div className="text-xs uppercase font-mono text-white/75 tracking-wider">{m.label}</div>
                       <div className="text-xl sm:text-2xl font-extrabold text-white font-mono mt-1">{m.value}</div>
-                      {m.subtext && <div className="text-xs text-white/65 mt-0.5 truncate font-mono">{m.subtext}</div>}
+                      {m.subtext && <div className="text-xs text-white/75 mt-0.5 truncate font-mono">{m.subtext}</div>}
                     </div>
                   ))}
                 </div>
@@ -148,7 +148,7 @@ export const ProjectsSection: React.FC = () => {
                 {/* Verified Tools Pill Box */}
                 <div className="flex flex-wrap gap-1.5 mb-6">
                   {project.tools.slice(0, 4).map((tool, idx) => (
-                    <span key={idx} className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-white/70 text-xs font-mono">
+                    <span key={idx} className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-white/80 text-xs font-mono">
                       {tool}
                     </span>
                   ))}
@@ -157,10 +157,11 @@ export const ProjectsSection: React.FC = () => {
 
               {/* Action Button */}
               <div className="pt-5 border-t border-white/10 flex items-center justify-between">
-                <span className="text-xs text-white/65 font-mono">Complete Methodology</span>
+                <span className="text-xs text-white/75 font-mono">Complete Methodology</span>
                 <button
                   onClick={() => setActiveModalProject(project)}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/10 hover:bg-white text-white hover:text-black text-xs font-mono font-bold transition-all duration-200 cursor-pointer shadow-sm active:scale-95"
+                  aria-label={`Inspect case study for ${project.title}`}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/10 hover:bg-white text-white hover:text-black text-xs font-mono font-bold transition-all duration-200 cursor-pointer shadow-sm active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
                 >
                   <span>Inspect Case Study</span>
                   <ChevronRight className="w-3.5 h-3.5" />

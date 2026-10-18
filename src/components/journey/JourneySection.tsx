@@ -17,7 +17,7 @@ export const JourneySection: React.FC = () => {
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white">
             Academic Grounding & Applied Practice
           </h2>
-          <p className="text-white/60 text-sm sm:text-base mt-2 max-w-2xl leading-relaxed">
+          <p className="text-white/75 text-sm sm:text-base mt-2 max-w-2xl leading-relaxed">
             A chronological timeline distinguishing professional employment from academic degrees, reflecting continuous growth across computer science, business analytics, and quantitative valuation.
           </p>
         </div>
@@ -58,13 +58,13 @@ export const JourneySection: React.FC = () => {
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-4 text-xs font-mono text-white/50">
+                  <div className="flex items-center gap-4 text-xs font-mono text-white/75">
                     <span className="flex items-center gap-1.5">
-                      <Calendar className="w-3.5 h-3.5 text-white/65" />
+                      <Calendar className="w-3.5 h-3.5 text-white/75" />
                       {item.period}
                     </span>
                     <span className="hidden sm:flex items-center gap-1.5">
-                      <MapPin className="w-3.5 h-3.5 text-white/65" />
+                      <MapPin className="w-3.5 h-3.5 text-white/75" />
                       {item.location}
                     </span>
                   </div>
@@ -81,14 +81,14 @@ export const JourneySection: React.FC = () => {
                 </div>
 
                 {/* Description */}
-                <p className="text-white/75 text-sm leading-relaxed mb-4 font-sans">
+                <p className="text-white/80 text-sm leading-relaxed mb-4 font-sans">
                   {item.description}
                 </p>
 
                 {/* Specific Responsibilities / Achievements */}
                 <div className="space-y-2 mb-5 pt-3 border-t border-white/10">
                   {item.highlights.map((h, hIdx) => (
-                    <div key={hIdx} className="flex items-start gap-2.5 text-xs text-white/65 leading-relaxed">
+                    <div key={hIdx} className="flex items-start gap-2.5 text-xs text-white/80 leading-relaxed">
                       <CheckCircle2 className="w-4 h-4 text-emerald-400/80 shrink-0 mt-0.5" />
                       <span>{h}</span>
                     </div>
@@ -100,7 +100,7 @@ export const JourneySection: React.FC = () => {
                   {item.skills.map((skill, sIdx) => (
                     <span
                       key={sIdx}
-                      className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-white/70 text-xs font-mono tracking-wide"
+                      className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-white/80 text-xs font-mono tracking-wide"
                     >
                       {skill}
                     </span>

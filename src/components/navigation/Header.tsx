@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, ArrowUpRight, Download } from 'lucide-react';
 import { portfolioConfig } from '../../config/portfolio';
 
@@ -10,6 +10,8 @@ export const Header: React.FC<HeaderProps> = ({ activeSection = 'hero' }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const mobileMenuButtonRef = useRef<HTMLButtonElement | null>(null);
+  const mobileDialogRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,6 +25,66 @@ export const Header: React.FC<HeaderProps> = ({ activeSection = 'hero' }) => {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+
+      requestAnimationFrame(() => {
+        const dialog = mobileDialogRef.current;
+        const firstFocusable = dialog?.querySelector<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        firstFocusable?.focus();
+      });
+
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          setMobileMenuOpen(false);
+          return;
+        }
+
+        if (e.key === 'Tab') {
+          const dialog = mobileDialogRef.current;
+          if (!dialog) return;
+
+          const focusable = Array.from(
+            dialog.querySelectorAll<HTMLElement>(
+              'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+            )
+          ).filter((el) => el.offsetParent !== null);
+
+          if (focusable.length === 0) {
+            e.preventDefault();
+            return;
+          }
+
+          const first = focusable[0];
+          const last = focusable[focusable.length - 1];
+
+          if (e.shiftKey) {
+            if (document.activeElement === first || !dialog.contains(document.activeElement)) {
+              e.preventDefault();
+              last.focus();
+            }
+          } else {
+            if (document.activeElement === last || !dialog.contains(document.activeElement)) {
+              e.preventDefault();
+              first.focus();
+            }
+          }
+        }
+      };
+
+      window.addEventListener('keydown', handleKeyDown);
+      return () => {
+        document.body.style.overflow = 'unset';
+        window.removeEventListener('keydown', handleKeyDown);
+        mobileMenuButtonRef.current?.focus();
+      };
+    }
+  }, [mobileMenuOpen]);
 
   const navItems = [
     { label: 'ABOUT', href: '#about', id: 'about' },
@@ -72,7 +134,8 @@ export const Header: React.FC<HeaderProps> = ({ activeSection = 'hero' }) => {
               e.preventDefault();
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            className="flex items-center gap-2 text-white font-bold tracking-wider text-sm transition-opacity hover:opacity-80"
+            aria-label={`${portfolioConfig.name} - Back to top`}
+            className="flex items-center gap-2 text-white font-bold tracking-wider text-sm transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 rounded-full"
           >
             <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
             <span className="font-mono uppercase text-xs sm:text-sm tracking-wide">
@@ -88,7 +151,9 @@ export const Header: React.FC<HeaderProps> = ({ activeSection = 'hero' }) => {
                 <button
                   key={item.label}
                   onClick={() => handleNavClick(item.href)}
-                  className={`px-2.5 py-1.5 rounded-full transition-all duration-200 uppercase font-mono text-xs cursor-pointer ${
+                  aria-current={isActive ? 'location' : undefined}
+                  aria-label={`Jump to ${item.label} section`}
+                  className={`px-2.5 py-1.5 rounded-full transition-all duration-200 uppercase font-mono text-xs cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 ${
                     isActive
                       ? 'bg-white text-black font-bold shadow-sm'
                       : 'text-white/80 hover:text-white hover:bg-white/10'
@@ -105,7 +170,8 @@ export const Header: React.FC<HeaderProps> = ({ activeSection = 'hero' }) => {
             <a
               href={portfolioConfig.resumePath}
               download="Kaustubh_Nandurkar_Resume.pdf"
-              className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-full bg-white text-black hover:bg-white/90 transition-transform active:scale-95 shadow-sm font-mono tracking-tight"
+              aria-label="Download verified resume PDF"
+              className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-full bg-white text-black hover:bg-white/90 transition-transform active:scale-95 shadow-sm font-mono tracking-tight focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
               title="Download Verified Resume PDF"
             >
               <span>RESUME</span>
@@ -115,9 +181,12 @@ export const Header: React.FC<HeaderProps> = ({ activeSection = 'hero' }) => {
 
           {/* Mobile Menu Button */}
           <button
+            ref={mobileMenuButtonRef}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden text-white p-1 rounded-full hover:bg-white/10 transition-colors cursor-pointer"
-            aria-label="Toggle navigation"
+            className="lg:hidden text-white p-1 rounded-full hover:bg-white/10 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-navigation-dialog"
+            aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -126,15 +195,23 @@ export const Header: React.FC<HeaderProps> = ({ activeSection = 'hero' }) => {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-40 bg-black/95 backdrop-blur-2xl lg:hidden flex flex-col justify-center items-center gap-5 p-8">
-          <div className="text-xs font-mono uppercase text-white/65 tracking-widest mb-2">
+        <div
+          ref={mobileDialogRef}
+          id="mobile-navigation-dialog"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Mobile Navigation Menu"
+          className="fixed inset-0 z-40 bg-black/95 backdrop-blur-2xl lg:hidden flex flex-col justify-center items-center gap-5 p-8"
+        >
+          <div className="text-xs font-mono uppercase text-white/75 tracking-widest mb-2">
             Navigation Index
           </div>
           {navItems.map((item) => (
             <button
               key={item.label}
               onClick={() => handleNavClick(item.href)}
-              className="text-lg font-mono tracking-wider text-white hover:text-red-400 transition-colors uppercase cursor-pointer"
+              aria-label={`Jump to ${item.label} section`}
+              className="text-lg font-mono tracking-wider text-white hover:text-red-400 transition-colors uppercase cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
             >
               [{item.label}]
             </button>
@@ -143,14 +220,15 @@ export const Header: React.FC<HeaderProps> = ({ activeSection = 'hero' }) => {
             <a
               href={portfolioConfig.resumePath}
               download="Kaustubh_Nandurkar_Resume.pdf"
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-full bg-white text-black font-bold text-sm tracking-wide"
+              aria-label="Download verified resume PDF"
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-full bg-white text-black font-bold text-sm tracking-wide focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
             >
               <Download className="w-4 h-4" />
               <span>Download Verified Resume</span>
             </a>
             <button
               onClick={() => setMobileMenuOpen(false)}
-              className="text-xs font-mono text-white/50 hover:text-white pt-2 cursor-pointer"
+              className="text-xs font-mono text-white/70 hover:text-white pt-2 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
             >
               [Close Menu]
             </button>

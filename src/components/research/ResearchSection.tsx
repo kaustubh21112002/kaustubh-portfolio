@@ -21,7 +21,7 @@ export const ResearchSection: React.FC = () => {
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white">
             Research Library & Manuscripts
           </h2>
-          <p className="text-white/60 text-base mt-2 max-w-2xl">
+          <p className="text-white/75 text-base mt-2 max-w-2xl">
             In-depth analytical manuscripts, strategic feasibility reports, and empirical econometric investigations.
           </p>
         </div>
@@ -38,16 +38,18 @@ export const ResearchSection: React.FC = () => {
                 {/* Header Bar */}
                 <button
                   onClick={() => togglePaper(paper.id)}
-                  className="w-full p-6 sm:p-7 flex items-center justify-between text-left gap-4 hover:bg-white/[0.02] transition-colors"
+                  aria-expanded={isExpanded}
+                  aria-controls={`paper-content-${paper.id}`}
+                  className="w-full p-6 sm:p-7 flex items-center justify-between text-left gap-4 hover:bg-white/[0.02] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 cursor-pointer"
                 >
                   <div>
                     <div className="flex flex-wrap items-center gap-2 text-xs font-mono mb-2">
                       <span className="px-2.5 py-0.5 rounded-full bg-red-500/10 text-red-400 border border-red-500/20">
                         {paper.topic}
                       </span>
-                      <span className="text-white/65">• {paper.date}</span>
-                      <span className="text-white/65">• {paper.fileType}</span>
-                      <span className="text-emerald-400/80">• {paper.status}</span>
+                      <span className="text-white/75">• {paper.date}</span>
+                      <span className="text-white/75">• {paper.fileType}</span>
+                      <span className="text-emerald-400/90">• {paper.status}</span>
                     </div>
                     <h3 className="text-lg sm:text-xl font-bold text-white leading-snug">{paper.title}</h3>
                   </div>
@@ -59,22 +61,25 @@ export const ResearchSection: React.FC = () => {
 
                 {/* Expanded Content */}
                 {isExpanded && (
-                  <div className="px-6 pb-7 sm:px-7 sm:pb-8 pt-2 border-t border-white/10 space-y-6 text-sm">
+                  <div
+                    id={`paper-content-${paper.id}`}
+                    className="px-6 pb-7 sm:px-7 sm:pb-8 pt-2 border-t border-white/10 space-y-6 text-sm"
+                  >
                     {/* Abstract */}
                     <div>
-                      <h4 className="text-xs font-mono text-white/65 mb-1.5 font-semibold">Abstract</h4>
+                      <h4 className="text-xs font-mono text-white/75 mb-1.5 font-semibold">Abstract</h4>
                       <p className="text-white/80 leading-relaxed">{paper.abstract}</p>
                     </div>
 
                     {/* Methodology */}
                     <div>
-                      <h4 className="text-xs font-mono text-white/65 mb-1.5 font-semibold">Analytical methodology</h4>
+                      <h4 className="text-xs font-mono text-white/75 mb-1.5 font-semibold">Analytical methodology</h4>
                       <p className="text-white/80 leading-relaxed font-mono text-xs">{paper.methodology}</p>
                     </div>
 
                     {/* Principal Findings */}
                     <div>
-                      <h4 className="text-xs font-mono text-white/65 mb-2 font-semibold">Principal observed findings</h4>
+                      <h4 className="text-xs font-mono text-white/75 mb-2 font-semibold">Principal observed findings</h4>
                       <div className="space-y-2">
                         {paper.principalFindings.map((finding, idx) => (
                           <div key={idx} className="flex items-start gap-2.5 text-white/80 text-xs sm:text-sm">
@@ -93,7 +98,7 @@ export const ResearchSection: React.FC = () => {
                       </div>
                       <div className="space-y-1">
                         {paper.limitations.map((lim, idx) => (
-                          <p key={idx} className="text-xs text-amber-200/80 leading-relaxed">
+                          <p key={idx} className="text-xs text-amber-200/90 leading-relaxed">
                             • {lim}
                           </p>
                         ))}

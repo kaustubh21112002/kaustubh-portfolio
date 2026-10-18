@@ -1,0 +1,6 @@
+# robots.txt for https://kaustubh-portfolio-six.vercel.app/
+User-agent: *
+Allow: /
+Allow: /Kaustubh_Nandurkar_Resume.pdf
+
+Sitemap: https://kaustubh-portfolio-six.vercel.app/sitemap.xml

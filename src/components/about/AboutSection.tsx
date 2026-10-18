@@ -73,7 +73,7 @@ export const AboutSection: React.FC = () => {
             Evidence-Driven Analytics <br className="hidden sm:inline" />
             Before Decorative Complexity.
           </h2>
-          <p className="text-white/60 text-sm sm:text-base mt-3 max-w-2xl leading-relaxed">
+          <p className="text-white/75 text-sm sm:text-base mt-3 max-w-2xl leading-relaxed">
             I am an MBA candidate in Business Analytics with a computer science foundation, focused on quantitative valuation, data governance, and decision intelligence.
           </p>
         </div>
@@ -93,7 +93,7 @@ export const AboutSection: React.FC = () => {
                   {item.label}
                 </div>
               </div>
-              <p className="text-xs text-white/60 mt-3 pt-3 border-t border-white/5 leading-relaxed font-sans">
+              <p className="text-xs text-white/75 mt-3 pt-3 border-t border-white/5 leading-relaxed font-sans">
                 {item.subtext}
               </p>
             </div>
@@ -107,19 +107,23 @@ export const AboutSection: React.FC = () => {
               <img
                 src={portfolioConfig.profilePhoto}
                 alt={`${portfolioConfig.fullName} Portrait`}
+                loading="lazy"
+                decoding="async"
+                width={640}
+                height={480}
                 className="w-full h-auto aspect-[4/3] object-cover object-top transition-transform duration-500 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
               <div className="absolute bottom-6 left-6 right-6">
                 <div className="text-xl font-bold text-white tracking-tight">{portfolioConfig.fullName}</div>
-                <div className="text-xs text-white/80 font-mono mt-0.5">MBA Business Analytics • Sandip University</div>
-                <div className="text-xs text-white/50 font-mono mt-0.5">{portfolioConfig.location}</div>
+                <div className="text-xs text-white/85 font-mono mt-0.5">MBA Business Analytics • Sandip University</div>
+                <div className="text-xs text-white/75 font-mono mt-0.5">{portfolioConfig.location}</div>
               </div>
             </div>
 
             {/* Quick Snapshot Card */}
             <div className="p-6 rounded-3xl bg-[#141722] border border-white/10 space-y-4">
-              <div className="text-xs font-mono uppercase text-white/50 tracking-wider font-bold">
+              <div className="text-xs font-mono uppercase text-white/75 tracking-wider font-bold">
                 Professional Profile
               </div>
 
@@ -128,7 +132,7 @@ export const AboutSection: React.FC = () => {
                   <GraduationCap className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
                   <div>
                     <span className="font-bold text-white">MBA - Business Analytics</span>
-                    <p className="text-white/60">Sandip University, Nashik (2025 – 2027)</p>
+                    <p className="text-white/75">Sandip University, Nashik (2025 – 2027)</p>
                   </div>
                 </div>
 
@@ -136,7 +140,7 @@ export const AboutSection: React.FC = () => {
                   <GraduationCap className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
                   <div>
                     <span className="font-bold text-white">BSc - Computer Science</span>
-                    <p className="text-white/60">Kamla Nehru Mahavidyalaya, Nagpur (2021 – 2025)</p>
+                    <p className="text-white/75">Kamla Nehru Mahavidyalaya, Nagpur (2021 – 2025)</p>
                   </div>
                 </div>
 
@@ -144,7 +148,7 @@ export const AboutSection: React.FC = () => {
                   <Briefcase className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                   <div>
                     <span className="font-bold text-white">Sports Data Analyst Intern</span>
-                    <p className="text-white/60">SPIIDEO (June 2026 – Present)</p>
+                    <p className="text-white/75">SPIIDEO (June 2026 – Present)</p>
                   </div>
                 </div>
               </div>
@@ -168,7 +172,7 @@ export const AboutSection: React.FC = () => {
 
             {/* 5-Step Methodology */}
             <div>
-              <div className="text-xs font-mono uppercase tracking-widest text-white/50 mb-4 flex items-center gap-2">
+              <div className="text-xs font-mono uppercase tracking-widest text-white/75 mb-4 flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-emerald-400" />
                 Problem-Solving Methodology
               </div>
