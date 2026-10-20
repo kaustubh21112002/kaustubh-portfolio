@@ -11,7 +11,9 @@ import {
   GraduationCap,
   Briefcase,
   RotateCcw,
-  AlertCircle
+  AlertCircle,
+  Volume2,
+  VolumeX
 } from 'lucide-react';
 import { portfolioConfig } from '../../config/portfolio';
 
@@ -64,6 +66,8 @@ const verifiedProofPoints = [
 const PersonalStoryVideo: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [hasError, setHasError] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
+  const [soundBlocked, setSoundBlocked] = useState(false);
   const [isReducedMotion, setIsReducedMotion] = useState<boolean>(() => {
     if (typeof window === 'undefined') return false;
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -74,8 +78,10 @@ const PersonalStoryVideo: React.FC = () => {
     const video = videoRef.current;
     if (!video || isReducedMotion) return;
 
-    video.defaultMuted = true;
-    video.muted = true;
+    if (isMuted) {
+      video.defaultMuted = true;
+      video.muted = true;
+    }
 
     if (video.paused) {
       const playPromise = video.play();
@@ -111,7 +117,7 @@ const PersonalStoryVideo: React.FC = () => {
         });
       }
     }
-  }, [isReducedMotion]);
+  }, [isReducedMotion, isMuted]);
 
   // Listen for dynamic changes to prefers-reduced-motion
   useEffect(() => {
@@ -131,21 +137,25 @@ const PersonalStoryVideo: React.FC = () => {
     const video = videoRef.current;
     if (!video) return;
 
-    video.defaultMuted = true;
-    video.muted = true;
+    if (isMuted) {
+      video.defaultMuted = true;
+      video.muted = true;
+    }
 
     if (isReducedMotion) {
       video.pause();
     } else {
       attemptPlay();
     }
-  }, [isReducedMotion, attemptPlay]);
+  }, [isReducedMotion, attemptPlay, isMuted]);
 
   const handleLoadedMetadata = () => {
     const video = videoRef.current;
     if (!video) return;
-    video.defaultMuted = true;
-    video.muted = true;
+    if (isMuted) {
+      video.defaultMuted = true;
+      video.muted = true;
+    }
     if (!isReducedMotion && video.paused) {
       attemptPlay();
     }
@@ -169,6 +179,33 @@ const PersonalStoryVideo: React.FC = () => {
     }
   };
 
+  const toggleSound = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (isMuted) {
+      video.muted = false;
+      video.volume = 0.7;
+      try {
+        if (video.paused) {
+          await video.play();
+        }
+        setIsMuted(false);
+        setSoundBlocked(false);
+      } catch (err) {
+        console.warn('Audio playback blocked by browser policy:', err);
+        video.muted = true;
+        setIsMuted(true);
+        setSoundBlocked(true);
+      }
+    } else {
+      video.muted = true;
+      setIsMuted(true);
+      setSoundBlocked(false);
+    }
+  };
+
   // Caption track support: ready for /videos/personal-story.vtt when governed track is provided
   const captionTrackSrc = '';
 
@@ -179,7 +216,7 @@ const PersonalStoryVideo: React.FC = () => {
         poster="/images/personal-story-poster.jpg"
         autoPlay
         loop
-        muted
+        muted={isMuted}
         playsInline
         preload="metadata"
         onLoadedMetadata={handleLoadedMetadata}
@@ -207,6 +244,45 @@ const PersonalStoryVideo: React.FC = () => {
           <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
           <span>Personal Story</span>
         </div>
+      </div>
+
+      {/* Sound Toggle Button */}
+      <div className="absolute top-3.5 right-3.5 sm:top-4 sm:right-4 z-20">
+        <button
+          type="button"
+          onClick={toggleSound}
+          onPointerDown={(e) => e.stopPropagation()}
+          aria-label={isMuted ? "Enable sound" : "Mute sound"}
+          aria-pressed={!isMuted}
+          title={isMuted ? "Enable sound" : "Mute sound"}
+          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full backdrop-blur-md border text-xs font-mono font-medium transition-all duration-200 cursor-pointer shadow-lg active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 ${
+            isMuted
+              ? 'bg-black/70 hover:bg-black/90 border-white/20 hover:border-red-500/40 text-white/90 hover:text-white'
+              : 'bg-red-500/20 hover:bg-red-500/30 border-red-500/50 text-red-200 hover:text-white'
+          }`}
+        >
+          {isMuted ? (
+            <>
+              <VolumeX className="w-3.5 h-3.5 text-red-400" />
+              <span>Enable sound</span>
+            </>
+          ) : (
+            <>
+              <Volume2 className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
+              <span>Mute sound</span>
+            </>
+          )}
+        </button>
+
+        {/* Clear hint if browser policy deferred sound */}
+        {soundBlocked && (
+          <div
+            role="status"
+            className="absolute top-10 right-0 mt-2 w-56 p-2.5 rounded-xl bg-black/90 backdrop-blur-md border border-amber-500/40 text-amber-200 text-[11px] font-mono shadow-xl text-left leading-snug"
+          >
+            Audio playback was blocked by browser policy. Click “Enable sound” again to confirm playback with audio.
+          </div>
+        )}
       </div>
 
       {/* Error Fallback Card */}
