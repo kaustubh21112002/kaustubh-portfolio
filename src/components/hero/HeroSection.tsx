@@ -114,7 +114,7 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
   return (
     <section
       id="hero"
-      className="relative w-full h-screen max-h-[1080px] min-h-[640px] overflow-hidden select-none bg-[#0b0d13]"
+      className="relative w-full min-h-[100dvh] select-none bg-[#0b0d13] flex flex-col justify-between overflow-x-hidden"
     >
       {/* 1. Full Cinematic Background Video */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
@@ -161,10 +161,10 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
       />
 
       {/* 3. Hero Content Container */}
-      <div className="relative z-20 h-full max-w-7xl mx-auto px-4 sm:px-10 lg:px-14 flex flex-col justify-between pt-20 sm:pt-28 pb-6 sm:pb-10 w-full min-w-0">
+      <div className="relative z-20 flex-1 max-w-7xl mx-auto px-4 sm:px-10 lg:px-14 flex flex-col justify-between pt-20 sm:pt-22 lg:pt-26 pb-4 sm:pb-6 lg:pb-8 w-full min-w-0">
         
-        {/* Top Eyebrow / Direct Contact Touchpoint */}
-        <div className="flex flex-wrap items-center justify-between gap-3">
+        {/* Top Eyebrow / Direct Contact Touchpoint (Visible on sm+ to prevent floating header collision on mobile) */}
+        <div className="hidden sm:flex flex-wrap items-center justify-between gap-3">
           <div className="inline-flex max-w-full min-w-0 items-center gap-2 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/20 text-white/95 text-xs font-mono tracking-wider shadow-lg">
             <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 shrink-0 rounded-full bg-emerald-400 animate-pulse" />
             <span className="truncate min-w-0">MBA Business Analytics • Sandip University</span>
@@ -172,7 +172,7 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
 
           <a
             href={`mailto:${portfolioConfig.socials.email}`}
-            className="hidden sm:inline-flex items-center gap-2 text-xs font-mono text-white/80 hover:text-white bg-black/40 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/15 transition-all hover:bg-black/60"
+            className="inline-flex items-center gap-2 text-xs font-mono text-white/80 hover:text-white bg-black/40 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/15 transition-all hover:bg-black/60"
           >
             <Mail className="w-3.5 h-3.5 text-red-400" />
             <span>{portfolioConfig.socials.email}</span>
@@ -180,30 +180,33 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
         </div>
 
         {/* Core Editorial Identity & CTAs */}
-        <div className="w-full max-w-xl lg:max-w-xl xl:max-w-2xl my-auto py-5 sm:py-6 max-md:bg-[#0b0d13]/85 max-md:backdrop-blur-xl max-md:border max-md:border-white/15 max-md:rounded-3xl max-md:p-4 sm:max-md:p-6 max-md:shadow-2xl min-w-0">
+        <div className="w-full max-w-xl lg:max-w-xl xl:max-w-2xl my-auto py-3 sm:py-4 lg:py-6 max-md:bg-[#0b0d13]/85 max-md:backdrop-blur-xl max-md:border max-md:border-white/15 max-md:rounded-3xl max-md:p-4 sm:max-md:p-6 max-md:shadow-2xl min-w-0">
           {/* Candidate Name & Positioning */}
-          <div className="flex flex-wrap items-center gap-2 mb-2">
+          <div className="flex flex-wrap items-center gap-2 mb-1.5 sm:mb-2">
             <span className="text-white font-mono text-xs sm:text-base font-bold tracking-widest uppercase">
               Kaustubh K. Nandurkar
             </span>
-            <span className="hidden sm:inline-block w-1.5 h-1.5 rounded-full bg-red-400" />
-            <span className="hidden sm:inline-block text-white/75 font-mono text-xs tracking-wider">
-              MBA Business Analytics • Sandip University
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-400" />
+            <span className="text-white/75 font-mono text-xs tracking-wider">
+              MBA Business Analytics
+            </span>
+            <span className="hidden sm:inline text-white/60 font-mono text-xs tracking-wider">
+              • Sandip University
             </span>
           </div>
 
           {/* Concise Headline */}
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.12] mb-3 sm:mb-4">
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.12] mb-2.5 sm:mb-3 lg:mb-4">
             Business Analytics <br className="sm:hidden" />& Research.
           </h1>
 
           {/* Evidence-Based Short Description */}
-          <p className="text-white/90 sm:text-white/85 text-xs sm:text-base leading-relaxed font-normal mb-5 sm:mb-6 max-w-xl">
+          <p className="text-white/90 sm:text-white/85 text-xs sm:text-sm lg:text-base leading-relaxed font-normal mb-3.5 sm:mb-4 lg:mb-5 max-w-xl">
             Evaluating commercial decisions through quantitative valuation, relational analytics, and governed data pipelines.
           </p>
 
           {/* Recruiter Quick Proof Signals (Interactive Direct Evidence Jumps) */}
-          <div className="flex flex-col sm:flex-row sm:flex-wrap items-start gap-1.5 sm:gap-2 mb-6 sm:mb-8 text-xs sm:text-sm font-mono">
+          <div className="flex flex-col sm:flex-row sm:flex-wrap items-start gap-1.5 sm:gap-2 mb-4 sm:mb-5 lg:mb-6 text-xs sm:text-sm font-mono">
             <button
               onClick={() => scrollTo('journey')}
               aria-label="Jump to SPIIDEO Match Analytics internship in journey section"
@@ -242,7 +245,7 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
                 if (onExploreClick) onExploreClick();
               }}
               aria-label="Explore flagship valuation model and analytical case studies"
-              className="flex items-center justify-center gap-2 px-6 sm:px-7 py-3 rounded-full bg-white text-black font-bold text-sm tracking-wide transition-all duration-200 hover:bg-white/95 hover:shadow-[0_0_25px_rgba(255,255,255,0.45)] active:scale-95 cursor-pointer shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+              className="flex items-center justify-center gap-2 px-5 sm:px-6 lg:px-7 py-2.5 sm:py-3 rounded-full bg-white text-black font-bold text-sm tracking-wide transition-all duration-200 hover:bg-white/95 hover:shadow-[0_0_25px_rgba(255,255,255,0.45)] active:scale-95 cursor-pointer shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
             >
               <span>Explore My Work</span>
               <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
@@ -253,7 +256,7 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
               href={portfolioConfig.resumePath}
               download="Kaustubh_Nandurkar_Resume.pdf"
               aria-label="Download verified resume PDF"
-              className="flex items-center justify-center gap-2 px-6 sm:px-7 py-3 rounded-full bg-white/10 hover:bg-white text-white hover:text-black border border-white/20 hover:border-transparent font-semibold text-sm tracking-wide transition-all duration-200 active:scale-95 shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+              className="flex items-center justify-center gap-2 px-5 sm:px-6 lg:px-7 py-2.5 sm:py-3 rounded-full bg-white/10 hover:bg-white text-white hover:text-black border border-white/20 hover:border-transparent font-semibold text-sm tracking-wide transition-all duration-200 active:scale-95 shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
             >
               <Download className="w-4 h-4 transition-transform group-hover:-translate-y-0.5" />
               <span>Download Resume (PDF)</span>
@@ -266,7 +269,7 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
                 if (onContactClick) onContactClick();
               }}
               aria-label="Scroll to direct contact channels"
-              className="flex items-center justify-center gap-1.5 px-5 py-3 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white/90 hover:text-white font-medium text-sm tracking-wide transition-all active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+              className="flex items-center justify-center gap-1.5 px-4 sm:px-5 py-2.5 sm:py-3 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white/90 hover:text-white font-medium text-sm tracking-wide transition-all active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
             >
               <Mail className="w-3.5 h-3.5 text-red-400" />
               <span>Contact</span>
@@ -275,7 +278,7 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
         </div>
 
         {/* Bottom Status & Navigation Bar */}
-        <div className="w-full flex items-center justify-end pt-3 sm:pt-4 border-t border-white/10 text-white/70 text-xs font-mono">
+        <div className="w-full flex items-center justify-end pt-2 sm:pt-3 lg:pt-4 border-t border-white/10 text-white/70 text-xs font-mono">
           {/* Section Navigation Link */}
           <button
             onClick={() => scrollTo('flagship')}

@@ -13,7 +13,8 @@ import {
   RotateCcw,
   AlertCircle,
   Volume2,
-  VolumeX
+  VolumeX,
+  X
 } from 'lucide-react';
 import { portfolioConfig } from '../../config/portfolio';
 
@@ -65,6 +66,7 @@ const verifiedProofPoints = [
 
 const PersonalStoryVideo: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const soundWarningTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [hasError, setHasError] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [soundBlocked, setSoundBlocked] = useState(false);
@@ -72,6 +74,34 @@ const PersonalStoryVideo: React.FC = () => {
     if (typeof window === 'undefined') return false;
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   });
+
+  const dismissSoundWarning = useCallback(() => {
+    if (soundWarningTimeoutRef.current) {
+      clearTimeout(soundWarningTimeoutRef.current);
+      soundWarningTimeoutRef.current = null;
+    }
+    setSoundBlocked(false);
+  }, []);
+
+  const triggerSoundBlockedWarning = useCallback(() => {
+    if (soundWarningTimeoutRef.current) {
+      clearTimeout(soundWarningTimeoutRef.current);
+    }
+    setSoundBlocked(true);
+    soundWarningTimeoutRef.current = setTimeout(() => {
+      setSoundBlocked(false);
+      soundWarningTimeoutRef.current = null;
+    }, 5000);
+  }, []);
+
+  // Clean up any pending warning timer on unmount
+  useEffect(() => {
+    return () => {
+      if (soundWarningTimeoutRef.current) {
+        clearTimeout(soundWarningTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Safe playback trigger matching Hero section behavior and browser autoplay policies
   const attemptPlay = useCallback(() => {
@@ -192,17 +222,17 @@ const PersonalStoryVideo: React.FC = () => {
           await video.play();
         }
         setIsMuted(false);
-        setSoundBlocked(false);
+        dismissSoundWarning();
       } catch (err) {
         console.warn('Audio playback blocked by browser policy:', err);
         video.muted = true;
         setIsMuted(true);
-        setSoundBlocked(true);
+        triggerSoundBlockedWarning();
       }
     } else {
       video.muted = true;
       setIsMuted(true);
-      setSoundBlocked(false);
+      dismissSoundWarning();
     }
   };
 
@@ -252,10 +282,12 @@ const PersonalStoryVideo: React.FC = () => {
           type="button"
           onClick={toggleSound}
           onPointerDown={(e) => e.stopPropagation()}
+          onTouchStart={(e) => e.stopPropagation()}
+          onKeyDown={(e) => e.stopPropagation()}
           aria-label={isMuted ? "Enable sound" : "Mute sound"}
           aria-pressed={!isMuted}
           title={isMuted ? "Enable sound" : "Mute sound"}
-          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full backdrop-blur-md border text-xs font-mono font-medium transition-all duration-200 cursor-pointer shadow-lg active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 ${
+          className={`inline-flex items-center gap-1.5 p-2 sm:px-3 sm:py-1.5 rounded-full backdrop-blur-md border text-xs font-mono font-medium transition-all duration-200 cursor-pointer shadow-lg active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 ${
             isMuted
               ? 'bg-black/70 hover:bg-black/90 border-white/20 hover:border-red-500/40 text-white/90 hover:text-white'
               : 'bg-red-500/20 hover:bg-red-500/30 border-red-500/50 text-red-200 hover:text-white'
@@ -263,13 +295,13 @@ const PersonalStoryVideo: React.FC = () => {
         >
           {isMuted ? (
             <>
-              <VolumeX className="w-3.5 h-3.5 text-red-400" />
-              <span>Enable sound</span>
+              <VolumeX className="w-3.5 h-3.5 text-red-400 shrink-0" />
+              <span className="hidden min-[440px]:inline">Enable sound</span>
             </>
           ) : (
             <>
-              <Volume2 className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
-              <span>Mute sound</span>
+              <Volume2 className="w-3.5 h-3.5 text-emerald-400 animate-pulse shrink-0" />
+              <span className="hidden min-[440px]:inline">Mute sound</span>
             </>
           )}
         </button>
@@ -278,9 +310,24 @@ const PersonalStoryVideo: React.FC = () => {
         {soundBlocked && (
           <div
             role="status"
-            className="absolute top-10 right-0 mt-2 w-56 p-2.5 rounded-xl bg-black/90 backdrop-blur-md border border-amber-500/40 text-amber-200 text-[11px] font-mono shadow-xl text-left leading-snug"
+            aria-live="polite"
+            className="absolute top-11 right-0 mt-2 w-64 p-2.5 rounded-xl bg-black/95 backdrop-blur-md border border-amber-500/40 text-amber-200 text-[11px] font-mono shadow-2xl text-left leading-snug z-30 flex items-start justify-between gap-2 animate-fadeIn"
           >
-            Audio playback was blocked by browser policy. Click “Enable sound” again to confirm playback with audio.
+            <p className="flex-1">
+              Audio playback was blocked by browser policy. Click “Enable sound” again to confirm playback with audio.
+            </p>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                dismissSoundWarning();
+              }}
+              onPointerDown={(e) => e.stopPropagation()}
+              className="text-amber-300/70 hover:text-amber-200 p-0.5 rounded cursor-pointer shrink-0 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-400"
+              aria-label="Dismiss audio notice"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
           </div>
         )}
       </div>

@@ -114,7 +114,8 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
   const scrollToTarget = (targetId: string) => {
     const el = document.getElementById(targetId);
     if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const isReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      el.scrollIntoView({ behavior: isReducedMotion ? 'auto' : 'smooth', block: 'start' });
     }
   };
 
@@ -127,7 +128,8 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
     requestAnimationFrame(() => {
       const sectionEl = document.getElementById(targetId);
       if (sectionEl) {
-        sectionEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const isReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        sectionEl.scrollIntoView({ behavior: isReducedMotion ? 'auto' : 'smooth', block: 'start' });
       }
     });
   };
@@ -183,63 +185,86 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
         </div>
 
         {/* Quick Recruiter Section Navigation */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-6 scrollbar-none border-b border-white/10 text-xs font-mono">
-          <span className="text-white/60 text-[11px] uppercase tracking-wider shrink-0 font-semibold mr-1">Jump to:</span>
-          {evidenceLink ? (
-            <a
-              href={evidenceLink.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`View project evidence for ${project.title} (opens in new tab)`}
-              className="px-2.5 py-1 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 hover:text-emerald-200 transition-colors shrink-0 flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-400"
-            >
-              <ExternalLink className="w-3 h-3 text-emerald-400" />
-              <span>View Evidence</span>
-            </a>
-          ) : (
-            <span
-              className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-white/50 transition-colors shrink-0 flex items-center gap-1.5 cursor-default"
-              title="Governed spreadsheet or external evidence link pending upload"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-400/60" />
-              <span>Evidence: Pending</span>
+        <div className="relative mb-6">
+          <div className="flex items-center justify-between gap-2 mb-2 sm:hidden text-[10px] font-mono">
+            <span className="text-white/60 uppercase tracking-wider font-semibold">Jump to Section</span>
+            <span className="text-white/45 tracking-wide flex items-center gap-1" aria-hidden="true">
+              <span>Swipe to explore</span>
+              <span>→</span>
             </span>
-          )}
-          <button
-            onClick={() => scrollToTarget('modal-overview')}
-            className="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 hover:text-white transition-colors shrink-0 cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-400"
-          >
-            Overview
-          </button>
-          {project.datasetScope && (
-            <button
-              onClick={() => scrollToTarget('modal-dataset-scope')}
-              className="px-2.5 py-1 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-300 hover:text-blue-200 transition-colors shrink-0 flex items-center gap-1.5 cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-400"
+          </div>
+
+          <div className="relative">
+            <div
+              tabIndex={0}
+              role="region"
+              aria-label="Case study section quick jump navigation"
+              className="flex items-center gap-2 overflow-x-auto pb-3 sm:pb-4 scrollbar-none border-b border-white/10 text-xs font-mono focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-400/50 rounded-lg pr-8 sm:pr-0"
             >
-              <Database className="w-3 h-3 text-blue-400" />
-              <span>Dataset Scope</span>
-            </button>
-          )}
-          <button
-            onClick={() => scrollToTarget('modal-metrics')}
-            className="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 hover:text-white transition-colors shrink-0 cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-400"
-          >
-            Metrics
-          </button>
-          <button
-            onClick={() => scrollToTarget('modal-sections')}
-            className="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 hover:text-white transition-colors shrink-0 cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-400"
-          >
-            Case Study ({project.caseStudy.sections.length} Sections)
-          </button>
-          {project.limitations && project.limitations.length > 0 && (
-            <button
-              onClick={() => scrollToTarget('modal-limitations')}
-              className="px-2.5 py-1 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 hover:text-amber-200 transition-colors shrink-0 cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-400"
-            >
-              Limitations
-            </button>
-          )}
+              <span className="hidden sm:inline-block text-white/60 text-[11px] uppercase tracking-wider shrink-0 font-semibold mr-1">Jump to:</span>
+              {evidenceLink ? (
+                <a
+                  href={evidenceLink.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`View project evidence for ${project.title} (opens in new tab)`}
+                  className="px-2.5 py-1 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 hover:text-emerald-200 transition-colors shrink-0 flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-400"
+                >
+                  <ExternalLink className="w-3 h-3 text-emerald-400" />
+                  <span>View Evidence</span>
+                </a>
+              ) : (
+                <span
+                  className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-white/50 transition-colors shrink-0 flex items-center gap-1.5 cursor-default"
+                  title="Governed spreadsheet or external evidence link pending upload"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400/60" />
+                  <span>Evidence: Pending</span>
+                </span>
+              )}
+              <button
+                onClick={() => scrollToTarget('modal-overview')}
+                className="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 hover:text-white transition-colors shrink-0 cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-400"
+              >
+                Overview
+              </button>
+              {project.datasetScope && (
+                <button
+                  onClick={() => scrollToTarget('modal-dataset-scope')}
+                  className="px-2.5 py-1 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-300 hover:text-blue-200 transition-colors shrink-0 flex items-center gap-1.5 cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-400"
+                >
+                  <Database className="w-3 h-3 text-blue-400" />
+                  <span>Dataset Scope</span>
+                </button>
+              )}
+              <button
+                onClick={() => scrollToTarget('modal-metrics')}
+                className="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 hover:text-white transition-colors shrink-0 cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-400"
+              >
+                Metrics
+              </button>
+              <button
+                onClick={() => scrollToTarget('modal-sections')}
+                className="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 hover:text-white transition-colors shrink-0 cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-400"
+              >
+                Case Study ({project.caseStudy.sections.length} Sections)
+              </button>
+              {project.limitations && project.limitations.length > 0 && (
+                <button
+                  onClick={() => scrollToTarget('modal-limitations')}
+                  className="px-2.5 py-1 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 hover:text-amber-200 transition-colors shrink-0 cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-400"
+                >
+                  Limitations
+                </button>
+              )}
+            </div>
+
+            {/* Subtle right-edge fade indicator on mobile to cue horizontal scrollability */}
+            <div
+              className="sm:hidden absolute top-0 right-0 bottom-3 w-8 pointer-events-none bg-gradient-to-l from-[#10121a] to-transparent"
+              aria-hidden="true"
+            />
+          </div>
         </div>
 
         {/* Top Storytelling Framework: Problem -> Approach -> Finding -> Implication */}

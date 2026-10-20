@@ -87,20 +87,21 @@ export const Header: React.FC<HeaderProps> = ({ activeSection = 'hero' }) => {
   }, [mobileMenuOpen]);
 
   const navItems = [
-    { label: 'ABOUT', href: '#about', id: 'about' },
-    { label: 'VALUATION', href: '#flagship', id: 'flagship' },
-    { label: 'WORK', href: '#projects', id: 'projects' },
-    { label: 'JOURNEY', href: '#journey', id: 'journey' },
-    { label: 'SKILLS', href: '#skills', id: 'skills' },
-    { label: 'RESEARCH', href: '#research', id: 'research' },
-    { label: 'CONTACT', href: '#contact', id: 'contact' },
+    { number: '01', label: 'About', href: '#about', id: 'about' },
+    { number: '02', label: 'Valuation', href: '#flagship', id: 'flagship' },
+    { number: '03', label: 'Work', href: '#projects', id: 'projects' },
+    { number: '04', label: 'Journey', href: '#journey', id: 'journey' },
+    { number: '05', label: 'Skills', href: '#skills', id: 'skills' },
+    { number: '06', label: 'Research', href: '#research', id: 'research' },
+    { number: '07', label: 'Contact', href: '#contact', id: 'contact' },
   ];
 
   const handleNavClick = (href: string) => {
     setMobileMenuOpen(false);
     const element = document.querySelector(href);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      const isReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      element.scrollIntoView({ behavior: isReducedMotion ? 'auto' : 'smooth' });
     }
   };
 
@@ -144,22 +145,22 @@ export const Header: React.FC<HeaderProps> = ({ activeSection = 'hero' }) => {
           </a>
 
           {/* Desktop Nav Items */}
-          <div className="hidden lg:flex items-center gap-0.5 text-xs tracking-wider font-medium">
+          <div className="hidden lg:flex items-center gap-1 text-xs tracking-wider font-medium">
             {navItems.map((item) => {
               const isActive = activeSection === item.id;
               return (
                 <button
-                  key={item.label}
+                  key={item.id}
                   onClick={() => handleNavClick(item.href)}
                   aria-current={isActive ? 'location' : undefined}
                   aria-label={`Jump to ${item.label} section`}
-                  className={`px-2.5 py-1.5 rounded-full transition-all duration-200 uppercase font-mono text-xs cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 ${
+                  className={`px-3 py-1.5 rounded-full transition-colors duration-200 uppercase font-mono text-xs cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 ${
                     isActive
                       ? 'bg-white text-black font-bold shadow-sm'
                       : 'text-white/80 hover:text-white hover:bg-white/10'
                   }`}
                 >
-                  [{item.label}]
+                  {item.label}
                 </button>
               );
             })}
@@ -193,45 +194,114 @@ export const Header: React.FC<HeaderProps> = ({ activeSection = 'hero' }) => {
         </nav>
       </header>
 
-      {/* Mobile Drawer */}
+      {/* Mobile Editorial Drawer */}
       {mobileMenuOpen && (
         <div
           ref={mobileDialogRef}
           id="mobile-navigation-dialog"
           role="dialog"
           aria-modal="true"
-          aria-label="Mobile Navigation Menu"
-          className="fixed inset-0 z-40 bg-black/95 backdrop-blur-2xl lg:hidden flex flex-col justify-center items-center gap-5 p-8"
+          aria-label="Navigation Menu"
+          className="fixed inset-0 z-50 bg-[#0b0d13]/98 backdrop-blur-2xl lg:hidden flex flex-col justify-between p-6 sm:p-10 overflow-y-auto"
         >
-          <div className="text-xs font-mono uppercase text-white/75 tracking-widest mb-2">
-            Navigation Index
-          </div>
-          {navItems.map((item) => (
+          {/* Top Bar: Editorial Index Title & Close Button */}
+          <div className="w-full max-w-md mx-auto flex items-center justify-between pb-4 border-b border-white/10">
+            <div className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-red-500" aria-hidden="true" />
+              <span className="text-[11px] font-mono uppercase text-white/50 tracking-widest font-semibold">
+                Navigation Index
+              </span>
+            </div>
             <button
-              key={item.label}
-              onClick={() => handleNavClick(item.href)}
-              aria-label={`Jump to ${item.label} section`}
-              className="text-lg font-mono tracking-wider text-white hover:text-red-400 transition-colors uppercase cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+              onClick={() => setMobileMenuOpen(false)}
+              aria-label="Close navigation menu"
+              className="p-1.5 rounded-full text-white/60 hover:text-white hover:bg-white/10 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
             >
-              [{item.label}]
+              <X className="w-5 h-5" />
             </button>
-          ))}
-          <div className="pt-6 border-t border-white/15 flex flex-col items-center gap-3 w-full max-w-xs">
+          </div>
+
+          {/* Editorial Navigation List: 01 About to 07 Contact */}
+          <nav
+            aria-label="Mobile Navigation Index"
+            className="w-full max-w-md mx-auto my-auto py-6 sm:py-8 flex flex-col gap-1 sm:gap-2"
+          >
+            {navItems.map((item) => {
+              const isActive = activeSection === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => handleNavClick(item.href)}
+                  aria-current={isActive ? 'location' : undefined}
+                  aria-label={`Section ${item.number}: ${item.label}`}
+                  className="group w-full flex items-center justify-between py-3 sm:py-3.5 px-3 -mx-3 rounded-xl transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 hover:bg-white/[0.03]"
+                >
+                  <div className="flex items-baseline gap-4 sm:gap-6">
+                    {/* Two-digit section number */}
+                    <span
+                      className={`font-mono text-xs sm:text-sm tracking-wider transition-colors duration-150 ${
+                        isActive
+                          ? 'text-red-400 font-semibold'
+                          : 'text-white/40 group-hover:text-white/70'
+                      }`}
+                    >
+                      {item.number}
+                    </span>
+
+                    {/* Dominant Section Label */}
+                    <span
+                      className={`text-2xl sm:text-3xl font-bold tracking-tight transition-colors duration-150 ${
+                        isActive
+                          ? 'text-white'
+                          : 'text-white/80 group-hover:text-white'
+                      }`}
+                    >
+                      {item.label}
+                    </span>
+                  </div>
+
+                  {/* Restrained Active Indicator: short red rule for active, subtle directional cue on hover */}
+                  <div className="flex items-center pl-2">
+                    {isActive ? (
+                      <span
+                        className="inline-block w-6 h-[2px] bg-red-500 rounded-full"
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      <span
+                        className="opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 text-white/40 text-sm font-mono motion-reduce:transition-none"
+                        aria-hidden="true"
+                      >
+                        →
+                      </span>
+                    )}
+                  </div>
+                </button>
+              );
+            })}
+          </nav>
+
+          {/* Bottom Actions & Metadata */}
+          <div className="w-full max-w-md mx-auto pt-6 border-t border-white/10 flex flex-col gap-4">
             <a
               href={portfolioConfig.resumePath}
               download="Kaustubh_Nandurkar_Resume.pdf"
               aria-label="Download verified resume PDF"
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-full bg-white text-black font-bold text-sm tracking-wide focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-full bg-white text-black font-bold text-sm tracking-wide transition-all hover:bg-white/95 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 shadow-md font-mono"
             >
               <Download className="w-4 h-4" />
               <span>Download Verified Resume</span>
             </a>
-            <button
-              onClick={() => setMobileMenuOpen(false)}
-              className="text-xs font-mono text-white/70 hover:text-white pt-2 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
-            >
-              [Close Menu]
-            </button>
+
+            <div className="flex items-center justify-between text-[11px] font-mono text-white/40 px-1">
+              <span>{portfolioConfig.fullName}</span>
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-white/50 hover:text-white transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-400 rounded px-1"
+              >
+                Close Menu
+              </button>
+            </div>
           </div>
         </div>
       )}
