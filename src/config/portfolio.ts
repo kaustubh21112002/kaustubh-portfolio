@@ -113,7 +113,7 @@ export const portfolioConfig: PortfolioConfig = {
     },
     {
       title: "Data Governance & Quality",
-      skills: ["PRESERVE → DOCUMENT → FLAG → GOVERN", "Attribution Modeling", "11 Validation Controls", "Forensic Data Reconciliation", "Audit Exception Tracking"]
+      skills: ["PRESERVE → DOCUMENT → FLAG → GOVERN", "Attribution Modeling", "10 Validation Controls (DQ-01–DQ-10)", "Forensic Data Reconciliation", "Audit Exception Tracking"]
     },
     {
       title: "Technology & Front-End",

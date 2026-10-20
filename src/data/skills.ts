@@ -77,8 +77,8 @@ export const skillGroups: SkillGroup[] = [
     accent: 'border-purple-500/30 hover:border-purple-500/50',
     skills: [
       { name: 'PRESERVE → DOCUMENT → FLAG → GOVERN', context: 'Zero silent data imputation; unmapped channels preserved as Unspecified', evidence: 'STRATOS Core Governance Protocol', isCoreTool: true },
-      { name: 'Forensic Data Reconciliation', context: '14,465 financial exception occurrences audited across 12,787 orders', evidence: 'STRATOS Transaction Audit', isCoreTool: true },
-      { name: 'Validation Control Design', context: '11 automated validation controls covering ledger imbalances and attribution gaps', evidence: 'Control Ledger Systems (DQ-10)', isCoreTool: true },
+      { name: 'Forensic Data Reconciliation', context: '15,630 exception occurrences audited across 14,156 unique orders (10 rules)', evidence: 'STRATOS Transaction Audit', isCoreTool: true },
+      { name: 'Validation Control Design', context: '10 automated validation controls (DQ-01–DQ-10) covering ledger imbalances and attribution gaps', evidence: 'Control Ledger Systems (DQ-10)', isCoreTool: true },
       { name: 'Financial Control DQ-10 Audit', context: 'Surfacing Net Revenue > Gross Revenue anomalies transparently as REVIEW', evidence: 'PhonePe & STRATOS Model Audits' }
     ]
   },

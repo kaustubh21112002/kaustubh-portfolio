@@ -73,11 +73,11 @@ export const researchPapers: ResearchPaper[] = [
     topic: "Operational Analytics & Machine Learning",
     date: "March 2026",
     abstract: "An empirical investigation into 10,000+ IT helpdesk incidents, analyzing resolution bottlenecks, staffing capacity mismatches, and regression-based ticket duration forecasting.",
-    methodology: "Exploratory data analysis, MySQL relational star schema design, Scikit-Learn tree ensembles for resolution regression, and Power BI DAX dashboards.",
+    methodology: "Exploratory data analysis, MySQL relational star schema design, Python regression duration modeling, and Power BI DAX dashboards.",
     principalFindings: [
-      "Ticket category and department of origin correlate more strongly with resolution time variance than ticket priority alone.",
-      "Staffing allocation imbalances during morning shift handovers account for 41% of all SLA breaches.",
-      "Gradient Boosting model achieved R² 0.81 in predicting resolution latency at ticket ingestion."
+      "Ticket category and requesting department show higher variance in observed resolution duration than initial priority assignment alone.",
+      "Tickets pending during shift-change windows (07:00–09:00 and 15:00–17:00) showed a statistically significant positive association with prolonged resolution latency (observed average +3.1 hours).",
+      "Overall empirical SLA compliance reached 92.4% across 10,000+ incidents against an organizational SLA target of 95.0%."
     ],
     limitations: [
       "Observational logs reflect specific organizational workflows; generalized predictive transfer requires organization-specific calibration."

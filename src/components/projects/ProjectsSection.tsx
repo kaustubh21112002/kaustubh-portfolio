@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { ArrowUpRight, Filter, Layers, BarChart2, ShieldCheck, CheckCircle2, ChevronRight, HelpCircle, Activity, Briefcase } from 'lucide-react';
-import { projects, Project } from '../../data/projects';
+import { ArrowUpRight, Filter, Layers, BarChart2, ShieldCheck, CheckCircle2, ChevronRight, HelpCircle, Activity, Briefcase, Database, ExternalLink } from 'lucide-react';
+import { projects, Project, getProjectEvidenceLink } from '../../data/projects';
 import { CaseStudyModal } from './CaseStudyModal';
 
 export const ProjectsSection: React.FC = () => {
@@ -95,9 +95,18 @@ export const ProjectsSection: React.FC = () => {
                 <h3 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-snug group-hover:text-red-400 transition-colors">
                   {project.title}
                 </h3>
-                <p className="text-white/75 text-xs sm:text-sm mt-1.5 font-mono mb-6">
+                <p className="text-white/75 text-xs sm:text-sm mt-1.5 font-mono mb-4">
                   {project.tagline}
                 </p>
+
+                {/* Dataset Scope Highlight */}
+                {project.datasetScope && (
+                  <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/[0.03] border border-white/10 text-xs font-mono text-white/80 mb-6">
+                    <Database className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                    <span className="text-white/60 text-[11px] uppercase tracking-wider font-semibold">Data Scope:</span>
+                    <span className="truncate">{project.datasetScope.scale}</span>
+                  </div>
+                )}
 
                 {/* 4 Storytelling Pillars: Problem -> Approach -> Key Finding -> Implication */}
                 <div className="space-y-3 text-xs sm:text-sm leading-relaxed mb-6 font-sans">
@@ -155,9 +164,50 @@ export const ProjectsSection: React.FC = () => {
                 </div>
               </div>
 
-              {/* Action Button */}
-              <div className="pt-5 border-t border-white/10 flex items-center justify-between">
-                <span className="text-xs text-white/75 font-mono">Complete Methodology</span>
+              {/* Action Button & Verified Direct Link */}
+              <div className="pt-5 border-t border-white/10 flex flex-wrap items-center justify-between gap-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  {(() => {
+                    const evidenceLink = getProjectEvidenceLink(project);
+                    if (evidenceLink) {
+                      return (
+                        <a
+                          href={evidenceLink.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`View project evidence for ${project.title} (opens in new tab)`}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 text-emerald-300 hover:text-emerald-200 text-xs font-mono font-semibold transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-400"
+                        >
+                          <span>{evidenceLink.label || "View Project Evidence"}</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      );
+                    }
+                    if (project.verifiedLinks?.[0]) {
+                      const link = project.verifiedLinks[0];
+                      return link.isInternal ? (
+                        <a
+                          href={link.url}
+                          className="inline-flex items-center gap-1 text-xs font-mono text-red-400 hover:text-red-300 font-semibold transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-400 rounded px-1"
+                        >
+                          <span>{link.label}</span>
+                          <span>↗</span>
+                        </a>
+                      ) : (
+                        <a
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-xs font-mono text-emerald-400 hover:text-emerald-300 font-semibold transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-400 rounded px-1"
+                        >
+                          <span>{link.label}</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      );
+                    }
+                    return <span className="text-xs text-white/50 font-mono">Evidence Pending</span>;
+                  })()}
+                </div>
                 <button
                   onClick={() => setActiveModalProject(project)}
                   aria-label={`Inspect case study for ${project.title}`}

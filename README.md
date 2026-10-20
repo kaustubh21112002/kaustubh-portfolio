@@ -50,7 +50,7 @@ In accordance with data governance rules (**PRESERVE → DOCUMENT → FLAG → G
 ## 3. Verified Projects Architecture
 
 1. **PhonePe Pre-IPO Equity Research & DCF Valuation** (Independent Pre-IPO Valuation)
-2. **STRATOS AI | Controlled Business Analytics & KPI Governance** (50,000 orders, 30 KPIs, 11 validation controls, 14,465 reconciled financial exception occurrences, DQ-10 audit)
+2. **STRATOS AI | Controlled Business Analytics & KPI Governance** (50,000 orders, 30 KPIs, 10 validation controls, 15,630 exception occurrences across 14,156 affected orders, DQ-10 audit)
 3. **Sports Match Event Tracking & Video Analytics (SPIIDEO)** (Sports data analyst internship event tagging and QA)
 4. **IT Support Service Intelligence & Resolution Prediction** (Academic dissertation: 10,000+ support ticket records, MySQL star schema, Power BI DAX KPIs, Python regression duration model)
 5. **SmartBank 360 – FinTech Feasibility & Unit Economics Report** (MBA academic business model report: neobank unit economics, deposit acquisition payback, Basel III compliance)

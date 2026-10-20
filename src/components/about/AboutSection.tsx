@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
   User,
   ShieldCheck,
@@ -9,7 +9,9 @@ import {
   CheckCircle2,
   ArrowRight,
   GraduationCap,
-  Briefcase
+  Briefcase,
+  RotateCcw,
+  AlertCircle
 } from 'lucide-react';
 import { portfolioConfig } from '../../config/portfolio';
 
@@ -50,7 +52,7 @@ const verifiedProofPoints = [
   {
     metric: '50,000',
     label: 'Controlled Orders Governed',
-    subtext: '14,465 financial exception occurrences reconciled with 30/30 KPI traceability in STRATOS AI'
+    subtext: '15,630 exception occurrences audited across 14,156 unique orders with 10 DQ controls in STRATOS AI'
   },
   {
     metric: '10,000+',
@@ -58,6 +60,195 @@ const verifiedProofPoints = [
     subtext: 'MySQL star-schema database, Power BI DAX calculated metrics, and Python regression duration modeling'
   }
 ];
+
+const PersonalStoryVideo: React.FC = () => {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [hasError, setHasError] = useState(false);
+  const [isReducedMotion, setIsReducedMotion] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  });
+
+  // Safe playback trigger matching Hero section behavior and browser autoplay policies
+  const attemptPlay = useCallback(() => {
+    const video = videoRef.current;
+    if (!video || isReducedMotion) return;
+
+    video.defaultMuted = true;
+    video.muted = true;
+
+    if (video.paused) {
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((err: unknown) => {
+          // If browser policy deferred autoplay pending interaction, resume on first gesture
+          const isPolicyRestriction =
+            err instanceof Error &&
+            (err.name === 'NotAllowedError' || err.name === 'AbortError');
+
+          if (isPolicyRestriction && typeof window !== 'undefined') {
+            const onUserInteraction = () => {
+              window.removeEventListener('pointerdown', onUserInteraction);
+              window.removeEventListener('touchstart', onUserInteraction);
+              window.removeEventListener('keydown', onUserInteraction);
+              window.removeEventListener('scroll', onUserInteraction);
+
+              const currentVideo = videoRef.current;
+              if (currentVideo && !isReducedMotion && currentVideo.paused) {
+                currentVideo.play().catch((playbackErr) => {
+                  console.warn('Personal story video playback deferred on gesture:', playbackErr);
+                });
+              }
+            };
+
+            window.addEventListener('pointerdown', onUserInteraction, { once: true, passive: true });
+            window.addEventListener('touchstart', onUserInteraction, { once: true, passive: true });
+            window.addEventListener('keydown', onUserInteraction, { once: true, passive: true });
+            window.addEventListener('scroll', onUserInteraction, { once: true, passive: true });
+          } else if (err instanceof Error) {
+            console.warn('Personal story video playback notice:', err.message);
+          }
+        });
+      }
+    }
+  }, [isReducedMotion]);
+
+  // Listen for dynamic changes to prefers-reduced-motion
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const handleMotionChange = (e: MediaQueryListEvent) => {
+      setIsReducedMotion(e.matches);
+    };
+
+    mediaQuery.addEventListener('change', handleMotionChange);
+    return () => mediaQuery.removeEventListener('change', handleMotionChange);
+  }, []);
+
+  // Synchronize playback state and respect reduced-motion
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.defaultMuted = true;
+    video.muted = true;
+
+    if (isReducedMotion) {
+      video.pause();
+    } else {
+      attemptPlay();
+    }
+  }, [isReducedMotion, attemptPlay]);
+
+  const handleLoadedMetadata = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.defaultMuted = true;
+    video.muted = true;
+    if (!isReducedMotion && video.paused) {
+      attemptPlay();
+    }
+  };
+
+  const handleRetry = () => {
+    setHasError(false);
+    if (videoRef.current) {
+      videoRef.current.load();
+      attemptPlay();
+    }
+  };
+
+  const togglePlayback = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (video.paused) {
+      video.play().catch(() => {});
+    } else {
+      video.pause();
+    }
+  };
+
+  // Caption track support: ready for /videos/personal-story.vtt when governed track is provided
+  const captionTrackSrc = '';
+
+  return (
+    <div className="relative rounded-3xl overflow-hidden border border-white/15 bg-black/40 group shadow-2xl">
+      <video
+        ref={videoRef}
+        poster="/images/personal-story-poster.jpg"
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="metadata"
+        onLoadedMetadata={handleLoadedMetadata}
+        onError={() => setHasError(true)}
+        onClick={togglePlayback}
+        className="w-full h-auto aspect-video object-cover transition-transform duration-500 cursor-pointer"
+        aria-label={`Personal storytelling video of ${portfolioConfig.fullName}`}
+      >
+        <source src="/videos/personal-story.mp4" type="video/mp4" />
+        <source src="/videos/personal-story.mp4.mp4" type="video/mp4" />
+        {captionTrackSrc && (
+          <track
+            kind="captions"
+            label="English"
+            src={captionTrackSrc}
+            srcLang="en"
+          />
+        )}
+        Your browser does not support HTML5 video playback.
+      </video>
+
+      {/* Top Badge */}
+      <div className="absolute top-4 left-4 z-10 pointer-events-none">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[11px] font-mono text-white/90">
+          <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+          <span>Personal Story</span>
+        </div>
+      </div>
+
+      {/* Error Fallback Card */}
+      {hasError && (
+        <div className="absolute inset-0 z-20 flex items-center justify-center p-6 bg-black/85 backdrop-blur-md">
+          <div className="p-5 rounded-2xl bg-[#141722] border border-red-500/30 text-center max-w-sm space-y-3 shadow-2xl">
+            <div className="w-10 h-10 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 flex items-center justify-center mx-auto">
+              <AlertCircle className="w-5 h-5" />
+            </div>
+            <div>
+              <h4 className="text-sm font-bold text-white tracking-tight">Video Storytelling Unavailable</h4>
+              <p className="text-xs text-white/75 mt-1 leading-relaxed">
+                The video file could not be loaded from{' '}
+                <code className="text-red-300 bg-white/5 px-1 py-0.5 rounded font-mono">
+                  /videos/personal-story.mp4
+                </code>
+                .
+              </p>
+            </div>
+            <div className="flex items-center justify-center gap-2 pt-1">
+              <button
+                type="button"
+                onClick={handleRetry}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-red-400 cursor-pointer"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                Retry
+              </button>
+              <button
+                type="button"
+                onClick={() => setHasError(false)}
+                className="inline-flex items-center px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-white/80 text-xs font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-white/20 cursor-pointer"
+              >
+                Dismiss
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export const AboutSection: React.FC = () => {
   return (
@@ -103,23 +294,8 @@ export const AboutSection: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
           {/* Left Column: Portrait & Credential Summary */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="relative rounded-3xl overflow-hidden border border-white/15 bg-black/40 group shadow-2xl">
-              <img
-                src={portfolioConfig.profilePhoto}
-                alt={`${portfolioConfig.fullName} Portrait`}
-                loading="lazy"
-                decoding="async"
-                width={640}
-                height={480}
-                className="w-full h-auto aspect-[4/3] object-cover object-top transition-transform duration-500 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
-              <div className="absolute bottom-6 left-6 right-6">
-                <div className="text-xl font-bold text-white tracking-tight">{portfolioConfig.fullName}</div>
-                <div className="text-xs text-white/85 font-mono mt-0.5">MBA Business Analytics • Sandip University</div>
-                <div className="text-xs text-white/75 font-mono mt-0.5">{portfolioConfig.location}</div>
-              </div>
-            </div>
+            {/* Personal Story Video Player */}
+            <PersonalStoryVideo />
 
             {/* Quick Snapshot Card */}
             <div className="p-6 rounded-3xl bg-[#141722] border border-white/10 space-y-4">

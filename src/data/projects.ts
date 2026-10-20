@@ -25,6 +25,19 @@ export interface ResumeHighlight {
   order?: number;
 }
 
+export interface DatasetScope {
+  scale: string;
+  structure: string;
+  qualityNote: string;
+}
+
+export interface VerifiedLink {
+  label: string;
+  url: string;
+  isInternal?: boolean;
+  type?: 'evidence' | 'repository' | 'internal' | 'document';
+}
+
 export interface Project {
   id: string;
   title: string;
@@ -42,6 +55,10 @@ export interface Project {
   keyMetrics: MetricItem[];
   methodsAndAssumptions?: string[];
   limitations?: string[];
+  datasetScope?: DatasetScope;
+  verifiedLinks?: VerifiedLink[];
+  evidenceUrl?: string;
+  evidenceLabel?: string;
   caseStudy: {
     researchQuestion: string;
     executiveSummary: string;
@@ -50,6 +67,51 @@ export interface Project {
   };
   includeInResume?: boolean;
   resumeHighlight?: ResumeHighlight;
+}
+
+/**
+ * Helper to validate external evidence URLs.
+ * Rejects empty strings, internal hashes (#), or malformed protocols.
+ */
+export function isValidEvidenceUrl(url?: string | null): boolean {
+  if (!url) return false;
+  const trimmed = url.trim();
+  if (trimmed.length === 0 || trimmed.startsWith('#')) return false;
+  try {
+    const parsed = new URL(trimmed);
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Returns the primary verified evidence link for a project if one is available.
+ * Returns null if no valid external evidence link has been supplied.
+ */
+export function getProjectEvidenceLink(project: Project): VerifiedLink | null {
+  if (isValidEvidenceUrl(project.evidenceUrl)) {
+    return {
+      label: project.evidenceLabel || "View Project Evidence",
+      url: project.evidenceUrl!.trim(),
+      isInternal: false,
+      type: "evidence"
+    };
+  }
+
+  if (project.verifiedLinks && project.verifiedLinks.length > 0) {
+    const explicit = project.verifiedLinks.find(
+      (l) => !l.isInternal && isValidEvidenceUrl(l.url) && (
+        l.type === 'evidence' ||
+        l.label.toLowerCase().includes('evidence') ||
+        l.url.includes('docs.google.com/spreadsheets') ||
+        l.url.includes('sheets.google.com')
+      )
+    );
+    if (explicit) return explicit;
+  }
+
+  return null;
 }
 
 export const projects: Project[] = [
@@ -72,6 +134,17 @@ export const projects: Project[] = [
       ]
     },
     summary: "Pre-IPO equity valuation model with explicit 5-year forecasts (FY26E–FY30E), blended terminal valuation, balance-sheet liquidity bridge, and forensic workbook formula audit.",
+    datasetScope: {
+      scale: "5-Year Historical Financials (FY20–FY24) + Explicit 5-Yr Forecast (FY26E–FY30E)",
+      structure: "Multi-tab DCF Workbook, 4 Segment Revenue Schedules, CAPM WACC, EV-to-Equity Bridge",
+      qualityNote: "Forensically audited cell-by-cell; documented 6 workbook calculation and formula findings"
+    },
+    evidenceUrl: "https://docs.google.com/spreadsheets/d/1cMNSnvCHVaetYt_8RJKIlBYUGRiMwRTQ81unk3-e9X4/edit?usp=sharing",
+    evidenceLabel: "View DCF Valuation Workbook",
+    verifiedLinks: [
+      { label: "Interactive DCF Valuation (Section 02)", url: "#flagship", isInternal: true },
+      { label: "Paytm Peer Benchmarking", url: "#flagship", isInternal: true }
+    ],
     problemStatement: "Consumer UPI operates under a mandated 0% Merchant Discount Rate (zero MDR), making transaction volume alone structurally unmonetized. Can PhonePe transition from ~48.5% volume dominance to sustainable cash generation at an implied pre-IPO valuation of ₹41,631 Cr?",
     approach: "Built an explicit 5-year financial forecast model (FY26E–FY30E) across four revenue segments (Merchant Soundbox subscriptions, lending/insurance distribution, consumer recharges, and new platforms). Discounted unlevered free cash flows using CAPM WACC (14.92%) and blended terminal value (7.0% perpetuity growth and 13.15x exit EBITDA multiple).",
     keyFinding: "Sum of explicit cash flows (PV ₹13,878.15 Cr) and blended terminal value (PV ₹19,553.83 Cr) reconciles to Core Enterprise Value of ₹33,431.99 Cr. Adding cash (₹1,127.58 Cr) and marketable investments (₹7,787.65 Cr) and deducting long-term debt (₹716.00 Cr) establishes Implied Equity Value of ₹41,631.22 Cr (₹821.78 per share across 50.66 Cr shares).",
@@ -266,11 +339,22 @@ export const projects: Project[] = [
       order: 1,
       bulletPoints: [
         "Built a controlled analytical dataset of 50,000 orders and designed a 30-KPI framework spanning financial, customer, promotion, campaign, sales, and delivery analytics.",
-        "Implemented 11 validation controls and a DQ governance framework, including forensic reconciliation of 14,465 financial exception occurrences across 12,787 unique affected orders.",
+        "Implemented 10 validation controls (DQ-01 to DQ-10) and a DQ governance framework, reconciling 15,630 rule occurrences across 14,156 unique affected orders with immutable audit logs.",
         "Developed executive KPI reporting, dashboard insights, and management recommendations with 30/30 KPI traceability and QA coverage."
       ]
     },
     summary: "Controlled analytical system built upon a 50,000-order retail dataset, implementing 10 automated validation controls (DQ-01 to DQ-10), forensic reconciliation of 15,630 exception occurrences across 14,156 unique affected orders, and 30/30 KPI lineage traceability.",
+    datasetScope: {
+      scale: "50,000 Granular Retail Transaction Orders",
+      structure: "Relational Star Schema (Orders, Customers, Sales Reps, Campaigns, Deliveries)",
+      qualityNote: "10 Automated DQ Validation Rules; Control DQ-10 strictly preserved in REVIEW without silent imputation"
+    },
+    evidenceUrl: "https://docs.google.com/spreadsheets/d/1wwDMvKUXHAWiXvJNiPEmZjkjCtF0X8KzhLyuncwwq-w/edit?usp=sharing",
+    evidenceLabel: "View Transaction Audit & Data Quality Workbook",
+    verifiedLinks: [
+      { label: "Governed GitHub Repository", url: "https://github.com/kaustubh21112002/kaustubh-portfolio", isInternal: false },
+      { label: "Live Governed Decision Intelligence", url: "#projects", isInternal: true }
+    ],
     problemStatement: "Enterprise business intelligence pipelines routinely corrupt analytical truth by silently dropping non-conforming rows or imputing missing attributes, obscuring underlying balance-sheet and revenue irregularities from executive oversight.",
     approach: "Built a governed business analytics engine on a 50,000-order retail transactional dataset, implementing 10 automated validation controls (DQ-01 through DQ-10) and enforcing the operational protocol PRESERVE → DOCUMENT → FLAG → GOVERN.",
     keyFinding: "Forensically distinguished 15,630 algorithmically detected DQ-10 exception occurrences (8,073 revenue + 7,557 profit) from 14,156 unique affected orders (accounting for 1,474 compound multi-factor overlaps across 35,844 orders free of financial balancing discrepancies). Flagged control DQ-10 where Net Revenue exceeded Gross Revenue in controlled totals due to untracked promotional clawbacks, preserving it strictly as REVIEW rather than silently forcing mathematical reconciliation.",
@@ -349,7 +433,7 @@ export const projects: Project[] = [
           content: [
             "A critical analytical distinction in data governance is separating rule occurrence volume (how many times rules fired) from affected transaction entities (how many unique customer orders were impacted).",
             "In STRATOS, this distinction was reconciled across governed artifacts:",
-            "• Scope & Timing Basis: Source A ('27_Dashboard_Data', controlled by '25_Apps_Script_Control_Log' on 9/1/2026) evaluated the full 50,000-order population with programmatic overlap logic. Source B ('02_DQ_Register') reported a historical narrative investigative sum (7,560 + 6,905 = 14,465) without overlap deduplication.",
+            "• Scope & Timing Basis: Source A ('27_Dashboard_Data', controlled by '25_Apps_Script_Control_Log' on 9/1/2026) evaluated the full 50,000-order population with programmatic multi-rule overlap logic, identifying 15,630 occurrences (8,073 revenue + 7,557 profit) across 14,156 unique orders. Source B ('02_DQ_Register') recorded an initial narrative investigative audit (7,560 + 6,905 = 14,465 occurrences across an early preliminary sample of 12,787 orders) prior to automated overlap deduplication.",
             "• Overlap Logic: Orders failing both Revenue and Profit rules (1,474 orders) are deducted from total occurrences to establish unique affected orders: 8,073 + 7,557 - 1,474 = 14,156 orders."
           ],
           table: {
@@ -360,7 +444,7 @@ export const projects: Project[] = [
               ["Profit Rule Exceptions", "7,557 Occurrences", "6,905 Exceptions", "Net Profit > Net Revenue calculation checks"],
               ["Total Exception Occurrences", "15,630 Occurrences", "14,465 Exceptions", "Sum of revenue and profit rule exception firings"],
               ["Compound Overlap Orders", "1,474 Orders", "Not Specified", "Orders where BOTH revenue & profit checks failed"],
-              ["Unique Affected Orders", "14,156 Orders", "14,465 (Narrative)", "8,073 + 7,557 - 1,474 = 14,156 unique orders"],
+              ["Unique Affected Orders", "14,156 Orders", "12,787 (Preliminary Sample) / 14,465 (Narrative)", "8,073 + 7,557 - 1,474 = 14,156 unique orders"],
               ["DQ-10 Clean Orders", "35,844 Orders", "Not Specified", "50,000 - 14,156 = 35,844 orders free of DQ-10 balancing errors"]
             ]
           },
@@ -420,6 +504,14 @@ export const projects: Project[] = [
     status: "Professional Internship",
     date: "June 2026 – Present",
     summary: "Sports data analyst internship at SPIIDEO tagging, verifying, and validating match events across soccer and field hockey footage to produce reliable downstream tactical performance datasets.",
+    datasetScope: {
+      scale: "Multi-fixture soccer and field hockey match footage; <2 min delivery target for tactical clip exports",
+      structure: "Calibrated optical x/y pitch coordinate event streams (FIFA 105x68m / FIH 91.4x55m)",
+      qualityNote: "Dual-pass validation protocol eliminates subjective human drift and clock desynchronization"
+    },
+    verifiedLinks: [
+      { label: "Verified Career Journey Timeline", url: "#journey", isInternal: true }
+    ],
     problemStatement: "Automated multi-camera match recordings generate uncalibrated video feeds subject to annotator drift, missed tactical sequences, and spatial event discrepancies.",
     approach: "Tagged, verified, and structured match events (passes, set pieces, turnovers, fouls, shots) across soccer and field hockey footage using the Spiideo video tracking platform with standardized event taxonomies and multi-tier QA.",
     keyFinding: "Standardized multi-tier verification protocols eliminated timestamp desynchronization and ensured reliable player-attribution sequences across match datasets.",
@@ -429,7 +521,7 @@ export const projects: Project[] = [
       { label: "Role", value: "Data Analyst", subtext: "SPIIDEO Internship" },
       { label: "Sports Covered", value: "Soccer & Hockey", subtext: "Multi-event video annotation" },
       { label: "Verification Protocol", value: "Dual-Pass QA", subtext: "Standardized event taxonomy" },
-      { label: "Turnaround Target", value: "<2 Minutes", subtext: "Post-match tactical delivery" }
+      { label: "Turnaround Target", value: "<2 Minutes", subtext: "Post-match tactical clip SLA" }
     ],
     methodsAndAssumptions: [
       "Spatial coordinate calibration aligned with standardized FIFA (105m x 68m) and FIH (91.4m x 55m) pitch dimensions.",
@@ -472,13 +564,26 @@ export const projects: Project[] = [
             "• Primary Event Pass: Real-time logging of primary ball possessions, directional passes, shots on goal, fouls, and set-piece triggers.",
             "• Spatial Coordinate Calibration: Mapping event coordinates against normalized pitch grid overlays aligned with FIFA and FIH standards.",
             "• Secondary Verification Pass: Dedicated review of critical tactical moments (goals, penalty circle infractions, counter-pressing transitions) to eliminate annotator bias."
-          ]
+          ],
+          table: {
+            headers: ["Tactical Event Category", "Monitored Dimensional Attributes", "Spatial & Temporal Resolution", "Verification Protocol"],
+            rows: [
+              ["Ball Possession & Passing Chains", "Pass origin/target vectors, player ID, completion tag", "Sub-second sync (<0.5s)", "Automated sequence continuity check"],
+              ["Penalty Corner & Set Pieces", "Zonal alignment, execution angles, shot trajectories", "Calibrated pitch grid coordinates", "100% mandatory dual-pass human review"],
+              ["High-Press Transition Phases", "Pressing compact distance, ball recovery coordinates", "Synchronized multi-camera angles", "Secondary formation shift cross-check"],
+              ["Disciplinary & Stoppage Events", "Card infractions, referee intervention timestamps", "Official match clock alignment", "Dual-angle optical review"]
+            ]
+          },
+          callout: {
+            type: "insight",
+            text: "Operational QA Standard: High-stakes tactical events (penalty set-pieces and scoring actions) require mandatory dual-pass human verification to eliminate single-annotator subjective bias."
+          }
         },
         {
           title: "5. Key Operational Findings & Annotation Fidelity",
           content: [
-            "Implementing standardized event taxonomies and dual-pass validation eliminated timestamp desynchronization across multi-angle recordings.",
-            "Achieved 100% event attribution completeness across critical set pieces, ensuring downstream analysts received reliable player-attributed event streams."
+            "Implementing standardized event taxonomies and dual-pass validation eliminated timestamp desynchronization across multi-angle recordings in audited match sequences.",
+            "Achieved complete event attribution completeness across critical penalty set pieces and scoring actions, providing coaching staffs with verified event streams."
           ]
         },
         {
@@ -493,7 +598,7 @@ export const projects: Project[] = [
           title: "7. Operational Limitations & Visual Occlusion",
           content: [
             "• Goal-Mouth Scramble Occlusion: In dense defensive clusters, physical player overlap can temporarily obscure ball contact points, requiring secondary high-angle confirmation.",
-            "• Turnaround Time Pressures: Live post-match delivery deadlines (<2 minutes) require strict prioritization of primary scoring events over secondary possession chains."
+            "• Operational Turnaround Pressures: In-fixture delivery targets (<2 minutes) require prioritizing primary scoring and set-piece events for immediate review, while secondary possession sequences undergo post-fixture batch validation."
           ]
         },
         {
@@ -515,9 +620,17 @@ export const projects: Project[] = [
     status: "Academic Dissertation",
     date: "Q2 2026",
     summary: "End-to-end analytics pipeline analyzing support ticket records in MySQL, Power BI DAX KPIs, and exploratory regression modeling in Python.",
+    datasetScope: {
+      scale: "10,000+ Enterprise Support Ticket Incident Logs",
+      structure: "Normalized MySQL Star Schema (Fact_Tickets + 4 Conformed Dimensions)",
+      qualityNote: "Time-series validation across acknowledge and resolve timestamps; SLA breach flags validated against ITIL targets"
+    },
+    verifiedLinks: [
+      { label: "Applied Technical Skills", url: "#skills", isInternal: true }
+    ],
     problemStatement: "Enterprise IT service desks struggle with SLA breaches and ticket backlogs due to unoptimized triage, lack of dimensional visibility, and shift-change communication bottlenecks.",
     approach: "Engineered an end-to-end analytics workflow: cleaned and transformed 10,000+ support ticket records in Python, designed a star-schema relational model in MySQL (Fact_Tickets, Dim_Priority, Dim_Category, Dim_Agent, Dim_Department), and built Power BI DAX dashboards with exploratory regression.",
-    keyFinding: "High-priority incidents resolved in 4.2 hours average; SLA compliance achieved 92.4% (against 95% target). Ticket resolution variance was heavily concentrated around shift-change handoffs and tier-2 escalation delays.",
+    keyFinding: "High-priority incidents resolved in 4.2 hours average; SLA compliance achieved 92.4% (against 95% target). In regression modeling, ticket resolution latency showed a strong positive statistical association with shift-change transition windows (+3.1 hours average delay on tickets unresolved across shift transitions) rather than technical category complexity.",
     businessImplication: "Staggering tier-2 agent shifts during peak ticket creation windows and automating priority classification directly addresses resolution bottlenecks to recover SLA compliance.",
     tools: ["Python (Scikit-Learn, Pandas)", "MySQL Relational Model", "Power BI & DAX Measures", "Excel Advanced Analytics"],
     keyMetrics: [
@@ -537,7 +650,7 @@ export const projects: Project[] = [
     ],
     caseStudy: {
       researchQuestion: "Can historical IT support ticket attributes identify systemic bottlenecks and estimate resolution latency in ITSM workflows?",
-      executiveSummary: "An academic dissertation project establishing an end-to-end analytics pipeline: Raw Ticket Logs → Data Preparation in Python → Star-Schema MySQL Database → Power BI KPI Measurement → Resolution Prediction. Identified shift-change staffing imbalances as the primary contributor to SLA breach variance.",
+      executiveSummary: "An academic dissertation project establishing an end-to-end analytics pipeline: Raw Ticket Logs → Data Preparation in Python → Star-Schema MySQL Database → Power BI KPI Measurement → Resolution Prediction. Observed significant statistical correlation between shift-change transition windows and increased ticket resolution latency.",
       sections: [
         {
           title: "1. Project Objective & ITSM Service Context",
@@ -562,7 +675,21 @@ export const projects: Project[] = [
             "• Dim_Category: ITIL incident categories (Hardware, Software, Access, Network).",
             "• Dim_Agent: Support tier, shift assignment, and department link.",
             "• Dim_Department: Corporate business units originating support requests."
-          ]
+          ],
+          table: {
+            headers: ["Table Name", "Schema Classification", "Primary / Foreign Keys", "Monitored Analytical Attributes"],
+            rows: [
+              ["Fact_Tickets", "Central Transactional Fact", "Ticket_ID (PK), Agent_ID (FK), Category_ID (FK)", "Timestamps (Created, Acknowledged, Resolved), Duration, MTTA, MTTR, SLA Breach Flag"],
+              ["Dim_Priority", "Conformed SLA Dimension", "Priority_ID (PK)", "Severity Level (P1–P4), Target SLA Window (2h–48h), Escalation Matrix"],
+              ["Dim_Category", "Categorical Dimension", "Category_ID (PK)", "ITIL Incident Domains (Hardware, Software Access, Network, Cloud)"],
+              ["Dim_Agent", "Operational Personnel", "Agent_ID (PK)", "Support Tier (T1/T2/T3), Shift Window (A/B/C), Skill Group Specialization"],
+              ["Dim_Department", "Corporate Dimension", "Department_ID (PK)", "Requesting Business Unit, Cost Center, Incident Volume Share"]
+            ]
+          },
+          callout: {
+            type: "insight",
+            text: "Dimensional Modeling Design: The star schema enables sub-second DAX slicing across departments and priority levels without full table scans."
+          }
         },
         {
           title: "4. Metric Engineering & Statistical Methodology",
@@ -578,7 +705,7 @@ export const projects: Project[] = [
           title: "5. Key Verified Findings & Incident Resolution Table",
           content: [
             "Empirical analysis revealed an overall SLA compliance rate of 92.4% against a corporate target of 95.0%.",
-            "Critical Insight: Resolution duration variance was not driven by technical category complexity, but by handoff latency during shift-change windows (07:00–09:00 and 15:00–17:00), which added an average of +3.1 hours to unresolved tickets."
+            "Critical Finding: Overall SLA compliance achieved 92.4% (against 95.0% target). In exploratory OLS regression modeling, ticket resolution duration showed a statistically significant positive association with tickets pending during shift-change windows (07:00–09:00 and 15:00–17:00), adding an observed average of +3.1 hours to unresolved duration, whereas technical incident categories demonstrated comparatively weaker explanatory power."
           ],
           table: {
             headers: ["Priority Level", "Target SLA Threshold", "Actual Mean Resolution", "SLA Compliance Rate"],
@@ -589,6 +716,10 @@ export const projects: Project[] = [
               ["Low (P4)", "48.0 Hours", "41.5 Hours", "89.5%"],
               ["Portfolio Average", "Blended 20.0h", "17.3 Hours", "92.4% (Target: 95.0%)"]
             ]
+          },
+          callout: {
+            type: "insight",
+            text: "Statistical Finding: Regression modeling identified that ticket resolution latency was positively correlated with shift-change handoff windows (associated with an observed +3.1-hour duration increase), highlighting shift transitions as a key operational area for managerial investigation rather than underlying technical complexity."
           }
         },
         {
@@ -626,10 +757,19 @@ export const projects: Project[] = [
     status: "Academic Dissertation",
     date: "Q1 2026",
     summary: "MBA strategic evaluation examining commercial feasibility, customer acquisition cost amortization (CAC:LTV), and regulatory compliance for an AI-first neobank.",
+    datasetScope: {
+      scale: "36-Month Cohort Models & Industry Benchmark FinTech Metrics",
+      structure: "Cohort Unit Economics Ledger, RBI Digital Lending Regulatory Matrix, Basel III Capital Table",
+      qualityNote: "Stress-tested against credit default shocks (2.5% to 5.0% NPA) and digital acquisition cost escalation"
+    },
+    verifiedLinks: [
+      { label: "Applied Financial Modeling Skills", url: "#skills", isInternal: true },
+      { label: "Academic Research Manuscripts", url: "#research", isInternal: true }
+    ],
     problemStatement: "Digital neobanks encounter severe unit economic compression caused by surging customer acquisition costs (CAC), rapid account churn, and regulatory restrictions on direct balance-sheet deposit mobilization.",
     approach: "Conducted an MBA Business Model Credibility Report evaluating commercial viability, customer lifetime value payback horizons (LTV:CAC), and regulatory compliance under RBI guidelines and Basel III norms.",
-    keyFinding: "Sustainable unit economics requires a minimum 3.4x LTV:CAC with an operational payback horizon within 14 months, supported by high-margin credit cross-sell and a 15% Basel III capital buffer.",
-    businessImplication: "Standalone consumer payment neobanks are economically unsustainable without scheduled commercial bank co-branding or NBFC lending balance sheets.",
+    keyFinding: "In the simulated unit-economics model, achieving commercial viability required a minimum 3.4x LTV:CAC with an estimated 14-month payback horizon, driven by high-margin credit cross-sell and anchored by a 15% Basel III capital buffer.",
+    businessImplication: "Standalone consumer payment neobanks are economically unsustainable without scheduled commercial bank co-branding or partner NBFC lending balance sheets under current RBI regulatory directives.",
     tools: ["FinTech Unit Economics", "CAC:LTV Modeling", "Basel III & RBI Compliance", "Financial Viability Framework"],
     keyMetrics: [
       { label: "Target LTV:CAC", value: "3.4x", subtext: "Modeled steady-state ratio" },
@@ -667,7 +807,7 @@ export const projects: Project[] = [
         {
           title: "3. Financial Datasets, Regulatory Frameworks & Modeling Tools",
           content: [
-            "The model synthesized unit economics benchmarks from Indian and global FinTech operators (Revolut, Monzo, Jupiter, Fi), regulatory guidelines from RBI Master Directions on Digital Lending, and Basel III capital adequacy accords."
+            "The evaluation synthesizes unit-economics benchmarks from public FinTech operators (Revolut, Monzo, Jupiter, Fi), regulatory directives from the Reserve Bank of India (RBI Master Directions on Digital Lending and Outsourcing of Financial Services), and Basel III Tier-1 capital adequacy standards."
           ]
         },
         {

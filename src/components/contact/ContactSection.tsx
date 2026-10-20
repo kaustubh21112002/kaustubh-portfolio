@@ -1,26 +1,101 @@
 import React, { useState } from 'react';
-import { Mail, Linkedin, Github, Send, Copy, Check, MessageSquare, MapPin, Phone } from 'lucide-react';
+import { Mail, Linkedin, Github, Send, Copy, Check, MapPin, Phone, Info, AlertCircle, FileText } from 'lucide-react';
 import { portfolioConfig } from '../../config/portfolio';
 
+const MAX_MESSAGE_LENGTH = 1500;
+
 export const ContactSection: React.FC = () => {
-  const [copied, setCopied] = useState(false);
+  const [copiedEmail, setCopiedEmail] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
-  const [submitted, setSubmitted] = useState(false);
+  const [dispatchAttempted, setDispatchAttempted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [copyStatus, setCopyStatus] = useState<'idle' | 'copied' | 'failed'>('idle');
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   const handleCopyEmail = () => {
     navigator.clipboard.writeText(portfolioConfig.socials.email);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setCopiedEmail(true);
+    setTimeout(() => setCopiedEmail(false), 2000);
+  };
+
+  const buildFormattedMessage = () => {
+    return [
+      `To: ${portfolioConfig.fullName} <${portfolioConfig.socials.email}>`,
+      `Subject: [Portfolio Inquiry] ${formData.subject.trim() || 'Opportunity Discussion'}`,
+      `From: ${formData.name.trim()} (${formData.email.trim()})`,
+      '',
+      'Message:',
+      formData.message.trim()
+    ].join('\n');
+  };
+
+  const copyFormattedMessage = async () => {
+    if (!formData.message.trim() && !formData.name.trim()) {
+      setValidationError('Please enter at least your name or a message to copy.');
+      return;
+    }
+    setValidationError(null);
+
+    const textToCopy = buildFormattedMessage();
+    let success = false;
+
+    if (navigator?.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(textToCopy);
+        success = true;
+      } catch {
+        success = false;
+      }
+    }
+
+    if (!success) {
+      try {
+        const textarea = document.createElement('textarea');
+        textarea.value = textToCopy;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        success = document.execCommand('copy');
+        document.body.removeChild(textarea);
+      } catch {
+        success = false;
+      }
+    }
+
+    if (success) {
+      setCopyStatus('copied');
+      setTimeout(() => setCopyStatus('idle'), 4000);
+    } else {
+      setCopyStatus('failed');
+      setTimeout(() => setCopyStatus('idle'), 5000);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const subject = encodeURIComponent(`[Portfolio Inquiry] ${formData.subject || 'Opportunity Discussion'}`);
+    if (isSubmitting) return;
+
+    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
+      setValidationError('Please complete all required fields before dispatching.');
+      return;
+    }
+
+    setValidationError(null);
+    setIsSubmitting(true);
+
+    const subject = encodeURIComponent(`[Portfolio Inquiry] ${formData.subject.trim() || 'Opportunity Discussion'}`);
     const body = encodeURIComponent(
-      `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`
+      `Name: ${formData.name.trim()}\nEmail: ${formData.email.trim()}\n\nMessage:\n${formData.message.trim()}`
     );
+
     window.location.href = `mailto:${portfolioConfig.socials.email}?subject=${subject}&body=${body}`;
-    setSubmitted(true);
+    setDispatchAttempted(true);
+
+    setTimeout(() => {
+      setIsSubmitting(false);
+    }, 2500);
   };
 
   return (
@@ -73,7 +148,7 @@ export const ContactSection: React.FC = () => {
                   title="Copy email"
                   aria-label="Copy direct email address to clipboard"
                 >
-                  {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                  {copiedEmail ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
                 </button>
               </div>
 
@@ -155,11 +230,23 @@ export const ContactSection: React.FC = () => {
               onSubmit={handleSubmit}
               className="p-8 rounded-3xl bg-[#141722] border border-white/10 space-y-5 shadow-xl"
             >
-              <h3 className="text-xl font-bold text-white mb-2">Send a Direct Message</h3>
+              <div className="flex items-center justify-between gap-2">
+                <h3 className="text-xl font-bold text-white">Send a Direct Message</h3>
+                <span className="text-[11px] font-mono text-white/60 bg-white/5 px-2.5 py-0.5 rounded-full border border-white/10">
+                  Client-side Dispatch
+                </span>
+              </div>
+
+              {validationError && (
+                <div role="alert" className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-300 text-xs flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+                  <span>{validationError}</span>
+                </div>
+              )}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="contact-name" className="block text-xs font-mono uppercase text-white/75 mb-1.5">Your Name</label>
+                  <label htmlFor="contact-name" className="block text-xs font-mono uppercase text-white/75 mb-1.5">Your Name *</label>
                   <input
                     id="contact-name"
                     type="text"
@@ -172,7 +259,7 @@ export const ContactSection: React.FC = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="contact-email" className="block text-xs font-mono uppercase text-white/75 mb-1.5">Your Email</label>
+                  <label htmlFor="contact-email" className="block text-xs font-mono uppercase text-white/75 mb-1.5">Your Email *</label>
                   <input
                     id="contact-email"
                     type="email"
@@ -190,7 +277,6 @@ export const ContactSection: React.FC = () => {
                 <input
                   id="contact-subject"
                   type="text"
-                  required
                   value={formData.subject}
                   onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                   placeholder="e.g. Role Opportunity / Valuation Model Inquiry"
@@ -199,11 +285,17 @@ export const ContactSection: React.FC = () => {
               </div>
 
               <div>
-                <label htmlFor="contact-message" className="block text-xs font-mono uppercase text-white/75 mb-1.5">Message / Details</label>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label htmlFor="contact-message" className="block text-xs font-mono uppercase text-white/75">Message / Details *</label>
+                  <span className={`text-[11px] font-mono ${formData.message.length > MAX_MESSAGE_LENGTH ? 'text-red-400 font-bold' : 'text-white/60'}`}>
+                    {formData.message.length} / {MAX_MESSAGE_LENGTH}
+                  </span>
+                </div>
                 <textarea
                   id="contact-message"
                   rows={4}
                   required
+                  maxLength={MAX_MESSAGE_LENGTH}
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   placeholder="Please specify role scope, analytical questions, or discussion topics..."
@@ -211,23 +303,72 @@ export const ContactSection: React.FC = () => {
                 />
               </div>
 
-              <button
-                type="submit"
-                aria-label="Send message via mail client"
-                className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-white text-black font-bold text-sm tracking-wide transition-all hover:bg-white/90 shadow-[0_0_20px_rgba(255,255,255,0.25)] active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
-              >
-                <span>Send Message</span>
-                <Send className="w-4 h-4" />
-              </button>
+              {/* Action Buttons: Primary Mail App Dispatch & Secondary Copy Message */}
+              <div className="space-y-2.5 pt-1">
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  aria-label="Send message via default mail client application"
+                  className={`w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-full font-bold text-sm tracking-wide transition-all ${
+                    isSubmitting
+                      ? 'bg-white/60 text-black/60 cursor-not-allowed'
+                      : 'bg-white text-black hover:bg-white/95 shadow-[0_0_20px_rgba(255,255,255,0.25)] active:scale-95 cursor-pointer'
+                  } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400`}
+                >
+                  <span>{isSubmitting ? 'Opening Mail Client...' : 'Open in Default Email Client'}</span>
+                  <Send className="w-4 h-4" />
+                </button>
 
-              {submitted && (
-                <p className="text-center text-xs font-mono text-emerald-400 mt-2">
-                  Opening mail client with pre-filled message...
+                <button
+                  type="button"
+                  onClick={copyFormattedMessage}
+                  aria-label="Copy formatted message to clipboard for webmail"
+                  className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-white/5 hover:bg-white/10 border border-white/15 text-white/90 hover:text-white font-mono text-xs tracking-wider transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+                >
+                  <Copy className="w-3.5 h-3.5 text-red-400" />
+                  <span>Copy Formatted Message for Webmail</span>
+                </button>
+              </div>
+
+              {/* Truthful Dispatch Notice */}
+              {dispatchAttempted && (
+                <div className="p-4 rounded-2xl bg-black/40 border border-white/10 text-left space-y-2 font-sans">
+                  <div className="flex items-center gap-2 text-xs font-mono uppercase text-amber-300 font-bold">
+                    <Info className="w-4 h-4 text-amber-400 shrink-0" />
+                    <span>Email Client Launch Notice</span>
+                  </div>
+                  <p className="text-xs text-white/80 leading-relaxed">
+                    Your default email application should open with your pre-filled inquiry. If your email application does not launch automatically, click “Copy Formatted Message for Webmail” above and send directly to{' '}
+                    <span className="font-mono text-white font-semibold">{portfolioConfig.socials.email}</span>.
+                  </p>
+                </div>
+              )}
+
+              {/* Copy Feedback */}
+              {copyStatus === 'copied' && (
+                <p className="text-center text-xs font-mono text-emerald-400 flex items-center justify-center gap-1.5">
+                  <Check className="w-3.5 h-3.5" />
+                  <span>Formatted message copied to clipboard. Ready to paste into Gmail, Outlook, or webmail.</span>
                 </p>
+              )}
+              {copyStatus === 'failed' && (
+                <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/25 space-y-2 text-left">
+                  <p className="text-xs font-mono text-amber-300">
+                    Clipboard access unavailable. Please select and copy your text below:
+                  </p>
+                  <textarea
+                    readOnly
+                    rows={4}
+                    value={buildFormattedMessage()}
+                    className="w-full p-2.5 bg-black/60 rounded-lg text-xs font-mono text-white/90 border border-white/10"
+                    onFocus={(e) => e.target.select()}
+                  />
+                </div>
               )}
             </form>
           </div>
         </div>
+
 
         {/* Footer */}
         <div className="mt-20 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-white/75">
