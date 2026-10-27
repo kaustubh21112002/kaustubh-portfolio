@@ -6,6 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0b0d13" />
 
+    <!-- Anti-flash inline theme initializer -->
+    <script>
+      (function() {
+        try {
+          var stored = localStorage.getItem('portfolio-theme');
+          var theme = stored || 'dark';
+          var isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+          document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+        } catch (e) {}
+      })();
+    </script>
+
     <!-- Canonical URL -->
     <link rel="canonical" href="https://kaustubh-portfolio-six.vercel.app/" />
     
@@ -13,7 +30,6 @@
     <title>Kaustubh K. Nandurkar | Business Analytics & Research Portfolio</title>
     <meta name="title" content="Kaustubh K. Nandurkar | Business Analytics & Research Portfolio" />
     <meta name="description" content="Business Analytics & Financial Valuation portfolio of Kaustubh K. Nandurkar. Featuring PhonePe Pre-IPO DCF valuation model, STRATOS AI decision intelligence, SQL/Power BI analytics pipelines, and governed research." />
-    <meta name="keywords" content="Kaustubh Nandurkar, Business Analytics, Financial Modeling, DCF Valuation, PhonePe Valuation, STRATOS AI, Power BI, Python, SQL, Equity Research, Decision Intelligence" />
     <meta name="author" content="Kaustubh K. Nandurkar" />
     
     <!-- Open Graph / Social Sharing -->
@@ -38,8 +54,8 @@
     <meta name="twitter:image" content="https://kaustubh-portfolio-six.vercel.app/og-image.png" />
     <meta name="twitter:image:alt" content="Kaustubh K. Nandurkar — Business Analytics & Financial Valuation Portfolio preview showing PhonePe Valuation and STRATOS AI analytical case studies." />
     
-    <!-- Preload Hero Poster Image for Instant Visual Paint -->
-    <link rel="preload" as="image" href="/videos/intro-poster.jpg" fetchpriority="high" />
+    <!-- Preload Hero Poster Image for Instant Visual Paint (Modern WebP Format) -->
+    <link rel="preload" as="image" href="/videos/intro-poster.webp" fetchpriority="high" type="image/webp" />
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

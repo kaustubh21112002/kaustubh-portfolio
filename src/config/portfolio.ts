@@ -11,6 +11,16 @@ export interface SkillCategory {
   skills: string[];
 }
 
+export interface AvailabilityConfig {
+  status: 'available' | 'interviewing' | 'busy';
+  badgeText: string;
+  targetRoles: string[];
+  engagementTypes: string[];
+  locationPreferences: string[];
+  earliestStartDate: string;
+  notice: string;
+}
+
 export interface PortfolioConfig {
   name: string;
   fullName: string;
@@ -20,6 +30,7 @@ export interface PortfolioConfig {
   shortBio: string;
   objective?: string;
   location: string;
+  availability: AvailabilityConfig;
   socials: SocialLinks;
   resumePath: string;
   resumeAvailable: boolean;
@@ -59,6 +70,29 @@ export const portfolioConfig: PortfolioConfig = {
   shortBio: "MBA in Business Analytics candidate connecting quantitative valuation, SQL & Power BI analytics pipelines, and governed data architecture.",
   objective: "To begin my career as a Business Analyst or Data Analyst by applying my skills in SQL, Power BI, Python, PostgreSQL, and business analytics to solve real-world business problems, generate actionable insights, and support data-driven decision-making in a growth-oriented organization.",
   location: "Nagpur / Nashik, India",
+  availability: {
+    status: "available",
+    badgeText: "Available for Roles & Projects",
+    targetRoles: [
+      "Business Analyst",
+      "Financial Analyst",
+      "Data Analyst",
+      "Valuation Specialist",
+      "Analytics Engineer"
+    ],
+    engagementTypes: [
+      "Full-Time Placement (MBA 2027 Cohort)",
+      "Analytics & Valuation Consulting Projects",
+      "Summer / Off-Cycle Internship"
+    ],
+    locationPreferences: [
+      "Hybrid (Mumbai, Pune, Bangalore, NCR)",
+      "Remote",
+      "On-Site (India)"
+    ],
+    earliestStartDate: "Immediate for Projects • 2027 for Full-Time",
+    notice: "Subject to candidate confirmation for specific scheduling and start dates."
+  },
   socials: {
     email: "kaustubhnandurkar21@gmail.com",
     linkedIn: "https://www.linkedin.com/in/kaustubhnandurkar",
@@ -68,7 +102,7 @@ export const portfolioConfig: PortfolioConfig = {
   },
   resumePath: "/Kaustubh_Nandurkar_Resume.pdf",
   resumeAvailable: true,
-  profilePhoto: "/profile.png",
+  profilePhoto: "/profile.webp",
   characterBgColor: "#ed2026",
   education: [
     {

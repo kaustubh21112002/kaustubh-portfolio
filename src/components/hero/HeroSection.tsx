@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { ArrowDown, Download, Mail, ChevronRight } from 'lucide-react';
+import { ArrowDown, Download, Mail, ChevronRight, Copy, Check } from 'lucide-react';
 import { portfolioConfig } from '../../config/portfolio';
+import { AvailabilityIndicator } from '../common/AvailabilityIndicator';
 
 interface HeroSectionProps {
   onExploreClick?: () => void;
@@ -18,6 +19,31 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
     if (typeof window === 'undefined') return false;
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   });
+  const [copiedEmail, setCopiedEmail] = useState(false);
+
+  const handleCopyEmail = async () => {
+    try {
+      if (navigator?.clipboard?.writeText) {
+        await navigator.clipboard.writeText(portfolioConfig.socials.email);
+        setCopiedEmail(true);
+        setTimeout(() => setCopiedEmail(false), 2200);
+      } else {
+        const textarea = document.createElement('textarea');
+        textarea.value = portfolioConfig.socials.email;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        setCopiedEmail(true);
+        setTimeout(() => setCopiedEmail(false), 2200);
+      }
+    } catch (err) {
+      console.warn('Failed to copy email:', err);
+    }
+  };
 
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
@@ -121,7 +147,7 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
         <video
           ref={videoRef}
           src="/videos/intro.mp4"
-          poster="/videos/intro-poster.jpg"
+          poster="/videos/intro-poster.webp"
           autoPlay
           loop
           muted
@@ -133,46 +159,51 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
         />
       </div>
 
-      {/* 2. Editorial Overlays: Strong Dark Gradient for Text, Clean Natural Skin Tones on Portrait */}
-      {/* Desktop Left-to-Right Editorial Gradient (100% dark behind text, transparent on portrait) */}
+      {/* 2. Editorial Overlays: Balanced Dark Gradient for Text, Clean Natural Clarity on Portrait */}
+      {/* Desktop Left-to-Right Editorial Gradient (Dark behind text on left, 100% transparent on portrait center-right) */}
       <div
         className="hidden md:block absolute inset-0 pointer-events-none z-10"
         style={{
           background:
-            'linear-gradient(90deg, #0b0d13 0%, #0b0d13 28%, rgba(11,13,19,0.96) 44%, rgba(11,13,19,0.60) 58%, rgba(11,13,19,0) 70%, rgba(11,13,19,0) 86%, rgba(11,13,19,0.35) 100%)',
+            'linear-gradient(90deg, #0b0d13 0%, #0b0d13 22%, rgba(11,13,19,0.92) 36%, rgba(11,13,19,0.45) 50%, rgba(11,13,19,0) 62%, rgba(11,13,19,0) 90%, rgba(11,13,19,0.25) 100%)',
         }}
         aria-hidden="true"
       />
 
-      {/* Top & Bottom Cinematic Edge Vignette (Anchors navigation & footer without washing face) */}
+      {/* Top & Bottom Cinematic Edge Vignette (Subtle anchor without dimming face) */}
       <div
         className="hidden md:block absolute inset-0 pointer-events-none z-10"
         style={{
           background:
-            'linear-gradient(180deg, rgba(11,13,19,0.65) 0%, rgba(11,13,19,0) 16%, rgba(11,13,19,0) 82%, rgba(11,13,19,0.85) 100%)',
+            'linear-gradient(180deg, rgba(11,13,19,0.45) 0%, rgba(11,13,19,0) 18%, rgba(11,13,19,0) 86%, rgba(11,13,19,0.75) 100%)',
         }}
         aria-hidden="true"
       />
 
       {/* Mobile Top-to-Bottom Scrim Overlay */}
       <div
-        className="md:hidden absolute inset-0 pointer-events-none z-10 bg-gradient-to-b from-[#0b0d13]/80 via-[#0b0d13]/55 to-[#0b0d13]/88 backdrop-blur-[0.5px]"
+        className="md:hidden absolute inset-0 pointer-events-none z-10 bg-gradient-to-b from-[#0b0d13]/70 via-[#0b0d13]/40 to-[#0b0d13]/85"
         aria-hidden="true"
       />
 
       {/* 3. Hero Content Container */}
       <div className="relative z-20 flex-1 max-w-7xl mx-auto px-4 sm:px-10 lg:px-14 flex flex-col justify-between pt-20 sm:pt-22 lg:pt-26 pb-4 sm:pb-6 lg:pb-8 w-full min-w-0">
         
-        {/* Top Eyebrow / Direct Contact Touchpoint (Visible on sm+ to prevent floating header collision on mobile) */}
+        {/* Top Eyebrow / Direct Contact & Availability Touchpoints (Visible on sm+ to prevent floating header collision on mobile) */}
         <div className="hidden sm:flex flex-wrap items-center justify-between gap-3">
-          <div className="inline-flex max-w-full min-w-0 items-center gap-2 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/20 text-white/95 text-xs font-mono tracking-wider shadow-lg">
-            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 shrink-0 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="truncate min-w-0">MBA Business Analytics • Sandip University</span>
+          <div className="flex flex-wrap items-center gap-2.5">
+            <div className="inline-flex max-w-full min-w-0 items-center gap-2 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/20 text-white/95 text-xs font-mono tracking-wider shadow-lg">
+              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 shrink-0 rounded-full bg-red-500" />
+              <span className="truncate min-w-0">MBA Business Analytics • Sandip University</span>
+            </div>
+
+            {/* Configurable Availability Indicator with Engagement Popover */}
+            <AvailabilityIndicator />
           </div>
 
           <a
             href={`mailto:${portfolioConfig.socials.email}`}
-            className="inline-flex items-center gap-2 text-xs font-mono text-white/80 hover:text-white bg-black/40 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/15 transition-all hover:bg-black/60"
+            className="inline-flex items-center gap-2 text-xs font-mono text-white/80 hover:text-white bg-black/40 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/15 transition-all hover:bg-black/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
           >
             <Mail className="w-3.5 h-3.5 text-red-400" />
             <span>{portfolioConfig.socials.email}</span>
@@ -180,9 +211,9 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
         </div>
 
         {/* Core Editorial Identity & CTAs */}
-        <div className="w-full max-w-xl lg:max-w-xl xl:max-w-2xl my-auto py-3 sm:py-4 lg:py-6 max-md:bg-[#0b0d13]/85 max-md:backdrop-blur-xl max-md:border max-md:border-white/15 max-md:rounded-3xl max-md:p-4 sm:max-md:p-6 max-md:shadow-2xl min-w-0">
+        <div className="w-full max-w-xl lg:max-w-xl xl:max-w-2xl my-auto py-4 sm:py-6 max-md:bg-[#0b0d13]/85 max-md:backdrop-blur-xl max-md:border max-md:border-white/10 max-md:rounded-3xl max-md:p-5 sm:max-md:p-7 max-md:shadow-2xl min-w-0">
           {/* Candidate Name & Positioning */}
-          <div className="flex flex-wrap items-center gap-2 mb-1.5 sm:mb-2">
+          <div className="flex flex-wrap items-center gap-2 mb-2 sm:mb-2.5">
             <span className="text-white font-mono text-xs sm:text-base font-bold tracking-widest uppercase">
               Kaustubh K. Nandurkar
             </span>
@@ -190,36 +221,36 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
             <span className="text-white/75 font-mono text-xs tracking-wider">
               MBA Business Analytics
             </span>
-            <span className="hidden sm:inline text-white/60 font-mono text-xs tracking-wider">
+            <span className="hidden sm:inline text-white/50 font-mono text-xs tracking-wider">
               • Sandip University
             </span>
           </div>
 
-          {/* Concise Headline */}
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.12] mb-2.5 sm:mb-3 lg:mb-4">
+          {/* Headline */}
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.12] mb-3 sm:mb-4">
             Business Analytics <br className="sm:hidden" />& Research.
           </h1>
 
-          {/* Evidence-Based Short Description */}
-          <p className="text-white/90 sm:text-white/85 text-xs sm:text-sm lg:text-base leading-relaxed font-normal mb-3.5 sm:mb-4 lg:mb-5 max-w-xl">
+          {/* Description */}
+          <p className="text-white/85 text-xs sm:text-sm lg:text-base leading-relaxed font-normal mb-5 sm:mb-6 max-w-xl">
             Evaluating commercial decisions through quantitative valuation, relational analytics, and governed data pipelines.
           </p>
 
-          {/* Recruiter Quick Proof Signals (Interactive Direct Evidence Jumps) */}
-          <div className="flex flex-col sm:flex-row sm:flex-wrap items-start gap-1.5 sm:gap-2 mb-4 sm:mb-5 lg:mb-6 text-xs sm:text-sm font-mono">
+          {/* Recruiter Quick Proof Signals (Unified Red Accent for Consistent Interaction) */}
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-4 sm:mb-6 text-xs sm:text-sm font-mono">
             <button
               onClick={() => scrollTo('journey')}
               aria-label="Jump to SPIIDEO Match Analytics internship in journey section"
-              className="w-fit px-2.5 py-1 rounded-lg bg-black/60 hover:bg-black/90 backdrop-blur-md border border-white/20 hover:border-emerald-400/50 text-white/95 flex items-center gap-1.5 transition-all cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+              className="px-2.5 py-1.5 rounded-lg bg-black/60 hover:bg-black/90 backdrop-blur-md border border-white/20 hover:border-red-400/50 text-white/95 flex items-center gap-1.5 transition-all cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 active:scale-[0.98]"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
+              <span className="w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
               <span>SPIIDEO Match Analytics Intern</span>
-              <span className="text-white/50 group-hover:text-emerald-400 transition-colors text-[10px]">↗</span>
+              <span className="text-white/50 group-hover:text-red-400 transition-colors text-[10px]">↗</span>
             </button>
             <button
               onClick={() => scrollTo('flagship')}
               aria-label="Jump to ₹41,631 Cr PhonePe Pre-IPO valuation model"
-              className="w-fit px-2.5 py-1 rounded-lg bg-black/60 hover:bg-black/90 backdrop-blur-md border border-white/20 hover:border-red-400/50 text-white/95 flex items-center gap-1.5 transition-all cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+              className="px-2.5 py-1.5 rounded-lg bg-black/60 hover:bg-black/90 backdrop-blur-md border border-white/20 hover:border-red-400/50 text-white/95 flex items-center gap-1.5 transition-all cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 active:scale-[0.98]"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
               <span>₹41,631 Cr Pre-IPO Valuation</span>
@@ -228,24 +259,24 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
             <button
               onClick={() => scrollTo('projects')}
               aria-label="Jump to 50,000 Order STRATOS governed analytics system"
-              className="w-fit px-2.5 py-1 rounded-lg bg-black/60 hover:bg-black/90 backdrop-blur-md border border-white/20 hover:border-blue-400/50 text-white/95 flex items-center gap-1.5 transition-all cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+              className="px-2.5 py-1.5 rounded-lg bg-black/60 hover:bg-black/90 backdrop-blur-md border border-white/20 hover:border-red-400/50 text-white/95 flex items-center gap-1.5 transition-all cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 active:scale-[0.98]"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0" />
+              <span className="w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
               <span>50,000 Order Governed System</span>
-              <span className="text-white/50 group-hover:text-blue-400 transition-colors text-[10px]">↗</span>
+              <span className="text-white/50 group-hover:text-red-400 transition-colors text-[10px]">↗</span>
             </button>
           </div>
 
           {/* Action Buttons: Primary "Explore My Work", Secondary "Download Resume (PDF)", Tertiary "Contact" */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 w-full sm:w-auto max-w-xs sm:max-w-none">
-            {/* Primary CTA */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+            {/* Primary CTA (Von Restorff: crisp white high-contrast standout) */}
             <button
               onClick={() => {
                 scrollTo('flagship');
                 if (onExploreClick) onExploreClick();
               }}
               aria-label="Explore flagship valuation model and analytical case studies"
-              className="flex items-center justify-center gap-2 px-5 sm:px-6 lg:px-7 py-2.5 sm:py-3 rounded-full bg-white text-black font-bold text-sm tracking-wide transition-all duration-200 hover:bg-white/95 hover:shadow-[0_0_25px_rgba(255,255,255,0.45)] active:scale-95 cursor-pointer shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+              className="min-h-[48px] flex items-center justify-center gap-2 px-6 sm:px-7 py-3 rounded-full bg-white text-black font-bold text-sm tracking-wide transition-all duration-200 hover:bg-white/95 hover:shadow-[0_0_25px_rgba(255,255,255,0.45)] active:scale-95 cursor-pointer shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
             >
               <span>Explore My Work</span>
               <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
@@ -255,25 +286,42 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
             <a
               href={portfolioConfig.resumePath}
               download="Kaustubh_Nandurkar_Resume.pdf"
-              aria-label="Download verified resume PDF"
-              className="flex items-center justify-center gap-2 px-5 sm:px-6 lg:px-7 py-2.5 sm:py-3 rounded-full bg-white/10 hover:bg-white text-white hover:text-black border border-white/20 hover:border-transparent font-semibold text-sm tracking-wide transition-all duration-200 active:scale-95 shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+              aria-label="Download verified resume PDF from hero section"
+              className="min-h-[48px] flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 hover:border-white/40 font-semibold text-sm tracking-wide transition-all duration-200 active:scale-95 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
             >
               <Download className="w-4 h-4 transition-transform group-hover:-translate-y-0.5" />
               <span>Download Resume (PDF)</span>
             </a>
 
-            {/* Quick Contact CTA in Hero */}
-            <button
-              onClick={() => {
-                scrollTo('contact');
-                if (onContactClick) onContactClick();
-              }}
-              aria-label="Scroll to direct contact channels"
-              className="flex items-center justify-center gap-1.5 px-4 sm:px-5 py-2.5 sm:py-3 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white/90 hover:text-white font-medium text-sm tracking-wide transition-all active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
-            >
-              <Mail className="w-3.5 h-3.5 text-red-400" />
-              <span>Contact</span>
-            </button>
+            {/* Quick Contact CTA in Hero with One-Click Email Copy */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => {
+                  scrollTo('contact');
+                  if (onContactClick) onContactClick();
+                }}
+                aria-label="Scroll to direct contact channels"
+                className="flex-1 sm:flex-none min-h-[48px] flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-white/5 hover:bg-white/15 backdrop-blur-md border border-white/15 text-white/90 hover:text-white font-medium text-sm tracking-wide transition-all active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+              >
+                <Mail className="w-4 h-4 text-red-400" />
+                <span>Contact</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleCopyEmail}
+                aria-label={copiedEmail ? 'Email copied to clipboard' : 'Copy email address'}
+                title={copiedEmail ? `Copied: ${portfolioConfig.socials.email}` : `Copy ${portfolioConfig.socials.email}`}
+                className="min-w-[48px] min-h-[48px] flex items-center justify-center p-3 rounded-full bg-white/5 hover:bg-white/15 backdrop-blur-md border border-white/15 text-white/90 hover:text-white transition-all active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 relative"
+              >
+                {copiedEmail ? (
+                  <Check className="w-4 h-4 text-emerald-400" />
+                ) : (
+                  <Copy className="w-4 h-4 text-white/80 hover:text-white" />
+                )}
+                <span className="sr-only">{copiedEmail ? 'Copied' : 'Copy email'}</span>
+              </button>
+            </div>
           </div>
         </div>
 

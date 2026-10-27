@@ -50,17 +50,17 @@ const verifiedProofPoints = [
   {
     metric: '₹41,631 Cr',
     label: 'Implied Pre-IPO Equity Valuation',
-    subtext: 'Explicit 5-year forecast (FY26E–FY30E), CAPM WACC (14.92%), audited balance-sheet liquidity bridge'
+    subtext: '5-year explicit DCF (FY26E–FY30E) discounted at 14.92% CAPM WACC, plus ₹8,915 Cr net liquid balances'
   },
   {
     metric: '50,000',
-    label: 'Controlled Orders Governed',
-    subtext: '15,630 exception occurrences audited across 14,156 unique orders with 10 DQ controls in STRATOS AI'
+    label: 'Audited Orders Governed',
+    subtext: 'Controlled order corpus: 15,630 exception flags audited across 14,156 unique orders across 10 DQ controls'
   },
   {
     metric: '10,000+',
-    label: 'Support Incidents Modeled',
-    subtext: 'MySQL star-schema database, Power BI DAX calculated metrics, and Python regression duration modeling'
+    label: 'Support Tickets Modeled',
+    subtext: 'Multivariate linear regression modeling resolution duration (hours) across MySQL star-schema pipelines'
   }
 ];
 
@@ -243,7 +243,7 @@ const PersonalStoryVideo: React.FC = () => {
     <div className="relative rounded-3xl overflow-hidden border border-white/15 bg-black/40 group shadow-2xl">
       <video
         ref={videoRef}
-        poster="/images/personal-story-poster.jpg"
+        poster="/images/personal-story-poster.webp"
         autoPlay
         loop
         muted={isMuted}
@@ -287,7 +287,7 @@ const PersonalStoryVideo: React.FC = () => {
           aria-label={isMuted ? "Enable sound" : "Mute sound"}
           aria-pressed={!isMuted}
           title={isMuted ? "Enable sound" : "Mute sound"}
-          className={`inline-flex items-center gap-1.5 p-2 sm:px-3 sm:py-1.5 rounded-full backdrop-blur-md border text-xs font-mono font-medium transition-all duration-200 cursor-pointer shadow-lg active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 ${
+          className={`min-h-[44px] min-w-[44px] inline-flex items-center justify-center gap-1.5 p-2.5 sm:px-3 sm:py-2 rounded-full backdrop-blur-md border text-xs font-mono font-medium transition-all duration-200 cursor-pointer shadow-lg active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 ${
             isMuted
               ? 'bg-black/70 hover:bg-black/90 border-white/20 hover:border-red-500/40 text-white/90 hover:text-white'
               : 'bg-red-500/20 hover:bg-red-500/30 border-red-500/50 text-red-200 hover:text-white'
@@ -378,7 +378,7 @@ export const AboutSection: React.FC = () => {
     <section id="about" className="relative py-28 sm:py-36 px-4 sm:px-6 lg:px-8 bg-[#0e1017] text-white border-t border-white/10">
       <div className="max-w-6xl mx-auto">
         {/* Editorial Section Label */}
-        <div className="mb-14">
+        <div className="mb-14 sm:mb-18">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/70 text-xs font-mono uppercase tracking-widest mb-3">
             <span className="text-red-400 font-bold">(01)</span>
             <span>About & Analytical Manifesto</span>
@@ -393,21 +393,21 @@ export const AboutSection: React.FC = () => {
         </div>
 
         {/* 3 Verified Quantitative Benchmarks */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 mb-16 sm:mb-20">
           {verifiedProofPoints.map((item, idx) => (
             <div
               key={idx}
-              className="p-6 rounded-3xl bg-[#141722] border border-white/10 hover:border-red-500/30 transition-all duration-300 shadow-xl flex flex-col justify-between h-full group"
+              className="p-5 rounded-2xl bg-[#141722]/80 border border-white/10 hover:border-white/20 transition-all duration-300 shadow-lg flex flex-col justify-between h-full group"
             >
               <div>
-                <div className="text-3xl sm:text-4xl font-extrabold font-mono text-white tracking-tight group-hover:text-red-400 transition-colors">
+                <div className="text-2xl sm:text-3xl font-extrabold font-mono text-white tracking-tight group-hover:text-red-400 transition-colors">
                   {item.metric}
                 </div>
-                <div className="text-xs font-mono uppercase text-red-400 font-bold tracking-wider mt-2">
+                <div className="text-xs font-mono uppercase text-white/60 font-semibold tracking-wider mt-1.5">
                   {item.label}
                 </div>
               </div>
-              <p className="text-xs text-white/75 mt-3 pt-3 border-t border-white/5 leading-relaxed font-sans">
+              <p className="text-xs text-white/70 mt-2.5 pt-2.5 border-t border-white/5 leading-relaxed font-sans">
                 {item.subtext}
               </p>
             </div>
@@ -436,7 +436,7 @@ export const AboutSection: React.FC = () => {
                 </div>
 
                 <div className="flex items-start gap-2.5 pt-2 border-t border-white/5">
-                  <GraduationCap className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+                  <GraduationCap className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
                   <div>
                     <span className="font-bold text-white">BSc - Computer Science</span>
                     <p className="text-white/75">Kamla Nehru Mahavidyalaya, Nagpur (2021 – 2025)</p>
@@ -444,7 +444,7 @@ export const AboutSection: React.FC = () => {
                 </div>
 
                 <div className="flex items-start gap-2.5 pt-2 border-t border-white/5">
-                  <Briefcase className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                  <Briefcase className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
                   <div>
                     <span className="font-bold text-white">Sports Data Analyst Intern</span>
                     <p className="text-white/75">SPIIDEO (June 2026 – Present)</p>
@@ -472,7 +472,7 @@ export const AboutSection: React.FC = () => {
             {/* 5-Step Methodology */}
             <div>
               <div className="text-xs font-mono uppercase tracking-widest text-white/75 mb-4 flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                <ShieldCheck className="w-4 h-4 text-red-400" />
                 Problem-Solving Methodology
               </div>
 
