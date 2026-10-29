@@ -22,7 +22,7 @@ export const telemetryMetrics: TelemetryMetric[] = [
     type: 'Financial Model Output',
     sourceFile: 'scripts/phonepe_valuation.py',
     sourceLocation: 'Flagship Section (02) & Excel Model (MCA/NPCI data)',
-    extractionMethod: 'Explicit 5-year DCF (FY26E–FY30E) discounted at 14.92% CAPM WACC, plus ₹8,915.23 Cr net liquid balances (cash + investments less debt).',
+    extractionMethod: 'Explicit 5-year DCF (FY26E–FY30E) discounted at 14.92% CAPM WACC, plus ₹8,915.23 Cr gross liquid assets (cash + investments) less ₹716.00 Cr debt = +₹8,199.23 Cr net liquidity.',
     contextAndCaveats: 'Method: 5-year explicit DCF (FY26E–FY30E) | Discount Rate: 14.92% WACC | Terminal Value: Exit Multiple & Perpetuity Blend. Independent academic valuation.',
     targetSectionHref: '#flagship'
   },

@@ -128,7 +128,7 @@ export const portfolioConfig: PortfolioConfig = {
     {
       role: "Sports Data Analyst Intern",
       organization: "SPIIDEO",
-      period: "June 2026 – Present",
+      period: "June 2026 – Oct 2026",
       responsibilities: [
         "Tagged and validated soccer and field hockey match events using Spiideo video tracking platform.",
         "Converted recorded match footage into structured event datasets.",

@@ -6,8 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build:resume": "node --experimental-strip-types scripts/generate_resume_pdf.mjs",
-    "build": "npm run build:resume && tsc && vite build",
-    "vercel-build": "tsc && vite build",
+    "typecheck:app": "tsc",
+    "typecheck:api": "tsc -p tsconfig.api.json",
+    "typecheck": "tsc && tsc -p tsconfig.api.json",
+    "build": "npm run build:resume && tsc && tsc -p tsconfig.api.json && vite build",
+    "vercel-build": "tsc && tsc -p tsconfig.api.json && vite build",
     "preview": "vite preview"
   },
   "dependencies": {

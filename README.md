@@ -13,7 +13,7 @@ A production-grade, editorial-style personal portfolio featuring an interactive,
   - BSc - Computer Science | Kamla Nehru Mahavidyalaya, Nagpur (2021 – 2025, Grade: 56.7%)
   - HSC - Science | G. H. Raisoni Vidya Niketan, Nagpur (2021, Grade: 67.4%)
 - **Professional Experience**:
-  - Sports Data Analyst Intern | SPIIDEO (June 2026 – Present): Tagging and validating soccer and field hockey match events into structured video analytics datasets.
+  - Sports Data Analyst Intern | SPIIDEO (June 2026 – Oct 2026): Tagging and validating soccer and field hockey match events into structured video analytics datasets.
 - **Contact & Socials**:
   - Email: `kaustubhnandurkar21@gmail.com`
   - Phone: `+91 8080001550`

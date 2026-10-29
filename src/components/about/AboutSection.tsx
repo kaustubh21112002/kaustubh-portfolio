@@ -50,7 +50,7 @@ const verifiedProofPoints = [
   {
     metric: '₹41,631 Cr',
     label: 'Implied Pre-IPO Equity Valuation',
-    subtext: '5-year explicit DCF (FY26E–FY30E) discounted at 14.92% CAPM WACC, plus ₹8,915 Cr net liquid balances'
+    subtext: '5-year explicit DCF (FY26E–FY30E) discounted at 14.92% CAPM WACC, plus ₹8,199 Cr net liquidity (₹8,915 Cr liquid assets less ₹716 Cr debt)'
   },
   {
     metric: '50,000',
@@ -256,7 +256,6 @@ const PersonalStoryVideo: React.FC = () => {
         aria-label={`Personal storytelling video of ${portfolioConfig.fullName}`}
       >
         <source src="/videos/personal-story.mp4" type="video/mp4" />
-        <source src="/videos/personal-story.mp4.mp4" type="video/mp4" />
         {captionTrackSrc && (
           <track
             kind="captions"
@@ -447,7 +446,7 @@ export const AboutSection: React.FC = () => {
                   <Briefcase className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
                   <div>
                     <span className="font-bold text-white">Sports Data Analyst Intern</span>
-                    <p className="text-white/75">SPIIDEO (June 2026 – Present)</p>
+                    <p className="text-white/75">SPIIDEO (June 2026 – Oct 2026)</p>
                   </div>
                 </div>
               </div>

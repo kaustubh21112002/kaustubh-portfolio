@@ -16,14 +16,17 @@ import {
   Calendar,
   Percent,
   ChevronRight,
-  Scale
+  Scale,
+  FileDown
 } from 'lucide-react';
+import { ValuationExportModal, ValuationSummaryData } from './ValuationExportModal';
 
 export const FlagshipPhonePe: React.FC = () => {
   const [activeTab, setActiveTab] = useState<
     'overview' | 'assumptions' | 'model' | 'scenarios' | 'bridge' | 'sensitivity' | 'peer' | 'audit'
   >('overview');
   const [scenario, setScenario] = useState<'bear' | 'base' | 'bull'>('base');
+  const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false);
 
   // Interactive sensitivity matrix parameters
   const [waccOffset, setWaccOffset] = useState<number>(0);
@@ -41,6 +44,68 @@ export const FlagshipPhonePe: React.FC = () => {
   // Net cash adjustment: +₹1,127.58 Cr cash + ₹7,787.65 Cr investments - ₹716.00 Cr debt = +₹8,199.23 Cr
   const calculatedEquityValue = calculatedEV + 1128 + 7788 - 716;
   const calculatedSharePrice = (calculatedEquityValue / 50.66).toFixed(2);
+
+  // Authoritative scenario metrics matching Tab 4
+  const scenarioDataMap = {
+    bear: {
+      enterpriseValue: 24500,
+      netLiquidity: 8199,
+      equityValue: 32699,
+      sharesOutstanding: 50.66,
+      sharePrice: '645.46',
+      revenueCagr: '18.0%',
+      exitMultiple: 10.0,
+      wacc: 14.92
+    },
+    base: {
+      enterpriseValue: 33432,
+      netLiquidity: 8199,
+      equityValue: 41631,
+      sharesOutstanding: 50.66,
+      sharePrice: '821.78',
+      revenueCagr: '27.0%',
+      exitMultiple: 13.15,
+      wacc: 14.92
+    },
+    bull: {
+      enterpriseValue: 45800,
+      netLiquidity: 8199,
+      equityValue: 53999,
+      sharesOutstanding: 50.66,
+      sharePrice: '1,065.91',
+      revenueCagr: '38.0%',
+      exitMultiple: 16.0,
+      wacc: 14.92
+    }
+  };
+
+  const activeScenarioValues = scenarioDataMap[scenario];
+
+  const exportSummaryPayload: ValuationSummaryData = {
+    scenario,
+    wacc: activeScenarioValues.wacc,
+    exitMultiple: activeScenarioValues.exitMultiple,
+    enterpriseValue: activeScenarioValues.enterpriseValue,
+    netLiquidity: activeScenarioValues.netLiquidity,
+    equityValue: activeScenarioValues.equityValue,
+    sharesOutstanding: activeScenarioValues.sharesOutstanding,
+    sharePrice: activeScenarioValues.sharePrice,
+    revenueCagr: activeScenarioValues.revenueCagr,
+    waccParameters: {
+      rf: '3.00%',
+      beta: '1.35',
+      rm: '11.82%',
+      erp: '8.82%',
+      ke: '14.92%',
+      wacc: '14.92%'
+    },
+    peerComparison: {
+      phonepeMultiple: '13.15x FY30E EBITDA',
+      paytmMultiple: '~3.5x EV/Sales',
+      phonepeShare: '~48.5%',
+      paytmShare: '~8.5%'
+    }
+  };
 
   const tabs: { id: typeof activeTab; label: string; icon: React.ReactNode }[] = [
     { id: 'overview', label: '1. Overview & Architecture', icon: <TrendingUp className="w-3.5 h-3.5" /> },
@@ -91,9 +156,19 @@ export const FlagshipPhonePe: React.FC = () => {
             <span>Flagship Valuation • Pre-IPO Equity Research</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white mb-4">
-            PhonePe Pre-IPO Equity Valuation & DCF Model
-          </h2>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white">
+              PhonePe Pre-IPO Equity Valuation & DCF Model
+            </h2>
+            <button
+              onClick={() => setIsExportModalOpen(true)}
+              aria-label="Export one-page executive valuation brief (Print/PDF)"
+              className="self-start sm:self-auto inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white text-black hover:bg-neutral-200 text-xs font-mono font-bold transition-all active:scale-95 cursor-pointer shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+            >
+              <FileDown className="w-4 h-4 text-red-600" />
+              <span>Export 1-Page Summary</span>
+            </button>
+          </div>
 
           <div className="p-6 sm:p-8 rounded-3xl bg-[#141722] border border-white/10 mt-4 max-w-4xl shadow-2xl">
             <div className="text-xs font-mono uppercase text-red-400 font-bold tracking-wider mb-2">
@@ -353,7 +428,9 @@ export const FlagshipPhonePe: React.FC = () => {
                       <tr className="bg-red-500/10 font-bold text-white">
                         <td className="py-3 px-3.5">Cost of Equity (Ke)</td>
                         <td className="py-3 px-3.5 text-right text-red-400 text-sm">14.92%</td>
-                        <td className="py-3 px-3.5 font-sans">Ke = 3.00% + 1.35 × 8.82% = 14.91% (14.92% in model)</td>
+                        <td className="py-3 px-3.5 font-sans">
+                          Workbook input (14.92%). Standard CAPM from displayed inputs evaluates to 3.00% + 1.35 × 8.82% = 14.907% (rounds to 14.91%); preserved as governed model input (see Audit Log).
+                        </td>
                       </tr>
                       <tr>
                         <td className="py-2.5 px-3.5 text-white">Pre-Tax Cost of Debt (Kd)</td>
@@ -931,6 +1008,19 @@ export const FlagshipPhonePe: React.FC = () => {
                   </tbody>
                 </table>
               </div>
+
+              {/* Sensitivity Methodology Note */}
+              <div className="mt-4 p-3.5 rounded-xl bg-black/40 border border-white/10 text-xs text-white/70 font-sans space-y-1">
+                <div className="font-mono text-[11px] text-white/90 font-bold uppercase tracking-wider">
+                  Sensitivity Grid Formulation & Bounds
+                </div>
+                <p>
+                  • <strong>Model Formula:</strong> EV ≈ ₹33,432 Cr × [1 − (ΔWACC / 100) × 8.5] × [1 + (ΔMultiple / 13.15) × 0.45], where ΔWACC is in percentage points (e.g. ±2.0) and ΔMultiple is in turns of EBITDA (e.g. ±2.0x).
+                </p>
+                <p>
+                  • <strong>Methodology:</strong> This grid is an <em>illustrative parametric approximation</em> capturing first-order duration and terminal multiple elasticity around the governed base valuation (₹33,432 Cr EV at 14.92% WACC / 13.15x multiple). It provides responsive interactive scenario testing rather than a full multi-tab DCF recalculation.
+                </p>
+              </div>
             </div>
           </div>
         )}
@@ -1094,6 +1184,13 @@ export const FlagshipPhonePe: React.FC = () => {
           </p>
         </div>
       </div>
+
+      {/* One-Page Valuation Brief Export Modal */}
+      <ValuationExportModal
+        isOpen={isExportModalOpen}
+        onClose={() => setIsExportModalOpen(false)}
+        data={exportSummaryPayload}
+      />
     </section>
   );
 };

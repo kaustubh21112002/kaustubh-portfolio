@@ -4,9 +4,13 @@ import { portfolioConfig } from '../../config/portfolio';
 
 const MAX_MESSAGE_LENGTH = 1500;
 
+type SubmissionStatus = 'idle' | 'sending' | 'delivered' | 'fallback_prompt' | 'rate_limited' | 'error';
+
 export const ContactSection: React.FC = () => {
   const [copiedEmail, setCopiedEmail] = useState(false);
-  const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '', honeypot: '' });
+  const [submissionStatus, setSubmissionStatus] = useState<SubmissionStatus>('idle');
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [dispatchAttempted, setDispatchAttempted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [copyStatus, setCopyStatus] = useState<'idle' | 'copied' | 'failed'>('idle');
@@ -73,7 +77,18 @@ export const ContactSection: React.FC = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Launch default mail client via mailto:
+  const launchMailClient = () => {
+    const subject = encodeURIComponent(`[Portfolio Inquiry] ${formData.subject.trim() || 'Opportunity Discussion'}`);
+    const body = encodeURIComponent(
+      `Name: ${formData.name.trim()}\nEmail: ${formData.email.trim()}\n\nMessage:\n${formData.message.trim()}`
+    );
+    window.location.href = `mailto:${portfolioConfig.socials.email}?subject=${subject}&body=${body}`;
+    setDispatchAttempted(true);
+  };
+
+  // Primary submission: Attempt direct serverless dispatch first
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSubmitting) return;
 
@@ -84,18 +99,54 @@ export const ContactSection: React.FC = () => {
 
     setValidationError(null);
     setIsSubmitting(true);
+    setSubmissionStatus('sending');
+    setStatusMessage(null);
 
-    const subject = encodeURIComponent(`[Portfolio Inquiry] ${formData.subject.trim() || 'Opportunity Discussion'}`);
-    const body = encodeURIComponent(
-      `Name: ${formData.name.trim()}\nEmail: ${formData.email.trim()}\n\nMessage:\n${formData.message.trim()}`
-    );
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          subject: formData.subject.trim(),
+          message: formData.message.trim(),
+          honeypot: formData.honeypot
+        })
+      });
 
-    window.location.href = `mailto:${portfolioConfig.socials.email}?subject=${subject}&body=${body}`;
-    setDispatchAttempted(true);
+      const data = await response.json().catch(() => null);
 
-    setTimeout(() => {
+      if (response.ok && data?.delivered) {
+        // Direct delivery confirmed
+        setSubmissionStatus('delivered');
+        setStatusMessage('Your message has been directly delivered to private notifications. Thank you!');
+        setFormData({ name: '', email: '', subject: '', message: '', honeypot: '' });
+      } else if (response.status === 429) {
+        // Rate limited
+        setSubmissionStatus('rate_limited');
+        setStatusMessage(data?.message || 'Rate limit reached. Please use direct email to get in touch.');
+      } else if (response.status === 503 || data?.code === 'SLACK_NOT_CONFIGURED') {
+        // Honest notification: Automated dispatch not configured, prompt mail client or copy
+        setSubmissionStatus('fallback_prompt');
+        setStatusMessage('Automated dispatch endpoint is in standby mode. Opening your default mail client...');
+        launchMailClient();
+      } else {
+        // Delivery failed or other server error - truthful fallback
+        setSubmissionStatus('fallback_prompt');
+        setStatusMessage('Direct transmission service unavailable. Opening your default mail client as reliable fallback...');
+        launchMailClient();
+      }
+    } catch {
+      // Network failure or static local preview without /api route active
+      setSubmissionStatus('fallback_prompt');
+      setStatusMessage('Direct dispatch route unreachable. Opening default email client...');
+      launchMailClient();
+    } finally {
       setIsSubmitting(false);
-    }, 2500);
+    }
   };
 
   return (
@@ -230,10 +281,24 @@ export const ContactSection: React.FC = () => {
               onSubmit={handleSubmit}
               className="p-8 rounded-3xl bg-[#141722] border border-white/10 space-y-5 shadow-xl"
             >
+              {/* Hidden honeypot field for spam bots */}
+              <div aria-hidden="true" style={{ display: 'none', position: 'absolute', left: '-9999px' }}>
+                <label htmlFor="contact-honeypot">Do not fill this field if you are human</label>
+                <input
+                  id="contact-honeypot"
+                  type="text"
+                  name="company_url_hp"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={formData.honeypot}
+                  onChange={(e) => setFormData({ ...formData, honeypot: e.target.value })}
+                />
+              </div>
+
               <div className="flex items-center justify-between gap-2">
                 <h3 className="text-xl font-bold text-white">Send a Direct Message</h3>
                 <span className="text-[11px] font-mono text-white/60 bg-white/5 px-2.5 py-0.5 rounded-full border border-white/10">
-                  Client-side Dispatch
+                  Secure Serverless & Mailto
                 </span>
               </div>
 
@@ -241,6 +306,37 @@ export const ContactSection: React.FC = () => {
                 <div role="alert" className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-300 text-xs flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
                   <span>{validationError}</span>
+                </div>
+              )}
+
+              {/* Status Banner */}
+              {submissionStatus === 'delivered' && (
+                <div role="status" className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs flex items-start gap-3">
+                  <Check className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
+                  <div>
+                    <div className="font-bold text-emerald-200">Delivery Confirmed</div>
+                    <div className="text-white/80 mt-0.5">{statusMessage}</div>
+                  </div>
+                </div>
+              )}
+
+              {submissionStatus === 'fallback_prompt' && (
+                <div role="status" className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs flex items-start gap-3">
+                  <Info className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+                  <div>
+                    <div className="font-bold text-amber-200">Dispatch Routing Notice</div>
+                    <div className="text-white/80 mt-0.5 leading-relaxed">{statusMessage}</div>
+                  </div>
+                </div>
+              )}
+
+              {submissionStatus === 'rate_limited' && (
+                <div role="alert" className="p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-300 text-xs flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+                  <div>
+                    <div className="font-bold text-red-200">Submission Limit Reached</div>
+                    <div className="text-white/80 mt-0.5">{statusMessage}</div>
+                  </div>
                 </div>
               )}
 
@@ -303,31 +399,43 @@ export const ContactSection: React.FC = () => {
                 />
               </div>
 
-              {/* Action Buttons: Primary Mail App Dispatch & Secondary Copy Message */}
-              <div className="space-y-2.5 pt-1">
+              {/* Action Buttons: Primary Dispatch & Secondary Fallback Actions */}
+              <div className="space-y-3 pt-2">
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  aria-label="Send message via default mail client application"
-                  className={`w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-full font-bold text-sm tracking-wide transition-all ${
+                  aria-label="Send direct message"
+                  className={`w-full min-h-[48px] flex items-center justify-center gap-2 px-6 py-3.5 rounded-full font-bold text-sm tracking-wide transition-all ${
                     isSubmitting
-                      ? 'bg-white/60 text-black/60 cursor-not-allowed'
-                      : 'bg-white text-black hover:bg-white/95 shadow-[0_0_20px_rgba(255,255,255,0.25)] active:scale-95 cursor-pointer'
+                       ? 'bg-white/60 text-black/60 cursor-not-allowed'
+                       : 'bg-white text-black hover:bg-white/95 shadow-[0_0_20px_rgba(255,255,255,0.25)] active:scale-95 cursor-pointer'
                   } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400`}
                 >
-                  <span>{isSubmitting ? 'Opening Mail Client...' : 'Open in Default Email Client'}</span>
+                  <span>{isSubmitting ? 'Transmitting Inquiry...' : 'Send Direct Message'}</span>
                   <Send className="w-4 h-4" />
                 </button>
 
-                <button
-                  type="button"
-                  onClick={copyFormattedMessage}
-                  aria-label="Copy formatted message to clipboard for webmail"
-                  className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-white/5 hover:bg-white/10 border border-white/15 text-white/90 hover:text-white font-mono text-xs tracking-wider transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
-                >
-                  <Copy className="w-3.5 h-3.5 text-red-400" />
-                  <span>Copy Formatted Message for Webmail</span>
-                </button>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={launchMailClient}
+                    aria-label="Open in default mail client application"
+                    className="min-h-[44px] flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 hover:text-white font-mono text-xs tracking-wider transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+                  >
+                    <Mail className="w-3.5 h-3.5 text-white/70" />
+                    <span>Open Mail Client</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={copyFormattedMessage}
+                    aria-label="Copy formatted message to clipboard for webmail"
+                    className="min-h-[44px] flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 hover:text-white font-mono text-xs tracking-wider transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+                  >
+                    <Copy className="w-3.5 h-3.5 text-white/70" />
+                    <span>Copy for Webmail</span>
+                  </button>
+                </div>
               </div>
 
               {/* Truthful Dispatch Notice */}
@@ -338,7 +446,7 @@ export const ContactSection: React.FC = () => {
                     <span>Email Client Launch Notice</span>
                   </div>
                   <p className="text-xs text-white/80 leading-relaxed">
-                    Your default email application should open with your pre-filled inquiry. If your email application does not launch automatically, click “Copy Formatted Message for Webmail” above and send directly to{' '}
+                    Your default email application should open with your pre-filled inquiry. If your email application does not launch automatically, click “Copy for Webmail” above and send directly to{' '}
                     <span className="font-mono text-white font-semibold">{portfolioConfig.socials.email}</span>.
                   </p>
                 </div>

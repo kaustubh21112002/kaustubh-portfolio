@@ -19,7 +19,7 @@ export const timelineData: TimelineItem[] = [
     title: 'Sports Data Analyst Intern',
     organization: 'SPIIDEO',
     location: 'Remote / India',
-    period: 'June 2026 – Present',
+    period: 'June 2026 – Oct 2026',
     status: 'Professional Experience',
     badgeColor: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
     description: 'Operational sports data analytics internship tagging, verifying, and structuring match video footage into reliable downstream performance datasets.',

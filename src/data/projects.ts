@@ -2,6 +2,7 @@ export interface MetricItem {
   label: string;
   value: string;
   subtext?: string;
+  classification?: "DEMONSTRATED" | "MODEL ESTIMATE" | "PROTOTYPE DEMO" | "STUDY ESTIMATE" | "OPERATIONAL SLA" | "BENCHMARK PARAMETER";
 }
 
 export interface CaseStudySection {
@@ -51,6 +52,12 @@ export interface Project {
   approach: string;
   keyFinding: string;
   businessImplication: string;
+  personalContribution?: string;
+  cardBrief?: {
+    objective: string;
+    methods: string;
+    keyDeliverable: string;
+  };
   tools: string[];
   keyMetrics: MetricItem[];
   methodsAndAssumptions?: string[];
@@ -149,12 +156,18 @@ export const projects: Project[] = [
     approach: "Built an explicit 5-year financial forecast model (FY26E–FY30E) across four revenue segments (Merchant Soundbox subscriptions, lending/insurance distribution, consumer recharges, and new platforms). Discounted unlevered free cash flows using CAPM WACC (14.92%) and blended terminal value (7.0% perpetuity growth and 13.15x exit EBITDA multiple).",
     keyFinding: "Sum of explicit cash flows (PV ₹13,878.15 Cr) and blended terminal value (PV ₹19,553.83 Cr) reconciles to Core Enterprise Value of ₹33,431.99 Cr. Adding cash (₹1,127.58 Cr) and marketable investments (₹7,787.65 Cr) and deducting long-term debt (₹716.00 Cr) establishes Implied Equity Value of ₹41,631.22 Cr (₹821.78 per share across 50.66 Cr shares).",
     businessImplication: "Device-based merchant subscriptions (SmartSpeakers) and high-margin credit distribution drive over 70% of incremental EBITDA; regulatory risk from the proposed NPCI 30% volume cap represents the primary ceiling on consumer acquisition.",
+    personalContribution: "Built independent 5-year explicit revenue segment forecast schedules, established CAPM Cost of Equity / WACC parameters, structured the blended terminal valuation synthesis, and performed forensic cell-by-cell audit documenting 6 model discrepancies.",
+    cardBrief: {
+      objective: "Evaluate whether PhonePe's zero-MDR consumer payments scale converts into sustainable FCF at an implied pre-IPO equity value of ₹41,631 Cr.",
+      methods: "5-year segment forecast (FY26E–FY30E) • DCF with 14.92% WACC • Blended terminal value (7.0% g + 13.15x multiple) • EV-to-equity bridge",
+      keyDeliverable: "8-tab interactive valuation dashboard with Base/Bear/Bull scenario model, sensitivity matrix, and audited Excel workbook."
+    },
     tools: ["Financial Modeling (Excel)", "DCF / CAPM WACC (14.92%)", "EV/EBITDA Multiple (13.15x)", "EV-to-Equity Bridge", "Workbook Model Audit"],
     keyMetrics: [
-      { label: "Implied Enterprise Value", value: "₹33,432 Cr", subtext: "PV FCF ₹13,878 Cr + PV TV ₹19,554 Cr" },
-      { label: "Implied Equity Value", value: "₹41,631 Cr", subtext: "+₹8,915 Cr net liquidity, -₹716 Cr debt" },
-      { label: "Implied Share Price", value: "₹821.78", subtext: "50.66 Cr common shares outstanding" },
-      { label: "WACC Benchmark", value: "14.92%", subtext: "Beta: 1.35 | Rf: 3.0% | Rm: 11.82%" }
+      { label: "Implied Enterprise Value", value: "₹33,432 Cr", subtext: "PV FCF ₹13,878 Cr + PV TV ₹19,554 Cr", classification: "MODEL ESTIMATE" },
+      { label: "Implied Equity Value", value: "₹41,631 Cr", subtext: "+₹8,915 Cr cash/investments, -₹716 Cr debt (+₹8,199 Cr net)", classification: "MODEL ESTIMATE" },
+      { label: "Implied Share Price", value: "₹821.78", subtext: "50.66 Cr common shares outstanding", classification: "MODEL ESTIMATE" },
+      { label: "WACC Benchmark", value: "14.92%", subtext: "Beta: 1.35 | Rf: 3.0% | Rm: 11.82%", classification: "BENCHMARK PARAMETER" }
     ],
     methodsAndAssumptions: [
       "Explicit 5-year forecast period (FY26E–FY30E) using 30% effective corporate tax rate and historical working capital schedules.",
@@ -359,12 +372,18 @@ export const projects: Project[] = [
     approach: "Built a governed business analytics engine on a 50,000-order retail transactional dataset, implementing 10 automated validation controls (DQ-01 through DQ-10) and enforcing the operational protocol PRESERVE → DOCUMENT → FLAG → GOVERN.",
     keyFinding: "Forensically distinguished 15,630 algorithmically detected DQ-10 exception occurrences (8,073 revenue + 7,557 profit) from 14,156 unique affected orders (accounting for 1,474 compound multi-factor overlaps across 35,844 orders free of financial balancing discrepancies). Flagged control DQ-10 where Net Revenue exceeded Gross Revenue in controlled totals due to untracked promotional clawbacks, preserving it strictly as REVIEW rather than silently forcing mathematical reconciliation.",
     businessImplication: "Establishing immutable audit ledgers ensures 100% KPI traceability (30/30 KPIs) and eliminates executive decision-making based on artificially sanitized source numbers.",
+    personalContribution: "Designed the 30-KPI dimensional framework, implemented automated verification for controls DQ-01 to DQ-10, forensically audited the 1,474 multi-rule overlap records, and enforced strict zero-imputation policy on financial measure DQ-10.",
+    cardBrief: {
+      objective: "Deliver trustworthy managerial intelligence across 50,000 retail transactions without masking balance-sheet or margin discrepancies through silent data imputation.",
+      methods: "Relational star schema • 10 automated DQ rules • Immutable ledger audit • 30 KPI lineage tracing • PRESERVE-DOCUMENT-FLAG-GOVERN doctrine",
+      keyDeliverable: "Governed decision intelligence console with verified data quality register, order exception triage, and audited KPI store."
+    },
     tools: ["Data Quality (DQ-10 Governance)", "Attribution Auditing", "Forensic Data Reconciliation", "React + TypeScript + Vite", "Control Ledger Systems"],
     keyMetrics: [
-      { label: "Orders Analyzed", value: "50,000", subtext: "Controlled transactional dataset" },
-      { label: "Validation Controls", value: "10 Rules", subtext: "Governed QA: DQ-01 to DQ-10 (9 Validated, 1 Review)" },
-      { label: "DQ-10 Occurrences", value: "15,630", subtext: "8,073 Revenue + 7,557 Profit" },
-      { label: "Unique Affected Orders", value: "14,156", subtext: "1,474 Overlap | 35,844 Clean of DQ-10" }
+      { label: "Orders Analyzed", value: "50,000", subtext: "Controlled transactional dataset", classification: "DEMONSTRATED" },
+      { label: "Validation Controls", value: "10 Rules", subtext: "Governed QA: DQ-01 to DQ-10 (9 Validated, 1 Review)", classification: "DEMONSTRATED" },
+      { label: "DQ-10 Occurrences", value: "15,630", subtext: "8,073 Revenue + 7,557 Profit", classification: "DEMONSTRATED" },
+      { label: "Unique Affected Orders", value: "14,156", subtext: "1,474 Overlap | 35,844 Clean of DQ-10", classification: "DEMONSTRATED" }
     ],
     methodsAndAssumptions: [
       "Strict data immutability: source transaction rows are never mutated, imputed, or dropped during ETL ingestion.",
@@ -502,7 +521,7 @@ export const projects: Project[] = [
     category: "Sports Analytics",
     featured: true,
     status: "Professional Internship",
-    date: "June 2026 – Present",
+    date: "June 2026 – Oct 2026",
     summary: "Sports data analyst internship at SPIIDEO tagging, verifying, and validating match events across soccer and field hockey footage to produce reliable downstream tactical performance datasets.",
     datasetScope: {
       scale: "Multi-fixture soccer and field hockey match footage; <2 min delivery target for tactical clip exports",
@@ -516,12 +535,18 @@ export const projects: Project[] = [
     approach: "Tagged, verified, and structured match events (passes, set pieces, turnovers, fouls, shots) across soccer and field hockey footage using the Spiideo video tracking platform with standardized event taxonomies and multi-tier QA.",
     keyFinding: "Standardized multi-tier verification protocols eliminated timestamp desynchronization and ensured reliable player-attribution sequences across match datasets.",
     businessImplication: "High-fidelity structured event datasets provide coaching and analytical teams with dependable data for tactical performance modeling and spatial strategy evaluation.",
+    personalContribution: "Executed primary event annotation and secondary dual-pass verification across live match recordings, conducted pitch-grid spatial calibration, and delivered indexed tactical clip playlists within strict <2-minute operational SLAs.",
+    cardBrief: {
+      objective: "Transform uncalibrated panoramic match video into structured, timestamp-synchronized event datasets for coaching and tactical strategy.",
+      methods: "Spiideo panoramic tracking • FIFA/FIH pitch coordinate calibration • Dual-pass event tagging • Sub-second clock synchronization",
+      keyDeliverable: "Standardized tabular match event logs (CSV/database) and indexed tactical video playlists delivered within <2-min turnaround."
+    },
     tools: ["Spiideo Camera Systems", "Video Annotation & Tagging", "Data Quality Verification", "Event Pipeline QA"],
     keyMetrics: [
-      { label: "Role", value: "Data Analyst", subtext: "SPIIDEO Internship" },
-      { label: "Sports Covered", value: "Soccer & Hockey", subtext: "Multi-event video annotation" },
-      { label: "Verification Protocol", value: "Dual-Pass QA", subtext: "Standardized event taxonomy" },
-      { label: "Turnaround Target", value: "<2 Minutes", subtext: "Post-match tactical clip SLA" }
+      { label: "Role", value: "Data Analyst", subtext: "SPIIDEO Internship", classification: "DEMONSTRATED" },
+      { label: "Sports Covered", value: "Soccer & Hockey", subtext: "Multi-event video annotation", classification: "DEMONSTRATED" },
+      { label: "Verification Protocol", value: "Dual-Pass QA", subtext: "Standardized event taxonomy", classification: "DEMONSTRATED" },
+      { label: "Turnaround Target", value: "<2 Minutes", subtext: "Post-match tactical clip SLA", classification: "OPERATIONAL SLA" }
     ],
     methodsAndAssumptions: [
       "Spatial coordinate calibration aligned with standardized FIFA (105m x 68m) and FIH (91.4m x 55m) pitch dimensions.",
@@ -632,12 +657,18 @@ export const projects: Project[] = [
     approach: "Engineered an end-to-end analytics workflow: cleaned and transformed 10,000+ support ticket records in Python, designed a star-schema relational model in MySQL (Fact_Tickets, Dim_Priority, Dim_Category, Dim_Agent, Dim_Department), and built Power BI DAX dashboards with exploratory regression.",
     keyFinding: "High-priority incidents resolved in 4.2 hours average; SLA compliance achieved 92.4% (against 95% target). In regression modeling, ticket resolution latency showed a strong positive statistical association with shift-change transition windows (+3.1 hours average delay on tickets unresolved across shift transitions) rather than technical category complexity.",
     businessImplication: "Staggering tier-2 agent shifts during peak ticket creation windows and automating priority classification directly addresses resolution bottlenecks to recover SLA compliance.",
+    personalContribution: "Designed the 5-table MySQL star-schema data architecture, authored Power BI DAX performance measures (MTTA, MTTR, SLA compliance), and conducted Python OLS regression modeling identifying shift-change handoff delays.",
+    cardBrief: {
+      objective: "Identify root causes of enterprise IT support ticket SLA breaches across 10,000+ incident logs and model resolution duration.",
+      methods: "Python data munging • MySQL star-schema (Fact_Tickets + 4 dims) • Power BI DAX calculated measures • Exploratory OLS regression",
+      keyDeliverable: "Interactive Power BI executive dashboard with drill-through triage, production SQL DDL schema, and statistical regression findings."
+    },
     tools: ["Python (Scikit-Learn, Pandas)", "MySQL Relational Model", "Power BI & DAX Measures", "Excel Advanced Analytics"],
     keyMetrics: [
-      { label: "Dataset Scale", value: "10,000+ Records", subtext: "Academic demonstration logs" },
-      { label: "SLA Benchmark", value: "92.4%", subtext: "Target 95.0% threshold" },
-      { label: "Mean Resolution", value: "4.2 hrs", subtext: "High-priority incidents" },
-      { label: "Escalation Delay", value: "+3.1 hrs", subtext: "Shift-change handoff latency" }
+      { label: "Dataset Scale", value: "10,000+ Records", subtext: "Academic demonstration logs", classification: "DEMONSTRATED" },
+      { label: "SLA Benchmark", value: "92.4%", subtext: "Target 95.0% threshold", classification: "DEMONSTRATED" },
+      { label: "Mean Resolution", value: "4.2 hrs", subtext: "High-priority incidents", classification: "DEMONSTRATED" },
+      { label: "Escalation Delay", value: "+3.1 hrs", subtext: "Shift-change handoff latency", classification: "STUDY ESTIMATE" }
     ],
     methodsAndAssumptions: [
       "Star schema relational architecture linking 10,000+ Fact_Tickets rows to 4 dimension tables (Priority, Category, Agent, Department).",
@@ -770,12 +801,18 @@ export const projects: Project[] = [
     approach: "Conducted an MBA Business Model Credibility Report evaluating commercial viability, customer lifetime value payback horizons (LTV:CAC), and regulatory compliance under RBI guidelines and Basel III norms.",
     keyFinding: "In the simulated unit-economics model, achieving commercial viability required a minimum 3.4x LTV:CAC with an estimated 14-month payback horizon, driven by high-margin credit cross-sell and anchored by a 15% Basel III capital buffer.",
     businessImplication: "Standalone consumer payment neobanks are economically unsustainable without scheduled commercial bank co-branding or partner NBFC lending balance sheets under current RBI regulatory directives.",
+    personalContribution: "Formulated the 36-month cohort LTV:CAC financial model, stress-tested capital adequacy against Basel III Tier-1 requirements, and synthesized RBI Master Directions on digital co-branding risk.",
+    cardBrief: {
+      objective: "Evaluate commercial feasibility, CAC payback dynamics, and RBI regulatory capital compliance for an AI-first neobanking concept.",
+      methods: "36-month cohort unit economics • LTV:CAC amortization • Basel III Tier-1 buffer stress testing • RBI regulatory matrix",
+      keyDeliverable: "Comprehensive 25-page MBA strategic credibility report with interactive financial model and regulatory compliance audit."
+    },
     tools: ["FinTech Unit Economics", "CAC:LTV Modeling", "Basel III & RBI Compliance", "Financial Viability Framework"],
     keyMetrics: [
-      { label: "Target LTV:CAC", value: "3.4x", subtext: "Modeled steady-state ratio" },
-      { label: "Payback Horizon", value: "14 Months", subtext: "Subscription & cross-sell model" },
-      { label: "Capital Adequacy", value: "15.0%", subtext: "Basel III buffer standard" },
-      { label: "Blended CAC", value: "₹650", subtext: "Organic payroll + digital acquisition" }
+      { label: "Target LTV:CAC", value: "3.4x", subtext: "Modeled steady-state ratio", classification: "STUDY ESTIMATE" },
+      { label: "Payback Horizon", value: "14 Months", subtext: "Subscription & cross-sell model", classification: "STUDY ESTIMATE" },
+      { label: "Capital Adequacy", value: "15.0%", subtext: "Basel III buffer standard", classification: "BENCHMARK PARAMETER" },
+      { label: "Blended CAC", value: "₹650", subtext: "Organic payroll + digital acquisition", classification: "STUDY ESTIMATE" }
     ],
     methodsAndAssumptions: [
       "CAC model assumes blended organic payroll referrals (₹350) and paid digital marketing (₹1,250).",
@@ -858,6 +895,162 @@ export const projects: Project[] = [
         }
       ],
       disclaimer: "MBA academic project prepared for educational purposes in the banking and digital strategy domain."
+    }
+  },
+  {
+    id: "equitrack-analytics-os",
+    title: "EquiTrack Analytics OS — Financial News Intelligence & Data Governance",
+    tagline: "Structured financial news intelligence, review-velocity tracking, and data-quality governance dashboard.",
+    category: "Data Governance",
+    featured: false,
+    status: "Completed Independent Research",
+    date: "October 2026",
+    summary: "Spreadsheet-based financial news intelligence and business reporting prototype combining structured register management, source compliance rules, analyst review workflows, and executive KPI monitoring across reported demonstration records.",
+    datasetScope: {
+      scale: "7 Reported Demonstration Records (Prototype Dataset)",
+      structure: "Financial News Register, Source Classification Directory, DQ Audit Rules, KPI Summary & Executive Dashboard",
+      qualityNote: "Controlled prototype demonstration dataset; reported acceptance metrics reflect configured workbook scoring logic, not independent factual verification."
+    },
+    evidenceUrl: "https://docs.google.com/spreadsheets/d/1kYoHioEEruwGpU0QJxqu3Ntk3JnnGSqb-e94ei4yjy0/edit?usp=drivesdk",
+    evidenceLabel: "View Project Workbook",
+    verifiedLinks: [
+      {
+        label: "View Project Workbook",
+        url: "https://docs.google.com/spreadsheets/d/1kYoHioEEruwGpU0QJxqu3Ntk3JnnGSqb-e94ei4yjy0/edit?usp=drivesdk",
+        isInternal: false,
+        type: "evidence"
+      }
+    ],
+    problemStatement: "Financial news ingested from multi-channel media feeds lacks standardized structure, verification traceability, and source governance. Without disciplined schema validation, duplicate detection, and review-queue monitoring, decision-makers face information noise, unvetted speculation, and operational review bottlenecks.",
+    approach: "Designed a structured spreadsheet-based intelligence operating system featuring a normalized news register, source authority directory, automated data-quality audit rules, analyst workflow queue tracking, and an executive KPI summary dashboard.",
+    keyFinding: "Reported prototype testing across 7 demonstration records achieved 100% mandatory-field completeness, 100% official-source compliance, and a 100/100 system audit health score with 0 failed rules. However, review completion velocity stood at 57.1% against a 70% operational benchmark—transparently identifying a workflow backlog across pending (2) and in-review (1) records.",
+    businessImplication: "Separating data completeness from factual verification and monitoring review velocity reveals operational workflow bottlenecks before intelligence reaches executive consumers. Structured governance prevents speculative dissemination while preserving auditability.",
+    personalContribution: "Architected the data dictionary, source classification hierarchy, multi-point data quality formulas, review queue velocity calculation, and executive dashboard layout in Google Sheets.",
+    cardBrief: {
+      objective: "Organize financial news in a governed register, monitor source compliance, track analyst review workflows, and deliver executive KPI oversight.",
+      methods: "Structured news register • Source compliance directory • DQ audit rules • Review queue monitoring • Executive dashboard",
+      keyDeliverable: "Governed Google Sheets financial intelligence prototype with audit scorecards and review velocity tracking."
+    },
+    tools: ["Google Sheets", "Financial Intelligence", "Data Governance", "KPI Frameworks", "Workflow Quality Assurance"],
+    keyMetrics: [
+      { label: "Reported Records", value: "7", subtext: "Prototype Demonstration Dataset", classification: "PROTOTYPE DEMO" },
+      { label: "Audit Health Score", value: "100/100", subtext: "Reported: 0 Failed Audit Rules", classification: "PROTOTYPE DEMO" },
+      { label: "Source Compliance", value: "100%", subtext: "Configured Approved-Source List", classification: "PROTOTYPE DEMO" },
+      { label: "Review Velocity", value: "57.1%", subtext: "Below 70% Target (Backlog Flag)", classification: "PROTOTYPE DEMO" }
+    ],
+    methodsAndAssumptions: [
+      "Structured News Register: Normalized schema capturing publication timestamp, headline, classified topic, official source URL, priority tier, sentiment classification, and analyst verification status.",
+      "Source Directory & Classification: Maintained approved-source list categorizing media authority, regulatory disclosures, and wire services.",
+      "Operational Review Queue: Multi-state workflow tracking (Pending Review, In Review, Reviewed) measuring completion velocity against a 70% target threshold.",
+      "Data Quality Rules: Formulas checking mandatory-field completeness, duplicate headline detection, and freshness tiers."
+    ],
+    limitations: [
+      "Prototype Scale Limitation: Built and tested on a reported 7-record demonstration dataset; not currently deployed at enterprise production throughput.",
+      "Completeness vs. Accuracy: A technically complete record with a valid source URL does not guarantee factual market truth; editorial verification remains essential.",
+      "Automated Regulatory Ingestion (Roadmap): Direct automated ingestion from regulatory portals (SEBI/RBI) or stock exchange announcements (NSE/BSE) is under feasibility study and not yet implemented.",
+      "Audit Score Scope: The 100/100 audit health score reflects configured formula checks within the workbook and does not imply independent third-party verification."
+    ],
+    caseStudy: {
+      researchQuestion: "How can financial organizations systematically structure, validate, and govern high-velocity news intelligence while identifying operational review bottlenecks before information reaches decision-makers?",
+      executiveSummary: "EquiTrack Analytics OS is a financial news intelligence and data-governance prototype constructed in Google Sheets. It addresses information fragmentation through a structured register, source compliance directories, formulaic quality audits, and an executive KPI dashboard. Evaluated across 7 demonstration records, the prototype achieved 100% field completeness and source compliance, while diagnostic tracking uncovered a 57.1% review completion velocity against a 70% benchmark—surfacing workflow backlogs as an actionable management insight.",
+      sections: [
+        {
+          title: "1. Project Overview & Business Problem",
+          content: [
+            "In modern financial markets, news arrives constantly from disparate sources, ranging from primary regulatory filings to secondary market commentary.",
+            "Without a structured operational process, teams face multiple failure modes: missing contextual fields, unverified rumors passed off as vetted intelligence, duplicate reporting distorting sentiment, and unmonitored backlogs in analyst review queues.",
+            "EquiTrack Analytics OS was designed to solve this governance challenge through an accessible, spreadsheet-based intelligence operating system that structures incoming items, enforces source compliance, monitors analyst workflows, and surfaces operational KPIs to leadership."
+          ]
+        },
+        {
+          title: "2. Project Objectives & Operational Scope",
+          content: [
+            "The system was engineered around seven clear operational objectives:",
+            "• Organize Financial News: Normalize heterogeneous market reports into a consistent register with explicit attributes (headline, company, sector, timestamp, priority, sentiment).",
+            "• Monitor Source Compliance: Validate incoming source URLs against an approved source directory to ensure lineage traceability.",
+            "• Track Review Workflows: Monitor items across 'Pending Review', 'In Review', and 'Reviewed' states to measure operational throughput.",
+            "• Evaluate Data Quality & Duplicates: Implement formula-driven checks for missing mandatory fields and flag redundant reporting.",
+            "• Monitor Priority & Freshness: Highlight breaking news and high-priority disclosures requiring expedited analyst attention.",
+            "• Executive KPI Dashboard: Synthesize operational health, workflow velocity, and exposure distributions into a single-pane executive summary.",
+            "• Document Governance Boundaries: Maintain clear documentation of validation rules, scoring logic, and structural limitations."
+          ]
+        },
+        {
+          title: "3. Spreadsheet Architecture & Components",
+          content: [
+            "The architecture consists of six interconnected functional modules within the workbook:",
+            "• Financial News Register: The operational core storing individual intelligence entries with standardized metadata fields.",
+            "• Source Classification Directory: A lookup table defining approved news providers, official publication types, and trust categories.",
+            "• Data-Quality Audit Engine: Formula-based validation rules auditing record completeness, duplicate presence, and URL validity.",
+            "• Workflow Queue Manager: Tracks review cycle progression and calculates analyst velocity.",
+            "• KPI Summary Aggregator: Computes roll-up metrics, ratio calculations, and target variances.",
+            "• Executive Dashboard: Visual management interface displaying KPI cards, audit scorecards, and operational distributions."
+          ]
+        },
+        {
+          title: "4. KPI Framework & Management Purpose",
+          content: [
+            "EquiTrack defines operational indicators specifically aligned with decision intelligence rather than vanity metrics:",
+            "• Mandatory Completeness (Reported 100%): Measures whether all critical attributes (timestamp, source, category, headline) are populated before distribution.",
+            "• Official-Source Compliance (Reported 100%): Audits whether stories originate from configured approved publications, preventing unvetted hearsay.",
+            "• Verified Intelligence Ratio (Reported 100%): Tracks the proportion of records that have completed primary source corroboration.",
+            "• Review Completion Velocity (Reported 57.1% vs 70% Benchmark): Diagnostic indicator measuring the ratio of completed reviews to total records. Falling below the 70% target flags an operational review backlog (2 Pending, 1 In Review, 4 Reviewed).",
+            "• High-Priority Exposure (Reported 71.4%): Quantifies the concentration of high-impact news requiring immediate risk assessment.",
+            "• Breaking-News Count (Reported 2): Highlights real-time flash bulletins requiring rapid editorial escalation.",
+            "• Duplicate Ratio (Reported 0%): Verifies deduplication controls to prevent over-weighting repeated media stories.",
+            "• System Audit Health Score (Reported 100/100): Composite index scoring compliance across configured quality checks (0 failed rules)."
+          ]
+        },
+        {
+          title: "5. Reported Prototype Test Results",
+          content: [
+            "Note: The figures below represent user-reported acceptance-test results from the prototype demonstration workbook, not independently verified production metrics."
+          ],
+          table: {
+            headers: ["Metric", "Reported Result", "Configured Target / Benchmark", "Operational Interpretation"],
+            rows: [
+              ["Total Intelligence Records", "7", "Prototype Demo Dataset", "Demonstration corpus illustrating register workflows"],
+              ["Mandatory-Field Completeness", "100%", "100%", "All required fields populated across all 7 records"],
+              ["Official-Source Compliance", "100%", "100%", "All records linked to approved source directory entities"],
+              ["Verified Intelligence Ratio", "100%", "100%", "All active records corroborate with primary source citations"],
+              ["Unverified Records", "0", "0", "Zero uncorroborated items currently active"],
+              ["Pending Review Queue", "2", "0 (Queue Goal)", "2 items awaiting initial analyst evaluation"],
+              ["In Review Items", "1", "Active Work", "1 item currently under active verification"],
+              ["Reviewed Items", "4", "4 Completed", "4 items completed through full verification cycle"],
+              ["Review Completion Velocity", "57.1%", "70.0% Target", "Below target: identifies review workflow backlog"],
+              ["High-Priority Exposure", "71.4%", "Risk Indicator", "5 of 7 records classified as high commercial priority"],
+              ["Duplicate Ratio", "0%", "0%", "Zero redundant records detected in demonstration corpus"],
+              ["Breaking-News Count", "2", "Alert Count", "2 real-time bulletins flagged for executive notification"],
+              ["System Audit Health Score", "100/100", "100/100", "All configured workbook audit checks passed"],
+              ["Failed Audit Rules", "0", "0", "Zero formulaic validation rule failures reported"]
+            ]
+          },
+          callout: {
+            type: "warning",
+            text: "Operational Diagnosis: While the workbook achieved a reported 100/100 audit health score on schema validation and source compliance, the Review Completion Velocity of 57.1% falls significantly below the configured 70.0% operational benchmark. This variance surfaces an active analyst workflow backlog (2 Pending, 1 In Review out of 7 total records) that requires workload redistribution before downstream distribution."
+          }
+        },
+        {
+          title: "6. Data Governance, Controls & Structural Limitations",
+          content: [
+            "Honest analytical storytelling requires distinguishing technical completeness from absolute market truth:",
+            "• Completeness Does Not Equal Truth: A news record can be 100% complete with a working URL, yet still report speculative or conflicting market claims. Quality audit scores reflect schema conformity, not infallible financial truth.",
+            "• Prototype Demonstration Scale: The current implementation operates on a reported 7-record dataset. It serves as an architectural prototype demonstrating governance design, not an enterprise-scale streaming engine.",
+            "• Feasibility of Ingestion Pipelines: Automatic scraping of regulatory publications (SEBI / RBI) or stock exchange announcements (NSE / BSE) is not implemented in the current workbook and remains subject to technical and legal feasibility studies."
+          ]
+        },
+        {
+          title: "7. Planned Roadmap: Regulatory Ingestion Architecture",
+          content: [
+            "To evolve EquiTrack beyond manual register logging, a 4-phase controlled roadmap is planned for feasibility evaluation:",
+            "• Phase 1 — Source Feasibility Study: Assess official SEBI and RBI regulatory publication structures, retrieval permissions, rate constraints, and metadata formats.",
+            "• Phase 2 — Read-Only Staging Layer: Design an isolated staging table to capture raw external feeds without directly touching or altering production registers.",
+            "• Phase 3 — Data-Quality & Deduplication Engine: Apply automated validation for required fields, timestamp synchronization, and fuzzy headline deduplication before review queues.",
+            "• Phase 4 — Controlled Analyst Review & Acceptance: Enforce mandatory analyst verification and sign-off before any record is promoted to executive reporting."
+          ]
+        }
+      ],
+      disclaimer: "EquiTrack Analytics OS is an independent financial analytics and data-governance demonstration prototype built in Google Sheets. All reported metrics reflect workbook prototype acceptance testing on demonstration data."
     }
   }
 ];
