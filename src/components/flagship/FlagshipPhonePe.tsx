@@ -20,12 +20,15 @@ import {
   FileDown
 } from 'lucide-react';
 import { ValuationExportModal, ValuationSummaryData } from './ValuationExportModal';
+import { ValuationWaterfallChart } from './ValuationWaterfallChart';
+import { ValuationScenarioComparison } from './ValuationScenarioComparison';
+import { PHONEPE_SCENARIO_DEFINITIONS, ValuationScenarioId } from './valuationScenarios';
 
 export const FlagshipPhonePe: React.FC = () => {
   const [activeTab, setActiveTab] = useState<
     'overview' | 'assumptions' | 'model' | 'scenarios' | 'bridge' | 'sensitivity' | 'peer' | 'audit'
   >('overview');
-  const [scenario, setScenario] = useState<'bear' | 'base' | 'bull'>('base');
+  const [scenario, setScenario] = useState<ValuationScenarioId>('base');
   const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false);
 
   // Interactive sensitivity matrix parameters
@@ -45,41 +48,8 @@ export const FlagshipPhonePe: React.FC = () => {
   const calculatedEquityValue = calculatedEV + 1128 + 7788 - 716;
   const calculatedSharePrice = (calculatedEquityValue / 50.66).toFixed(2);
 
-  // Authoritative scenario metrics matching Tab 4
-  const scenarioDataMap = {
-    bear: {
-      enterpriseValue: 24500,
-      netLiquidity: 8199,
-      equityValue: 32699,
-      sharesOutstanding: 50.66,
-      sharePrice: '645.46',
-      revenueCagr: '18.0%',
-      exitMultiple: 10.0,
-      wacc: 14.92
-    },
-    base: {
-      enterpriseValue: 33432,
-      netLiquidity: 8199,
-      equityValue: 41631,
-      sharesOutstanding: 50.66,
-      sharePrice: '821.78',
-      revenueCagr: '27.0%',
-      exitMultiple: 13.15,
-      wacc: 14.92
-    },
-    bull: {
-      enterpriseValue: 45800,
-      netLiquidity: 8199,
-      equityValue: 53999,
-      sharesOutstanding: 50.66,
-      sharePrice: '1,065.91',
-      revenueCagr: '38.0%',
-      exitMultiple: 16.0,
-      wacc: 14.92
-    }
-  };
-
-  const activeScenarioValues = scenarioDataMap[scenario];
+  // Authoritative scenario metrics matching Tab 4 from shared definition module
+  const activeScenarioValues = PHONEPE_SCENARIO_DEFINITIONS[scenario];
 
   const exportSummaryPayload: ValuationSummaryData = {
     scenario,
@@ -652,8 +622,14 @@ export const FlagshipPhonePe: React.FC = () => {
         {/* ================================================================= */}
         {activeTab === 'scenarios' && (
           <div className="space-y-8">
+            {/* Visual Scenario Sensitivity & Variance Engine */}
+            <ValuationScenarioComparison
+              currentScenario={scenario}
+              onSelectScenario={(s) => setScenario(s)}
+            />
+
             {/* Scenario Selector */}
-            <div className="flex flex-wrap items-center justify-center gap-3">
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-4 border-t border-white/10">
               {[
                 { id: 'bear', label: 'Bear Case (Regulatory Throttling)', color: 'text-rose-400' },
                 { id: 'base', label: 'Base Case (Workbook Baseline)', color: 'text-amber-400' },
@@ -827,6 +803,18 @@ export const FlagshipPhonePe: React.FC = () => {
               <p className="text-xs text-white/60 mb-6 font-sans">
                 Corporate finance bridge converting operational Enterprise Value into common Equity Value and implied price per share.
               </p>
+
+              {/* Responsive EV-to-Equity Capital Bridge Waterfall */}
+              <div className="mb-8">
+                <ValuationWaterfallChart
+                  enterpriseValue={33431.99}
+                  cashAndBank={1127.58}
+                  marketableInvestments={7787.65}
+                  longTermDebt={716.00}
+                  equityValue={41631.22}
+                  scenarioName="Base Case Reconciliation"
+                />
+              </div>
 
               <div className="space-y-3 font-mono text-sm max-w-2xl mx-auto">
                 <div className="flex items-center justify-between p-4 rounded-xl bg-black/40 border border-white/10">

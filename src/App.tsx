@@ -4,6 +4,7 @@ import { Header } from './components/navigation/Header';
 import { MagneticCursor } from './components/common/MagneticCursor';
 import { BackToTop } from './components/common/BackToTop';
 import { HeroSection } from './components/hero/HeroSection';
+import { RecruiterCommandCenter } from './components/command/RecruiterCommandCenter';
 import { EvidenceTelemetryBar } from './components/metrics/EvidenceTelemetryBar';
 import { AboutSection } from './components/about/AboutSection';
 import { FlagshipPhonePe } from './components/flagship/FlagshipPhonePe';
@@ -22,6 +23,7 @@ export function App() {
     const handleScroll = () => {
       const sections = [
         'hero',
+        'command-center',
         'about',
         'flagship',
         'projects',
@@ -99,6 +101,9 @@ export function App() {
 
           {/* Evidence Telemetry Bar: Verified Quantitative Outputs & Governed Data Volumes */}
           <EvidenceTelemetryBar />
+
+          {/* Portfolio Command Center: Recruiter-Oriented Positioning, Top Projects & Capability Matrix */}
+          <RecruiterCommandCenter />
 
           {/* Section (01): About Me, Analytical Manifesto & 5-Stage Problem-Solving Methodology */}
           <AboutSection />

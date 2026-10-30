@@ -1,13 +1,18 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { X, ArrowRight, ShieldAlert, CheckCircle2, FileText, ChevronDown, ChevronUp, Layers, HelpCircle, Activity, Info, AlertTriangle, Database, ExternalLink } from 'lucide-react';
+import { X, ArrowRight, ArrowLeft, ShieldAlert, CheckCircle2, FileText, ChevronDown, ChevronUp, Layers, HelpCircle, Activity, Info, AlertTriangle, Database, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Project, getProjectEvidenceLink } from '../../data/projects';
+import { StratosDQMatrix } from './StratosDQMatrix';
+import { DecisionIntelligenceBlock } from './DecisionIntelligenceBlock';
+import { ShareProjectButton } from './ShareProjectButton';
+import { getAdjacentProjects } from './projectNavigation';
 
 interface CaseStudyModalProps {
   project: Project | null;
   onClose: () => void;
+  onSelectProject?: (project: Project) => void;
 }
 
-export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose }) => {
+export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose, onSelectProject }) => {
   // Allow multiple sections to be expanded simultaneously
   const [expandedSections, setExpandedSections] = useState<Set<number>>(new Set([0]));
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -15,6 +20,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
   const triggerElementRef = useRef<HTMLElement | null>(null);
   const targetFocusIdRef = useRef<string | null>(null);
   const evidenceLink = project ? getProjectEvidenceLink(project) : null;
+  const adjacent = project ? getAdjacentProjects(project.id) : null;
 
   useEffect(() => {
     // Reset to expand first section when project changes
@@ -160,15 +166,23 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
         ref={modalCardRef}
         className="relative w-full max-w-4xl max-h-[90vh] bg-[#10121a] border border-white/20 rounded-3xl shadow-2xl overflow-y-auto z-10 text-white p-6 sm:p-10 my-auto"
       >
-        {/* Close Button */}
-        <button
-          ref={closeButtonRef}
-          onClick={onClose}
-          className="absolute top-5 right-5 sm:top-6 sm:right-6 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
-          aria-label="Close case study"
-        >
-          <X className="w-5 h-5" />
-        </button>
+        {/* Close Button & Share Action Header Dock */}
+        <div className="absolute top-5 right-5 sm:top-6 sm:right-6 flex items-center gap-2 z-20">
+          <ShareProjectButton
+            projectId={project.id}
+            projectTitle={project.title}
+            view="case-study"
+            compact={true}
+          />
+          <button
+            ref={closeButtonRef}
+            onClick={onClose}
+            className="min-w-[40px] min-h-[40px] flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+            aria-label="Close case study"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
 
         {/* Header */}
         <div className="mb-6 pr-12">
@@ -267,7 +281,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
           </div>
         </div>
 
-        {/* Top Storytelling Framework: Problem -> Approach -> Finding -> Implication */}
+        {/* Top Storytelling Framework & Decision Intelligence: Problem -> Approach -> Finding -> Implication -> Evidence Status */}
         <div id="modal-overview" className="space-y-4 mb-8">
           {project.personalContribution && (
             <div className="p-4 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-start gap-3">
@@ -278,40 +292,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
             </div>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-5 rounded-2xl bg-[#141722] border border-white/10">
-              <span className="text-xs font-mono uppercase text-amber-400 font-bold block mb-1.5">
-                1. Commercial Problem / Question
-              </span>
-              <p className="text-white/80 text-xs sm:text-sm leading-relaxed">{project.problemStatement}</p>
-            </div>
-
-            <div className="p-5 rounded-2xl bg-[#141722] border border-white/10">
-              <span className="text-xs font-mono uppercase text-blue-400 font-bold block mb-1.5">
-                2. Analytical Approach & Architecture
-              </span>
-              <p className="text-white/80 text-xs sm:text-sm leading-relaxed">{project.approach}</p>
-            </div>
-
-            <div className="p-5 rounded-2xl bg-[#141722] border border-white/10">
-              <div className="flex items-center justify-between gap-2 mb-1.5">
-                <span className="text-xs font-mono uppercase text-emerald-400 font-bold">
-                  3. Key Verified Finding
-                </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300">
-                  {project.category === 'Equity Research' ? 'MODEL ESTIMATE' : 'DEMONSTRATED'}
-                </span>
-              </div>
-              <p className="text-white/80 text-xs sm:text-sm leading-relaxed">{project.keyFinding}</p>
-            </div>
-
-            <div className="p-5 rounded-2xl bg-[#141722] border border-white/10">
-              <span className="text-xs font-mono uppercase text-red-400 font-bold block mb-1.5">
-                4. Business Implication
-              </span>
-              <p className="text-white/80 text-xs sm:text-sm leading-relaxed">{project.businessImplication}</p>
-            </div>
-          </div>
+          <DecisionIntelligenceBlock project={project} layout="modal" showMetricsGrid={false} />
         </div>
 
         {/* Dataset Scope & Governance Architecture Panel */}
@@ -462,6 +443,13 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
                       ))}
                     </div>
 
+                    {/* Interactive STRATOS Data Quality Matrix (Integrated into Governance Section) */}
+                    {project.id === 'stratos-governance' && section.title.includes('10 Governed Validation Controls') && (
+                      <div className="mt-5">
+                        <StratosDQMatrix />
+                      </div>
+                    )}
+
                     {/* Table if present */}
                     {section.table && (
                       <div className="mt-4 space-y-1">
@@ -546,8 +534,47 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
           )}
         </div>
 
+        {/* Next / Previous Project Navigation Deck */}
+        {adjacent && onSelectProject && (
+          <div className="mt-8 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 text-xs font-mono">
+            <button
+              type="button"
+              onClick={() => onSelectProject(adjacent.prevProject)}
+              aria-label={`Navigate to previous project: ${adjacent.prevProject.title}`}
+              className="min-h-[44px] flex-1 flex items-center justify-start gap-2.5 p-3 rounded-2xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/10 hover:border-white/20 transition-all cursor-pointer group text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+            >
+              <ChevronLeft className="w-4 h-4 text-white/50 group-hover:text-red-400 transition-colors shrink-0" />
+              <div className="min-w-0">
+                <span className="text-[10px] uppercase text-white/50 block font-semibold">Previous Project</span>
+                <span className="text-white group-hover:text-red-300 transition-colors font-sans text-xs truncate block font-bold">
+                  {adjacent.prevProject.title}
+                </span>
+              </div>
+            </button>
+
+            <div className="hidden sm:flex items-center justify-center px-2 text-[10px] text-white/40 font-mono">
+              {adjacent.currentIndex + 1} / {adjacent.totalCount}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => onSelectProject(adjacent.nextProject)}
+              aria-label={`Navigate to next project: ${adjacent.nextProject.title}`}
+              className="min-h-[44px] flex-1 flex items-center justify-end gap-2.5 p-3 rounded-2xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/10 hover:border-white/20 transition-all cursor-pointer group text-right focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+            >
+              <div className="min-w-0">
+                <span className="text-[10px] uppercase text-white/50 block font-semibold">Next Project</span>
+                <span className="text-white group-hover:text-red-300 transition-colors font-sans text-xs truncate block font-bold">
+                  {adjacent.nextProject.title}
+                </span>
+              </div>
+              <ChevronRight className="w-4 h-4 text-white/50 group-hover:text-red-400 transition-colors shrink-0" />
+            </button>
+          </div>
+        )}
+
         {/* Tools and Stack */}
-        <div className="pt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
+        <div className="pt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-4 mt-6">
           <div>
             <div className="text-xs font-mono text-white/75 uppercase mb-2">Verified Technology Stack</div>
             <div className="flex flex-wrap gap-1.5">
