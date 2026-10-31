@@ -378,13 +378,49 @@ export function buildResumeHtml() {
 </html>`;
 }
 
-export async function generateResumePdf(outputPath, screenshotPath = null) {
+export const CANONICAL_RESUME_FILENAME = 'Kaustubh_Nandurkar_Resume.pdf';
+export const STAGING_RESUME_FILENAME = 'Kaustubh_Nandurkar_Resume.generated.pdf';
+
+export function getCanonicalResumePath() {
+  return path.resolve(projectRoot, 'public', CANONICAL_RESUME_FILENAME);
+}
+
+export function getStagingResumePath() {
+  return path.resolve(projectRoot, 'public', STAGING_RESUME_FILENAME);
+}
+
+/**
+ * Generates an executive resume PDF from governed portfolio data.
+ * 
+ * Safety invariants:
+ * - Direct programmatic calls cannot silently overwrite the canonical protected PDF.
+ * - An explicit options object with { allowCanonicalOverwrite: true } or an explicit flag is mandatory to write to the canonical path.
+ * - If targeted at canonical without authorization, safely redirects to the staging path.
+ */
+export async function generateResumePdf(outputPath, screenshotPath = null, options = {}) {
+  const canonicalPdfPath = getCanonicalResumePath();
+  const stagingPdfPath = getStagingResumePath();
+
+  let resolvedTarget = outputPath ? path.resolve(outputPath) : stagingPdfPath;
+  // Strict authorization: only an explicit options.allowCanonicalOverwrite = true permits writing to the canonical file.
+  // Environment variable overrides are intentionally NOT supported to prevent accidental leaks in CI/worker environments.
+  const allowCanonicalOverwrite = Boolean(options?.allowCanonicalOverwrite === true);
+
+  if (resolvedTarget === canonicalPdfPath && !allowCanonicalOverwrite) {
+    console.warn(
+      `[Resume PDF Safety] Refusing to overwrite canonical protected resume: ${canonicalPdfPath}\n` +
+      `[Resume PDF Safety] Redirecting programmatic output to staging path: ${stagingPdfPath}\n` +
+      `[Resume PDF Safety] Pass { allowCanonicalOverwrite: true } only for intentional, verified canonical updates.`
+    );
+    resolvedTarget = stagingPdfPath;
+  }
+
   // Vercel cloud environment check: Vercel build containers lack Chromium.
   // Use the verified, committed PDF and proceed with TypeScript check and Vite build.
   if (process.env.VERCEL === '1' || process.env.NOW_BUILDER === '1') {
-    if (fs.existsSync(outputPath)) {
-      console.log(`[Resume PDF] Vercel cloud build environment detected (VERCEL=1). Using verified committed resume at: ${outputPath}`);
-      return outputPath;
+    if (fs.existsSync(resolvedTarget)) {
+      console.log(`[Resume PDF] Vercel cloud build environment detected (VERCEL=1). Using verified committed resume at: ${resolvedTarget}`);
+      return resolvedTarget;
     }
   }
 
@@ -503,16 +539,16 @@ export async function generateResumePdf(outputPath, screenshotPath = null) {
     });
 
     const pdfBuffer = Buffer.from(pdfResult.data, 'base64');
-    const targetDir = path.dirname(outputPath);
+    const targetDir = path.dirname(resolvedTarget);
     if (!fs.existsSync(targetDir)) {
       fs.mkdirSync(targetDir, { recursive: true });
     }
 
-    fs.writeFileSync(outputPath, pdfBuffer);
-    console.log(`[Resume PDF] Generated successfully at: ${outputPath} (${pdfBuffer.length} bytes)`);
+    fs.writeFileSync(resolvedTarget, pdfBuffer);
+    console.log(`[Resume PDF] Generated successfully at: ${resolvedTarget} (${pdfBuffer.length} bytes)`);
 
     ws.close();
-    return outputPath;
+    return resolvedTarget;
   } finally {
     try {
       chromeProcess.kill();
@@ -525,16 +561,28 @@ export async function generateResumePdf(outputPath, screenshotPath = null) {
 
 // CLI entry point
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  const targetPath = process.argv[2] 
-    ? path.resolve(process.cwd(), process.argv[2])
-    : path.resolve(projectRoot, 'public', 'Kaustubh_Nandurkar_Resume.pdf');
+  const args = process.argv.slice(2);
+  const allowCanonicalOverwrite = args.includes('--overwrite-canonical');
+  const filteredArgs = args.filter((a) => a !== '--overwrite-canonical');
 
-  const screenshotPath = process.argv[3]
-    ? path.resolve(process.cwd(), process.argv[3])
+  const canonicalPdfPath = getCanonicalResumePath();
+  const stagingPdfPath = getStagingResumePath();
+
+  let targetPath;
+  if (filteredArgs[0]) {
+    targetPath = path.resolve(process.cwd(), filteredArgs[0]);
+  } else if (allowCanonicalOverwrite) {
+    targetPath = canonicalPdfPath;
+  } else {
+    targetPath = stagingPdfPath;
+  }
+
+  const screenshotPath = filteredArgs[1]
+    ? path.resolve(process.cwd(), filteredArgs[1])
     : null;
 
-  console.log(`[Resume PDF] Generating resume from governed portfolio data...`);
-  generateResumePdf(targetPath, screenshotPath)
+  console.log(`[Resume PDF] Generating resume from governed portfolio data to: ${targetPath}...`);
+  generateResumePdf(targetPath, screenshotPath, { allowCanonicalOverwrite })
     .then(() => {
       console.log(`[Resume PDF] Done!`);
       process.exit(0);

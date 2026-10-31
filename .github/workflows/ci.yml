@@ -1,0 +1,104 @@
+name: CI & Regression Verification
+
+on:
+  push:
+    branches:
+      - main
+      - feature/**
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  verify:
+    name: Regression Suite & Build Safety
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Verify Chrome Availability
+        run: |
+          CHROME_PATH=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium-browser || command -v chromium || true)
+          if [ -z "$CHROME_PATH" ]; then
+            echo "Google Chrome not found on default PATH, installing chromium..."
+            sudo apt-get update && sudo apt-get install -y chromium
+            CHROME_PATH=$(command -v chromium || true)
+          fi
+          echo "Verified browser executable for CDP tests: $CHROME_PATH"
+          "$CHROME_PATH" --version
+
+      - name: Verify Protected Resume Checksum (96,435 bytes)
+        run: |
+          node -e "
+            const fs = require('fs'), crypto = require('crypto');
+            const b = fs.readFileSync('public/Kaustubh_Nandurkar_Resume.pdf');
+            const sha1 = crypto.createHash('sha1').update(b).digest('hex').toUpperCase();
+            if (b.length !== 96435 || sha1 !== '317857D88309548D9D05E8198FFBF8212C88470C') {
+              console.error('FAIL: Protected resume PDF altered! Bytes:', b.length, 'SHA1:', sha1);
+              process.exit(1);
+            }
+            console.log('PASS: Protected resume PDF verified (96,435 bytes, SHA-1 317857D88309548D9D05E8198FFBF8212C88470C)');
+          "
+
+      - name: TypeScript Validation (App & API)
+        run: npm run typecheck
+
+      - name: Valuation Math Verification (22 Tests)
+        run: node scripts/test_valuation_math.mjs
+
+      - name: Contact API Contract Verification (9 Tests)
+        run: node scripts/test_contact_api.mjs
+
+      - name: Production Build
+        run: npm run build
+
+      - name: Verify Protected Resume Post-Build Invariance
+        run: |
+          node -e "
+            const fs = require('fs'), crypto = require('crypto');
+            const b = fs.readFileSync('public/Kaustubh_Nandurkar_Resume.pdf');
+            const sha1 = crypto.createHash('sha1').update(b).digest('hex').toUpperCase();
+            if (b.length !== 96435 || sha1 !== '317857D88309548D9D05E8198FFBF8212C88470C') {
+              console.error('FAIL: Build process mutated protected resume PDF! Bytes:', b.length, 'SHA1:', sha1);
+              process.exit(1);
+            }
+            console.log('PASS: Build safety verified: resume PDF remained pristine');
+          "
+
+      - name: Start Preview Server & Run Shareable URL Tests (6 Tests)
+        run: |
+          npx vite preview --port 4173 --host 127.0.0.1 &
+          PREVIEW_PID=$!
+
+          # Reliable cleanup trap ensuring server termination regardless of test outcome
+          trap "echo 'Terminating preview server...'; kill -9 $PREVIEW_PID 2>/dev/null || true" EXIT
+
+          echo "Waiting for Vite preview server on 127.0.0.1:4173..."
+          SERVER_UP=false
+          for i in $(seq 1 30); do
+            if curl -s http://127.0.0.1:4173 > /dev/null; then
+              echo "Preview server is ready on attempt $i!"
+              SERVER_UP=true
+              break
+            fi
+            sleep 1
+          done
+
+          if [ "$SERVER_UP" != "true" ]; then
+            echo "ERROR: Preview server failed to respond within 30 seconds."
+            exit 1
+          fi
+
+          node scripts/test_shareable_urls.mjs
