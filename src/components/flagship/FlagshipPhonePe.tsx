@@ -23,6 +23,12 @@ import { ValuationExportModal, ValuationSummaryData } from './ValuationExportMod
 import { ValuationWaterfallChart } from './ValuationWaterfallChart';
 import { ValuationScenarioComparison } from './ValuationScenarioComparison';
 import { PHONEPE_SCENARIO_DEFINITIONS, ValuationScenarioId } from './valuationScenarios';
+import {
+  calculatePhonePeValuation,
+  generateSensitivityMatrix,
+  TerminalMethodology,
+  PHONEPE_VALUATION_CONSTANTS,
+} from './valuationSensitivityMath';
 
 export const FlagshipPhonePe: React.FC = () => {
   const [activeTab, setActiveTab] = useState<
@@ -34,19 +40,29 @@ export const FlagshipPhonePe: React.FC = () => {
   // Interactive sensitivity matrix parameters
   const [waccOffset, setWaccOffset] = useState<number>(0);
   const [multipleOffset, setMultipleOffset] = useState<number>(0);
+  const [growthOffset, setGrowthOffset] = useState<number>(0);
+  const [sensitivityColMode, setSensitivityColMode] = useState<'exitMultiple' | 'terminalGrowth'>('exitMultiple');
+  const [sensitivityOutputMetric, setSensitivityOutputMetric] = useState<'ev' | 'equityValue' | 'sharePrice'>('ev');
+  const [terminalMethodology, setTerminalMethodology] = useState<TerminalMethodology>('blended');
 
   const baseWacc = 14.92;
   const baseMultiple = 13.15;
+  const baseGrowth = 7.00;
   const currentWacc = baseWacc + waccOffset;
   const currentMultiple = baseMultiple + multipleOffset;
+  const currentGrowth = baseGrowth + growthOffset;
 
-  // Dynamic EV calculation approximation for illustrative exploration
-  const calculatedEV = Math.round(
-    33432 * (1 - (waccOffset / 100) * 8.5) * (1 + (multipleOffset / baseMultiple) * 0.45)
-  );
-  // Net cash adjustment: +₹1,127.58 Cr cash + ₹7,787.65 Cr investments - ₹716.00 Cr debt = +₹8,199.23 Cr
-  const calculatedEquityValue = calculatedEV + 1128 + 7788 - 716;
-  const calculatedSharePrice = (calculatedEquityValue / 50.66).toFixed(2);
+  // Real-time valuation output calculated via pure mathematical engine
+  const sensitivityValuation = calculatePhonePeValuation({
+    wacc: currentWacc / 100,
+    terminalGrowth: currentGrowth / 100,
+    exitMultiple: currentMultiple,
+    methodology: terminalMethodology,
+  });
+
+  const calculatedEV = Math.round(sensitivityValuation.enterpriseValue);
+  const calculatedEquityValue = Math.round(sensitivityValuation.equityValue);
+  const calculatedSharePrice = sensitivityValuation.sharePrice.toFixed(2);
 
   // Authoritative scenario metrics matching Tab 4 from shared definition module
   const activeScenarioValues = PHONEPE_SCENARIO_DEFINITIONS[scenario];
@@ -870,7 +886,7 @@ export const FlagshipPhonePe: React.FC = () => {
         )}
 
         {/* ================================================================= */}
-        {/* TAB 6: DYNAMIC SENSITIVITY HEATMAP */}
+        {/* TAB 6: DYNAMIC SENSITIVITY HEATMAP & VALUATION EXPLORER */}
         {/* ================================================================= */}
         {activeTab === 'sensitivity' && (
           <div className="space-y-6">
@@ -879,35 +895,152 @@ export const FlagshipPhonePe: React.FC = () => {
               <div className="p-4 rounded-2xl bg-blue-500/10 border border-blue-500/25 mb-6 flex items-start gap-3">
                 <Info className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" />
                 <p className="text-xs text-blue-200/90 leading-relaxed font-sans">
-                  <strong>ILLUSTRATIVE SENSITIVITY EXPLORATION:</strong> This interactive sensitivity tool allows testing how macroeconomic interest rates (WACC) and market multiple shifts impact implied valuation. The authoritative baseline valuation (<strong>₹33,431.99 Cr EV</strong> and <strong>₹41,631.22 Cr Equity Value</strong>) remains anchored to the verified source model.
+                  <strong>INTERACTIVE VALUATION SENSITIVITY ENGINE:</strong> This mathematical engine recalculates PhonePe's discounted cash flows, terminal valuations, and balance-sheet equity bridge in real time. The baseline parameters (<strong>14.92% WACC</strong>, <strong>7.00% Terminal Growth</strong>, and <strong>13.15x Exit Multiple</strong>) reproduce the authoritative model target of <strong>₹33,432 Cr EV</strong>, <strong>₹41,631 Cr Equity Value</strong>, and <strong>₹821.78 per share</strong>.
                 </p>
               </div>
 
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+              {/* Header with Live Output Counters */}
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
                 <div>
-                  <h3 className="text-lg font-bold text-white">Valuation Sensitivity Heatmap (WACC vs Exit Multiple)</h3>
-                  <p className="text-xs text-white/65">Simulate macroeconomic interest rates and exit multiples.</p>
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <span>Valuation Sensitivity Explorer</span>
+                    <span className="text-xs font-normal px-2.5 py-0.5 rounded-full bg-red-500/10 border border-red-500/30 text-red-300 font-mono">
+                      Pure Math Engine
+                    </span>
+                  </h3>
+                  <p className="text-xs text-white/65 mt-0.5">
+                    Live sensitivity across macroeconomic cost of capital, growth expectations, and terminal multiples.
+                  </p>
                 </div>
-                <div className="flex items-center gap-3">
-                  <div className="p-3 rounded-2xl bg-black/40 border border-white/10 text-right">
-                    <span className="text-xs text-white/65 uppercase block font-mono">Dynamic EV</span>
-                    <span className="text-xl font-bold text-red-400 font-mono">₹{calculatedEV.toLocaleString()} Cr</span>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                  <div className="p-2.5 rounded-xl bg-black/40 border border-white/10 text-right">
+                    <span className="text-[10px] text-white/60 uppercase block font-mono">Operating EV</span>
+                    <span className="text-base sm:text-lg font-bold text-red-400 font-mono">₹{calculatedEV.toLocaleString()} Cr</span>
                   </div>
-                  <div className="p-3 rounded-2xl bg-black/40 border border-white/10 text-right">
-                    <span className="text-xs text-white/65 uppercase block font-mono">Dynamic Equity Val</span>
-                    <span className="text-xl font-bold text-emerald-400 font-mono">₹{calculatedEquityValue.toLocaleString()} Cr</span>
+                  <div className="p-2.5 rounded-xl bg-black/40 border border-white/10 text-right">
+                    <span className="text-[10px] text-white/60 uppercase block font-mono">Net Liquidity</span>
+                    <span className="text-base sm:text-lg font-bold text-emerald-400 font-mono">+₹8,199 Cr</span>
+                  </div>
+                  <div className="p-2.5 rounded-xl bg-black/40 border border-white/10 text-right">
+                    <span className="text-[10px] text-white/60 uppercase block font-mono">Equity Value</span>
+                    <span className="text-base sm:text-lg font-bold text-emerald-300 font-mono">₹{calculatedEquityValue.toLocaleString()} Cr</span>
+                  </div>
+                  <div className="p-2.5 rounded-xl bg-red-500/10 border border-red-500/30 text-right">
+                    <span className="text-[10px] text-red-200/70 uppercase block font-mono">Per Share</span>
+                    <span className="text-base sm:text-lg font-extrabold text-amber-300 font-mono">₹{calculatedSharePrice}</span>
                   </div>
                 </div>
               </div>
 
-              {/* Sliders */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-4 rounded-2xl bg-black/30 border border-white/5 mb-6">
+              {/* Methodology Selector & Metric Toggles */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 rounded-2xl bg-black/40 border border-white/10 mb-6">
                 <div>
-                  <label className="flex justify-between text-xs font-mono text-white/80 mb-2">
-                    <span>WACC Adjustment ({waccOffset > 0 ? `+${waccOffset}` : waccOffset}%): Current {currentWacc.toFixed(2)}%</span>
-                  </label>
+                  <span className="text-xs font-mono text-white/80 block mb-2 font-semibold">
+                    Terminal Value Methodology:
+                  </span>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[
+                      { id: 'blended', label: '50/50 Blended', desc: 'Perpetuity + Multiple' },
+                      { id: 'perpetuity', label: '100% Perpetuity', desc: 'Gordon Growth (g)' },
+                      { id: 'multiple', label: '100% Multiple', desc: 'Exit EBITDA Multiple' },
+                    ].map((m) => (
+                      <button
+                        key={m.id}
+                        type="button"
+                        onClick={() => setTerminalMethodology(m.id as TerminalMethodology)}
+                        className={`p-2 rounded-xl text-left border transition-all text-xs font-sans ${
+                          terminalMethodology === m.id
+                            ? 'bg-red-500/20 border-red-500/60 text-white shadow-sm'
+                            : 'bg-white/[0.02] border-white/5 text-white/60 hover:text-white hover:bg-white/[0.05]'
+                        }`}
+                      >
+                        <span className="font-bold block text-[11px]">{m.label}</span>
+                        <span className="text-[9px] text-white/50 block font-mono">{m.desc}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <span className="text-xs font-mono text-white/80 block mb-2 font-semibold">
+                    Matrix Display & Dimension Settings:
+                  </span>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex rounded-lg border border-white/10 bg-black/30 p-0.5 text-xs">
+                      <button
+                        type="button"
+                        onClick={() => setSensitivityColMode('exitMultiple')}
+                        className={`px-2.5 py-1 rounded-md text-[11px] font-mono transition-colors ${
+                          sensitivityColMode === 'exitMultiple'
+                            ? 'bg-red-500 text-white font-bold'
+                            : 'text-white/60 hover:text-white'
+                        }`}
+                      >
+                        WACC × Multiple
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSensitivityColMode('terminalGrowth')}
+                        className={`px-2.5 py-1 rounded-md text-[11px] font-mono transition-colors ${
+                          sensitivityColMode === 'terminalGrowth'
+                            ? 'bg-red-500 text-white font-bold'
+                            : 'text-white/60 hover:text-white'
+                        }`}
+                      >
+                        WACC × Growth (g)
+                      </button>
+                    </div>
+
+                    <div className="flex rounded-lg border border-white/10 bg-black/30 p-0.5 text-xs">
+                      <button
+                        type="button"
+                        onClick={() => setSensitivityOutputMetric('ev')}
+                        className={`px-2 py-1 rounded-md text-[11px] font-mono transition-colors ${
+                          sensitivityOutputMetric === 'ev'
+                            ? 'bg-white/20 text-white font-bold'
+                            : 'text-white/60 hover:text-white'
+                        }`}
+                      >
+                        EV
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSensitivityOutputMetric('equityValue')}
+                        className={`px-2 py-1 rounded-md text-[11px] font-mono transition-colors ${
+                          sensitivityOutputMetric === 'equityValue'
+                            ? 'bg-white/20 text-white font-bold'
+                            : 'text-white/60 hover:text-white'
+                        }`}
+                      >
+                        Equity Val
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSensitivityOutputMetric('sharePrice')}
+                        className={`px-2 py-1 rounded-md text-[11px] font-mono transition-colors ${
+                          sensitivityOutputMetric === 'sharePrice'
+                            ? 'bg-emerald-500/30 text-emerald-300 font-bold'
+                            : 'text-white/60 hover:text-white'
+                        }`}
+                      >
+                        ₹ / Share
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Interactive Sliders */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 p-5 rounded-2xl bg-black/30 border border-white/10 mb-6">
+                {/* WACC Slider */}
+                <div>
+                  <div className="flex justify-between text-xs font-mono text-white/90 mb-2">
+                    <span className="font-semibold">Discount Rate (WACC)</span>
+                    <span className="text-amber-300 font-bold">{currentWacc.toFixed(2)}% ({waccOffset > 0 ? `+${waccOffset.toFixed(2)}%` : `${waccOffset.toFixed(2)}%`})</span>
+                  </div>
                   <input
                     type="range"
+                    aria-label="Discount rate WACC slider"
                     min="-2.0"
                     max="2.0"
                     step="0.5"
@@ -915,19 +1048,22 @@ export const FlagshipPhonePe: React.FC = () => {
                     onChange={(e) => setWaccOffset(parseFloat(e.target.value))}
                     className="w-full accent-red-500 cursor-pointer"
                   />
-                  <div className="flex justify-between text-xs text-white/65 font-mono mt-1">
-                    <span>12.92% (Low rate)</span>
-                    <span>14.92% (Base)</span>
+                  <div className="flex justify-between text-[10px] text-white/50 font-mono mt-1">
+                    <span>12.92% (Low WACC)</span>
+                    <span className="text-white/80 font-bold">14.92% (Base)</span>
                     <span>16.92% (Tightening)</span>
                   </div>
                 </div>
 
+                {/* Exit Multiple Slider */}
                 <div>
-                  <label className="flex justify-between text-xs font-mono text-white/80 mb-2">
-                    <span>Exit Multiple Adjustment ({multipleOffset > 0 ? `+${multipleOffset}` : multipleOffset}x): Current {currentMultiple.toFixed(2)}x</span>
-                  </label>
+                  <div className="flex justify-between text-xs font-mono text-white/90 mb-2">
+                    <span className="font-semibold">Exit Multiple (EV/EBITDA)</span>
+                    <span className="text-amber-300 font-bold">{currentMultiple.toFixed(2)}x ({multipleOffset > 0 ? `+${multipleOffset.toFixed(2)}x` : `${multipleOffset.toFixed(2)}x`})</span>
+                  </div>
                   <input
                     type="range"
+                    aria-label="Terminal exit multiple slider"
                     min="-2.0"
                     max="2.0"
                     step="0.5"
@@ -935,78 +1071,179 @@ export const FlagshipPhonePe: React.FC = () => {
                     onChange={(e) => setMultipleOffset(parseFloat(e.target.value))}
                     className="w-full accent-red-500 cursor-pointer"
                   />
-                  <div className="flex justify-between text-xs text-white/65 font-mono mt-1">
+                  <div className="flex justify-between text-[10px] text-white/50 font-mono mt-1">
                     <span>11.15x (Compressed)</span>
-                    <span>13.15x (Base)</span>
+                    <span className="text-white/80 font-bold">13.15x (Base)</span>
                     <span>15.15x (Expanded)</span>
+                  </div>
+                </div>
+
+                {/* Terminal Growth Slider */}
+                <div>
+                  <div className="flex justify-between text-xs font-mono text-white/90 mb-2">
+                    <span className="font-semibold">Perpetuity Growth (g)</span>
+                    <span className="text-amber-300 font-bold">{currentGrowth.toFixed(2)}% ({growthOffset > 0 ? `+${growthOffset.toFixed(2)}%` : `${growthOffset.toFixed(2)}%`})</span>
+                  </div>
+                  <input
+                    type="range"
+                    aria-label="Terminal perpetuity growth rate slider"
+                    min="-2.0"
+                    max="1.0"
+                    step="0.5"
+                    value={growthOffset}
+                    onChange={(e) => setGrowthOffset(parseFloat(e.target.value))}
+                    className="w-full accent-red-500 cursor-pointer"
+                  />
+                  <div className="flex justify-between text-[10px] text-white/50 font-mono mt-1">
+                    <span>5.00% (Mature)</span>
+                    <span className="text-white/80 font-bold">7.00% (Base)</span>
+                    <span>8.00% (Aggressive)</span>
                   </div>
                 </div>
               </div>
 
-              {/* Matrix Table */}
+              {/* Reset Control */}
+              {(waccOffset !== 0 || multipleOffset !== 0 || growthOffset !== 0 || terminalMethodology !== 'blended') && (
+                <div className="mb-6 flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setWaccOffset(0);
+                      setMultipleOffset(0);
+                      setGrowthOffset(0);
+                      setTerminalMethodology('blended');
+                    }}
+                    className="px-3 py-1.5 rounded-lg text-xs font-mono bg-white/5 hover:bg-white/10 text-white/80 border border-white/10 transition-colors"
+                  >
+                    ↺ Reset to Governed Base Case (14.92% WACC / 7.0% g / 13.15x)
+                  </button>
+                </div>
+              )}
+
+              {/* Dynamic 5x5 Sensitivity Matrix Table */}
               <div
                 tabIndex={0}
                 role="region"
-                aria-label="WACC versus EV Multiple sensitivity matrix table"
+                aria-label="Interactive PhonePe valuation sensitivity matrix table"
                 className="overflow-x-auto rounded-2xl border border-white/10 focus:outline-none focus:ring-1 focus:ring-red-400"
               >
-                <table className="w-full text-center border-collapse text-xs font-mono">
-                  <thead>
-                    <tr className="bg-black/50 border-b border-white/10 text-white/75 text-xs uppercase">
-                      <th className="py-3 px-3 text-left">WACC \ Multiple</th>
-                      <th className="py-3 px-3">11.15x (-2.0x)</th>
-                      <th className="py-3 px-3">12.15x (-1.0x)</th>
-                      <th className="py-3 px-3 bg-red-500/20 text-red-300 font-bold">13.15x (Base)</th>
-                      <th className="py-3 px-3">14.15x (+1.0x)</th>
-                      <th className="py-3 px-3">15.15x (+2.0x)</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-white/5">
-                    {[
-                      { waccLabel: '12.92% (-2.0%)', wOff: -2.0 },
-                      { waccLabel: '13.92% (-1.0%)', wOff: -1.0 },
-                      { waccLabel: '14.92% (Base)', wOff: 0.0, isBaseWacc: true },
-                      { waccLabel: '15.92% (+1.0%)', wOff: 1.0 },
-                      { waccLabel: '16.92% (+2.0%)', wOff: 2.0 },
-                    ].map((row, rIdx) => (
-                      <tr key={rIdx} className={row.isBaseWacc ? 'bg-red-500/10 font-semibold' : 'hover:bg-white/[0.02]'}>
-                        <td className="py-2.5 px-3 text-left font-bold text-white/80">{row.waccLabel}</td>
-                        {[-2.0, -1.0, 0.0, 1.0, 2.0].map((mOff, cIdx) => {
-                          const ev = Math.round(
-                            33432 * (1 - (row.wOff / 100) * 8.5) * (1 + (mOff / baseMultiple) * 0.45)
-                          );
-                          const isAnchor = row.isBaseWacc && mOff === 0.0;
+                {(() => {
+                  const matrix = generateSensitivityMatrix({
+                    rowParam: 'wacc',
+                    colParam: sensitivityColMode,
+                    rowValues: [0.1292, 0.1392, 0.1492, 0.1592, 0.1692],
+                    colValues:
+                      sensitivityColMode === 'exitMultiple'
+                        ? [11.15, 12.15, 13.15, 14.15, 15.15]
+                        : [0.05, 0.06, 0.07, 0.075, 0.08],
+                    baseParams: {
+                      wacc: currentWacc / 100,
+                      terminalGrowth: currentGrowth / 100,
+                      exitMultiple: currentMultiple,
+                      methodology: terminalMethodology,
+                    },
+                  });
+
+                  return (
+                    <table className="w-full text-center border-collapse text-xs font-mono">
+                      <thead>
+                        <tr className="bg-black/60 border-b border-white/10 text-white/75 text-xs uppercase">
+                          <th className="py-3 px-3 text-left font-bold">
+                            WACC \ {sensitivityColMode === 'exitMultiple' ? 'Exit Multiple' : 'Growth (g)'}
+                          </th>
+                          {matrix.colValues.map((colVal, cIdx) => {
+                            const isBaseCol =
+                              sensitivityColMode === 'exitMultiple'
+                                ? Math.abs(colVal - 13.15) < 0.01
+                                : Math.abs(colVal - 0.07) < 0.001;
+                            const label =
+                              sensitivityColMode === 'exitMultiple'
+                                ? `${colVal.toFixed(2)}x`
+                                : `${(colVal * 100).toFixed(1)}%`;
+                            return (
+                              <th
+                                key={cIdx}
+                                className={`py-3 px-3 ${
+                                  isBaseCol ? 'bg-red-500/20 text-red-300 font-bold' : ''
+                                }`}
+                              >
+                                {label} {isBaseCol ? '(Base)' : ''}
+                              </th>
+                            );
+                          })}
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-white/5">
+                        {matrix.cells.map((rowCells, rIdx) => {
+                          const rowWacc = matrix.rowValues[rIdx];
+                          const isBaseRow = Math.abs(rowWacc - 0.1492) < 0.001;
                           return (
-                            <td
-                              key={cIdx}
-                              className={`py-2.5 px-3 ${
-                                isAnchor
-                                  ? 'bg-emerald-500/30 text-emerald-300 font-extrabold border border-emerald-400'
-                                  : mOff === 0.0
-                                  ? 'bg-red-500/10 text-white'
-                                  : 'text-white/70'
-                              }`}
+                            <tr
+                              key={rIdx}
+                              className={isBaseRow ? 'bg-red-500/10 font-semibold' : 'hover:bg-white/[0.02]'}
                             >
-                              ₹{ev.toLocaleString()} Cr
-                            </td>
+                              <td className="py-2.5 px-3 text-left font-bold text-white/90">
+                                {(rowWacc * 100).toFixed(2)}% {isBaseRow ? '(Base)' : ''}
+                              </td>
+                              {rowCells.map((cell, cIdx) => {
+                                const isBaseCol =
+                                  sensitivityColMode === 'exitMultiple'
+                                    ? Math.abs(cell.colValue - 13.15) < 0.01
+                                    : Math.abs(cell.colValue - 0.07) < 0.001;
+                                const isAnchor = isBaseRow && isBaseCol && terminalMethodology === 'blended';
+
+                                let displayVal = '';
+                                if (sensitivityOutputMetric === 'ev') {
+                                  displayVal = `₹${Math.round(cell.output.enterpriseValue).toLocaleString()} Cr`;
+                                } else if (sensitivityOutputMetric === 'equityValue') {
+                                  displayVal = `₹${Math.round(cell.output.equityValue).toLocaleString()} Cr`;
+                                } else {
+                                  displayVal = `₹${cell.output.sharePrice.toFixed(2)}`;
+                                }
+
+                                return (
+                                  <td
+                                    key={cIdx}
+                                    className={`py-2.5 px-3 ${
+                                      isAnchor
+                                        ? 'bg-emerald-500/30 text-emerald-300 font-extrabold border border-emerald-400'
+                                        : isBaseRow || isBaseCol
+                                        ? 'text-white font-medium'
+                                        : 'text-white/70'
+                                    }`}
+                                  >
+                                    {displayVal}
+                                  </td>
+                                );
+                              })}
+                            </tr>
                           );
                         })}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                      </tbody>
+                    </table>
+                  );
+                })()}
               </div>
 
-              {/* Sensitivity Methodology Note */}
-              <div className="mt-4 p-3.5 rounded-xl bg-black/40 border border-white/10 text-xs text-white/70 font-sans space-y-1">
-                <div className="font-mono text-[11px] text-white/90 font-bold uppercase tracking-wider">
-                  Sensitivity Grid Formulation & Bounds
+              {/* Mathematical Formulation & Reconciled Lineage Note */}
+              <div className="mt-5 p-4 rounded-xl bg-black/40 border border-white/10 text-xs text-white/75 font-sans space-y-2">
+                <div className="font-mono text-[11px] text-white/90 font-bold uppercase tracking-wider flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  <span>Governed Mathematical Formulation & Reconciled Lineage</span>
                 </div>
-                <p>
-                  • <strong>Model Formula:</strong> EV ≈ ₹33,432 Cr × [1 − (ΔWACC / 100) × 8.5] × [1 + (ΔMultiple / 13.15) × 0.45], where ΔWACC is in percentage points (e.g. ±2.0) and ΔMultiple is in turns of EBITDA (e.g. ±2.0x).
-                </p>
-                <p>
-                  • <strong>Methodology:</strong> This grid is an <em>illustrative parametric approximation</em> capturing first-order duration and terminal multiple elasticity around the governed base valuation (₹33,432 Cr EV at 14.92% WACC / 13.15x multiple). It provides responsive interactive scenario testing rather than a full multi-tab DCF recalculation.
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1 text-[11px] text-white/70 leading-relaxed">
+                  <div>
+                    <span className="font-semibold text-white block">1. Explicit Cash Flows & Duration Scaling:</span>
+                    PV of 5-year explicit FCFs scales from baseline ₹13,878.15 Cr via Macaulay cash flow duration (2.85 years):
+                    <code className="text-amber-300 font-mono block mt-0.5">PV(FCF) = ₹13,878.15 Cr × [(1 + 14.92%) ÷ (1 + WACC)]^2.85</code>
+                  </div>
+                  <div>
+                    <span className="font-semibold text-white block">2. Dual Terminal Value Mechanics:</span>
+                    Gordon Perpetuity scales at <code className="text-amber-300 font-mono">Numerator ÷ (WACC − g)</code> while Exit Multiple capitalizes Year 5 EBITDA (₹1,477.19 Cr), discounted to Year 0 via Year 5 discount factor.
+                  </div>
+                </div>
+                <p className="text-[11px] text-white/60 pt-1 border-t border-white/5">
+                  • <strong>Model Governance Notice:</strong> All sensitivity calculations are exploratory financial models reflecting parameterized macroeconomic assumptions. Outputs are strictly model-derived estimates and do not represent trading recommendations, secondary market bids, or guaranteed IPO underwriting prices.
                 </p>
               </div>
             </div>

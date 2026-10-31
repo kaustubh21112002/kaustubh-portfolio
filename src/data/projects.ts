@@ -639,144 +639,160 @@ export const projects: Project[] = [
   {
     id: "it-support-analytics",
     title: "IT Support Service Intelligence & Resolution Prediction",
-    tagline: "Empirical analysis of 10,000+ support ticket records for SLA bottleneck detection.",
+    tagline: "Interactive IT operations analytics exploring ticket demand, backlog composition, SLA compliance, and resolution prediction.",
     category: "Business Analytics",
     featured: true,
-    status: "Academic Dissertation",
-    date: "Q2 2026",
-    summary: "End-to-end analytics pipeline analyzing support ticket records in MySQL, Power BI DAX KPIs, and exploratory regression modeling in Python.",
+    status: "Completed Independent Research",
+    date: "Q4 2024",
+    summary: "High-fidelity enterprise service-intelligence SaaS workspace analyzing 8,000 synthetic ticket transactions across calendar year 2024 with operational triage, SLA compliance analytics, and resolution-time modeling.",
     datasetScope: {
-      scale: "10,000+ Enterprise Support Ticket Incident Logs",
-      structure: "Normalized MySQL Star Schema (Fact_Tickets + 4 Conformed Dimensions)",
-      qualityNote: "Time-series validation across acknowledge and resolve timestamps; SLA breach flags validated against ITIL targets"
+      scale: "8,000 Synthetic Support Ticket Transactions (CY 2024)",
+      structure: "Snowflake/Star Relational Schema (tickets Fact + 5 Conformed Dimensions: departments, teams, agents, categories, sla_rules)",
+      qualityNote: "Controlled clean reference vs. 120 injected defect variant in data workbench; 24/7 calendar-hour resolution metrics; synthetic data disclosure"
     },
     verifiedLinks: [
+      { label: "Live Interactive Application", url: "https://it-support-analytics.vercel.app/", isInternal: false, type: "evidence" },
+      { label: "GitHub Source Repository", url: "https://github.com/kaustubh21112002/it-support-analytics", isInternal: false, type: "repository" },
       { label: "Applied Technical Skills", url: "#skills", isInternal: true }
     ],
-    problemStatement: "Enterprise IT service desks struggle with SLA breaches and ticket backlogs due to unoptimized triage, lack of dimensional visibility, and shift-change communication bottlenecks.",
-    approach: "Engineered an end-to-end analytics workflow: cleaned and transformed 10,000+ support ticket records in Python, designed a star-schema relational model in MySQL (Fact_Tickets, Dim_Priority, Dim_Category, Dim_Agent, Dim_Department), and built Power BI DAX dashboards with exploratory regression.",
-    keyFinding: "High-priority incidents resolved in 4.2 hours average; SLA compliance achieved 92.4% (against 95% target). In regression modeling, ticket resolution latency showed a strong positive statistical association with shift-change transition windows (+3.1 hours average delay on tickets unresolved across shift transitions) rather than technical category complexity.",
-    businessImplication: "Staggering tier-2 agent shifts during peak ticket creation windows and automating priority classification directly addresses resolution bottlenecks to recover SLA compliance.",
-    personalContribution: "Designed the 5-table MySQL star-schema data architecture, authored Power BI DAX performance measures (MTTA, MTTR, SLA compliance), and conducted Python OLS regression modeling identifying shift-change handoff delays.",
+    problemStatement: "Enterprise IT support desks face severe operational opacity: individual ticket backlogs obscure macro demand patterns, triage bottlenecks delay high-impact incidents, and retrospective SLA reporting often lacks denominator governance.",
+    approach: "Architected a full-featured SaaS analytics platform using React 18, TypeScript, and Recharts, backed by a governed stateful data-service layer (dataService.ts) analyzing 8,000 synthetic ticket records across calendar year 2024. Implemented role-based workspaces, SLA threshold auditing, and an intake-stage resolution time prediction interface.",
+    keyFinding: "Analysis of 8,000 synthetic tickets revealed 6,612 completed tickets with an 87.9% overall retrospective SLA compliance rate (5,814 compliant vs. 798 breached). Turnaround times exhibit strong positive right-skew: mean resolution of 14.9 hours vs. median of 7.32 hours (a 50.9% variance), proving that high-duration infrastructure outages distort arithmetic averages.",
+    businessImplication: "Service leaders should monitor median turnaround time alongside SLA compliance to prevent right-tail infrastructure outages from skewing operational performance assessments, while prioritizing automated intake triage for high-volume Access and Network categories.",
+    personalContribution: "Engineered the end-to-end frontend SaaS architecture, implemented the decoupled TypeScript data-service layer (dataService.ts and dataNormalizer.ts) with useSyncExternalStore, designed the relational star-schema specification and DDL, and formulated the intake resolution estimation engine.",
     cardBrief: {
-      objective: "Identify root causes of enterprise IT support ticket SLA breaches across 10,000+ incident logs and model resolution duration.",
-      methods: "Python data munging • MySQL star-schema (Fact_Tickets + 4 dims) • Power BI DAX calculated measures • Exploratory OLS regression",
-      keyDeliverable: "Interactive Power BI executive dashboard with drill-through triage, production SQL DDL schema, and statistical regression findings."
+      objective: "Explore support ticket demand, backlog composition, SLA compliance, and reported resolution-time predictions across 8,000 synthetic incident records.",
+      methods: "React 18 + TypeScript • dataService.ts abstraction • 5-table star schema • Multi-tier SLA rules • LightGBM evaluation & heuristic",
+      keyDeliverable: "Deployed enterprise analytics workspace on Vercel with role-based routing, interactive prediction tool, and comprehensive data workbench."
     },
-    tools: ["Python (Scikit-Learn, Pandas)", "MySQL Relational Model", "Power BI & DAX Measures", "Excel Advanced Analytics"],
+    tools: ["React 18 & TypeScript", "Tailwind CSS & Recharts", "dataService.ts Abstraction", "MySQL Relational Schema", "LightGBM Regression (Offline)"],
     keyMetrics: [
-      { label: "Dataset Scale", value: "10,000+ Records", subtext: "Academic demonstration logs", classification: "DEMONSTRATED" },
-      { label: "SLA Benchmark", value: "92.4%", subtext: "Target 95.0% threshold", classification: "DEMONSTRATED" },
-      { label: "Mean Resolution", value: "4.2 hrs", subtext: "High-priority incidents", classification: "DEMONSTRATED" },
-      { label: "Escalation Delay", value: "+3.1 hrs", subtext: "Shift-change handoff latency", classification: "STUDY ESTIMATE" }
+      { label: "Dataset Scale", value: "8,000 Records", subtext: "Synthetic transactions (CY 2024)", classification: "DEMONSTRATED" },
+      { label: "SLA Compliance", value: "87.9%", subtext: "5,814 / 6,612 completed tickets", classification: "OPERATIONAL SLA" },
+      { label: "Mean vs Median", value: "14.9h / 7.3h", subtext: "Turnaround distribution skew", classification: "DEMONSTRATED" },
+      { label: "Model Baseline", value: "3.42h MAE", subtext: "Offline LightGBM (R² 0.784)", classification: "STUDY ESTIMATE" }
     ],
     methodsAndAssumptions: [
-      "Star schema relational architecture linking 10,000+ Fact_Tickets rows to 4 dimension tables (Priority, Category, Agent, Department).",
-      "DAX calculated measures for Mean Time to Acknowledge (MTTA), Mean Time to Resolve (MTTR), and SLA compliance percentage.",
-      "Exploratory Ordinary Least Squares (OLS) regression modeling in Python evaluating ticket duration drivers."
+      "Synthetic Data Scope: Exactly 8,000 synthetic ticket records across calendar year 2024 generated for academic and demonstration purposes; no confidential production records are utilized.",
+      "Resolution Time Metric: Calculated as (resolved_at - created_at) / 3600 seconds, evaluated continuously across 24/7 calendar hours.",
+      "SLA Denominator Governance: Retrospective compliance evaluates strictly against completed tickets (6,612 resolved/closed), never diluting breach rates with the active 1,388 open backlog tickets.",
+      "Model Evaluation Context: Reported metrics (MAE 3.42h, RMSE 5.18h, R² 0.784) reflect an offline LightGBM regressor on an 80/20 chronological split; the running web client utilizes a calibrated client-side regression heuristic mirroring these weights."
     ],
     limitations: [
-      "Model evaluated on historical incident tickets; newly introduced software stack issues may exhibit divergent resolution distributions.",
-      "Agent subjective notes and unstructured chat transcripts were not incorporated into the tabular model."
+      "Synthetic Data Constraint: Dataset parameters reflect parameterized operational distributions; real-world enterprise environments exhibit unmodeled vendor outages, multi-hop escalations, and unstructured communication delays.",
+      "Frontend Heuristic vs. Live Server: The live prediction tab executes a calibrated client-side regression heuristic matching LightGBM weights rather than invoking a live containerized ML microservice.",
+      "Prototype Authentication: Demo logins and two-factor OTP (123456) operate client-side without external SSO/SAML identity provider integration."
     ],
     caseStudy: {
-      researchQuestion: "Can historical IT support ticket attributes identify systemic bottlenecks and estimate resolution latency in ITSM workflows?",
-      executiveSummary: "An academic dissertation project establishing an end-to-end analytics pipeline: Raw Ticket Logs → Data Preparation in Python → Star-Schema MySQL Database → Power BI KPI Measurement → Resolution Prediction. Observed significant statistical correlation between shift-change transition windows and increased ticket resolution latency.",
+      researchQuestion: "How can operational ticket logs be transformed into governed service intelligence, multi-tier SLA monitoring, and reliable intake resolution-time estimates?",
+      executiveSummary: "An end-to-end enterprise service-intelligence SaaS workspace developed in React 18, TypeScript, and Recharts, backed by a stateful service-layer abstraction (dataService.ts) and a 5-table relational star schema. Analyzes 8,000 synthetic support ticket transactions across CY 2024 to uncover backlog distribution, turnaround right-skew (14.9h mean vs. 7.3h median), department demand drivers, and reported LightGBM resolution prediction capabilities.",
       sections: [
         {
-          title: "1. Project Objective & ITSM Service Context",
+          title: "1. Executive Summary & Interactive Architecture",
+          subtitle: "Decoupled 5-tier architecture connecting synthetic fact logs to responsive analytics views",
           content: [
-            "Enterprise IT Service Management (ITSM) operations face increasing complexity across cloud infrastructure, application access, and hardware provisioning.",
-            "The objective of this research project was to construct an end-to-end analytics pipeline analyzing historical incident logs to uncover root causes of service-level agreement (SLA) breaches and model ticket resolution duration."
+            "Enterprise IT Service Management (ITSM) operations generate massive transactional ticket volumes that overwhelm static spreadsheets and standard ticketing queues.",
+            "The IT Support Analytics Platform was built to bridge operational triage with executive decision support. It features four dedicated role-based workspaces: Employee Self-Service, Support Agent Queue, Management Service Intelligence, and Administrator Data Workbench.",
+            "In accordance with governed engineering standards, the interactive workspace below illustrates the system architecture, verified KPIs, predictive modeling audit, and high-fidelity product gallery captured from the live deployment:"
           ]
         },
         {
-          title: "2. Core Analytical & SLA Bottleneck Question",
+          title: "2. Business Problem & Operational Analytical Questions",
+          subtitle: "Addressing visibility bottlenecks in high-volume IT support desks",
           content: [
-            "What factors drive SLA breaches across multi-tiered enterprise IT support environments, and how accurately can resolution latency be modeled from initial ticket attributes?",
-            "Organizations frequently assume agent individual productivity is the primary determinant of resolution speed; this research empirically tests whether structural triage and schedule handoffs drive variance."
+            "At enterprise scale, support desks process thousands of concurrent requests across disparate departments, technical tiers, and urgency levels. Individual ticket logs fail to provide macro operational answers to essential questions:",
+            "• Ticket Demand & Seasonality: How is request demand distributed across calendar months, and does ticket creation outpace team resolution throughput?",
+            "• Backlog Distribution: How is unresolved work divided between new Open requests (552), active In Progress tickets (523), and external Pending tickets (313)?",
+            "• SLA Compliance Integrity: What proportion of eligible resolved tickets satisfied tier-specific SLA thresholds, and which categories suffer highest breach rates?",
+            "• Turnaround Time Distribution: Why do average resolution metrics mask operational reality, and how significant is right-tail latency skew?",
+            "• Intake Predictive Estimation: What can features available at intake (priority, category, department, issue type) tell service desks about expected turnaround duration?"
           ]
         },
         {
-          title: "3. Dataset Scope & MySQL Star Schema",
+          title: "3. Governed KPI Framework & Mathematical Formulations",
+          subtitle: "Rigorous metric definitions anchored to the 8,000-ticket dataset",
           content: [
-            "The underlying dataset encompasses 10,000+ support ticket records modeled into a normalized star-schema database in MySQL:",
-            "• Fact_Tickets: Granular transaction table storing ticket IDs, open/close timestamps, satisfaction scores, and resolution duration.",
-            "• Dim_Priority: SLA threshold rules (Critical: 2h, High: 6h, Medium: 24h, Low: 48h).",
-            "• Dim_Category: ITIL incident categories (Hardware, Software, Access, Network).",
-            "• Dim_Agent: Support tier, shift assignment, and department link.",
-            "• Dim_Department: Corporate business units originating support requests."
+            "Following the PRESERVE → DOCUMENT → FLAG → GOVERN methodology, every metric in the platform is derived from formal mathematical rules evaluated in dataNormalizer.ts and analysis_queries.sql:",
+            "1. Resolution Duration (Elapsed Calendar Hours): Evaluated as (resolved_at - created_at) / 3600 seconds, operating across 24/7 calendar time.",
+            "2. Retrospective SLA Compliance Rate: Evaluated strictly as Compliant Resolved Tickets ÷ Total Completed Tickets (6,612). Unresolved tickets (Open, In Progress, Pending) are never mixed into retrospective compliance denominators.",
+            "3. Multi-Tier Target SLAs: Critical (4.0h), High (8.0h), Medium (24.0h), and Low (72.0h).",
+            "The table below details performance across each priority tier from the authoritative dataset:"
           ],
           table: {
-            headers: ["Table Name", "Schema Classification", "Primary / Foreign Keys", "Monitored Analytical Attributes"],
+            headers: ["Priority Tier", "Target SLA Window", "Resolved Tickets", "Compliant Tickets", "Breached Tickets", "SLA Compliance %"],
             rows: [
-              ["Fact_Tickets", "Central Transactional Fact", "Ticket_ID (PK), Agent_ID (FK), Category_ID (FK)", "Timestamps (Created, Acknowledged, Resolved), Duration, MTTA, MTTR, SLA Breach Flag"],
-              ["Dim_Priority", "Conformed SLA Dimension", "Priority_ID (PK)", "Severity Level (P1–P4), Target SLA Window (2h–48h), Escalation Matrix"],
-              ["Dim_Category", "Categorical Dimension", "Category_ID (PK)", "ITIL Incident Domains (Hardware, Software Access, Network, Cloud)"],
-              ["Dim_Agent", "Operational Personnel", "Agent_ID (PK)", "Support Tier (T1/T2/T3), Shift Window (A/B/C), Skill Group Specialization"],
-              ["Dim_Department", "Corporate Dimension", "Department_ID (PK)", "Requesting Business Unit, Cost Center, Incident Volume Share"]
+              ["Critical (P1)", "4.0 Calendar Hours", 687, 598, 89, "87.0%"],
+              ["High (P2)", "8.0 Calendar Hours", 1632, 1419, 213, "86.9%"],
+              ["Medium (P3)", "24.0 Calendar Hours", 2955, 2624, 331, "88.8%"],
+              ["Low (P4)", "72.0 Calendar Hours", 1338, 1173, 165, "87.7%"],
+              ["Portfolio Total", "Multi-Tier Target", 6612, 5814, 798, "87.9% (Breach: 12.1%)"]
             ]
           },
           callout: {
             type: "insight",
-            text: "Dimensional Modeling Design: The star schema enables sub-second DAX slicing across departments and priority levels without full table scans."
+            text: "Denominator Discipline: Retrospective SLA compliance evaluates strictly against completed tickets (6,612). Active backlog tickets (1,388) are monitored separately in operational queues with countdown timers rather than diluting historical compliance rates."
           }
         },
         {
-          title: "4. Metric Engineering & Statistical Methodology",
+          title: "4. Operational Analysis: Turnaround Skew & Department Demand",
+          subtitle: "Empirical insights across turnaround times, categories, and business units",
           content: [
-            "Implemented calculated measures in Power BI DAX for core ITIL performance indicators:",
-            "• Mean Time to Acknowledge (MTTA) = AVERAGE(Fact_Tickets[AcknowledgeTimestamp] - Fact_Tickets[CreatedTimestamp])",
-            "• Mean Time to Resolve (MTTR) = AVERAGE(Fact_Tickets[ResolvedTimestamp] - Fact_Tickets[CreatedTimestamp])",
-            "• SLA Compliance Rate = DIVIDE(COUNTROWS(FILTER(Fact_Tickets, Fact_Tickets[MTTR] <= Related_SLA[Target])), COUNTROWS(Fact_Tickets))",
-            "Exploratory OLS regression in Python tested relationships between ticket priority, category complexity, creation hour, and resolution latency."
-          ]
-        },
-        {
-          title: "5. Key Verified Findings & Incident Resolution Table",
-          content: [
-            "Empirical analysis revealed an overall SLA compliance rate of 92.4% against a corporate target of 95.0%.",
-            "Critical Finding: Overall SLA compliance achieved 92.4% (against 95.0% target). In exploratory OLS regression modeling, ticket resolution duration showed a statistically significant positive association with tickets pending during shift-change windows (07:00–09:00 and 15:00–17:00), adding an observed average of +3.1 hours to unresolved duration, whereas technical incident categories demonstrated comparatively weaker explanatory power."
+            "• Turnaround Skew: The mean resolution time is 14.9 hours, whereas the median is 7.32 hours (a 50.9% variance). This substantial positive right-skew indicates that while over half of all requests resolve within 7.3 hours, complex multi-team escalations and vendor dependencies extend the arithmetic mean.",
+            "• Department Demand Distribution: Ticket volume is evenly distributed across the 5 corporate business units: Human Resources (1,648 tickets, 14.6h avg), Finance & Administration (1,640 tickets, 15.4h avg), Engineering & DevOps (1,618 tickets, 14.6h avg), Corporate IT (1,555 tickets, 15.0h avg), and Customer Support & Operations (1,539 tickets, 15.0h avg).",
+            "• Recurring Issue Hotspots: Battery health critical (302 occurrences, 15.6h avg, 13.1% breach rate), DNS lookup failure (301 occurrences, 14.6h avg, 10.7% breach rate), and Okta SSO login failure (290 occurrences, 16.0h avg, 12.1% breach rate) represent the primary drivers of recurring support demand."
           ],
-          table: {
-            headers: ["Priority Level", "Target SLA Threshold", "Actual Mean Resolution", "SLA Compliance Rate"],
-            rows: [
-              ["Critical (P1)", "2.0 Hours", "1.8 Hours", "96.2%"],
-              ["High (P2)", "6.0 Hours", "4.2 Hours", "94.1%"],
-              ["Medium (P3)", "24.0 Hours", "21.6 Hours", "91.8%"],
-              ["Low (P4)", "48.0 Hours", "41.5 Hours", "89.5%"],
-              ["Portfolio Average", "Blended 20.0h", "17.3 Hours", "92.4% (Target: 95.0%)"]
-            ]
-          },
           callout: {
-            type: "insight",
-            text: "Statistical Finding: Regression modeling identified that ticket resolution latency was positively correlated with shift-change handoff windows (associated with an observed +3.1-hour duration increase), highlighting shift transitions as a key operational area for managerial investigation rather than underlying technical complexity."
+            type: "note",
+            text: "Managerial Guidance: Reporting solely average resolution time creates a false impression of poor general service desk productivity. Median resolution (7.32h) more accurately reflects typical user experience, while right-tail mean variance isolates systemic infrastructure bottlenecks."
           }
         },
         {
-          title: "6. Analytical Deliverables & Decision Tools",
+          title: "5. Predictive Analytics: Intake Estimation & Governance Audit",
+          subtitle: "Reconciling offline LightGBM evaluation with the running client heuristic",
           content: [
-            "• Interactive Power BI Executive Dashboard: Dynamic filtering across departments, agent tiers, and incident categories with automated breach alerts.",
-            "• MySQL Analytical Star-Schema: Production-ready DDL script with indexed surrogate keys for high-performance reporting.",
-            "• Python Predictive Notebooks: Cleaned data transformation pipelines and regression models evaluating ticket backlog accumulation."
+            "The platform addresses resolution latency modeling through an intake-stage prediction framework:",
+            "• Prediction Target: Total calendar hours to resolution, modeled as a continuous regression target.",
+            "• Features Available at Intake: Priority tier (Critical/High/Medium/Low), Category ID, Requesting Department ID, and Issue Type description. Features generated during triage (agent assignment, reassignment counts, internal notes) are strictly excluded to prevent data leakage.",
+            "• Offline LightGBM Baseline: In Python experimentation across 8,000 synthetic records using an 80/20 chronological time-aware split (6,400 training / 1,600 test), a LightGBM regressor achieved MAE of 3.42 hours, RMSE of 5.18 hours, and R² of 0.784.",
+            "• Running Web Application Implementation: In dataService.ts (predictResolutionTime), the running client evaluates an intake feature heuristic matching the baseline model weights with parametric confidence intervals (65% lower bound to 160% upper bound). This provides instant interactive feedback on the live Vercel deployment without requiring an external containerized inference service."
+          ],
+          callout: {
+            type: "warning",
+            text: "Transparency Disclosure: The interactive prediction UI uses a calibrated client-side regression heuristic matching LightGBM weights. No live cloud ML inference microservice is currently invoked."
+          }
+        },
+        {
+          title: "6. Engineering Architecture & Data Governance",
+          subtitle: "Component design, state isolation, and data-quality workbench",
+          content: [
+            "• Decoupled Service Abstraction: UI components interact exclusively with dataService.ts via useSyncExternalStore. No page directly imports raw mock data or executes inline SQL transformations.",
+            "• Relational Snowflake Schema: Supported by production-ready DDL scripts in MySQL/PostgreSQL with InnoDB engines, foreign key constraints, and multi-column indexes across ticket timestamps and priority tiers.",
+            "• Data Workbench & QA Audit Tooling: Embedded /admin/data workbench validates schema compliance against clean (8,000 rows) and dirty (8,040 rows, 120 defects) datasets, verifying 100% key uniqueness and zero orphan foreign keys in the production reference.",
+            "• Role-Based Route Guards: React Router v6 architecture with client-side role authorization separating employee runbooks from confidential agent internal notes and administrative settings."
           ]
         },
         {
-          title: "7. Methodological Limitations",
+          title: "7. Author's Personal Contributions & Demonstrated Competencies",
+          subtitle: "Mapping project engineering to professional analytical roles",
           content: [
-            "• Unstructured Chat Exclusion: The structured tabular dataset did not incorporate free-text communication logs between agents and users, which may contain contextual delay explanations.",
-            "• External Vendor Dependencies: Third-party SaaS outage incidents were recorded under generic Network categories without external API status verification."
+            "This project demonstrates applied competencies across core analytics, financial modeling, and software engineering domains:",
+            "• Business & Operational Analytics: Designed the complete ITIL metric framework (MTTR, SLA compliance, backlog aging), formulated denominator governance rules, and evaluated right-tail turnaround skew.",
+            "• Relational Data Architecture: Authored the 5-table relational schema DDL, indexed foreign keys, and wrote verified analytical SQL queries reproducing all dashboard metrics.",
+            "• Predictive Modeling & ML Governance: Formulated intake feature boundaries, audited leakage risks, recorded LightGBM performance metrics (MAE 3.42h, R² 0.784), and transparently documented prototype heuristic execution.",
+            "• Full-Stack Frontend Engineering: Developed 18+ responsive view routes in React 18, TypeScript, and Tailwind CSS with custom Recharts visualizations, deterministic OTP demo authentication, and stateful data hydration."
           ]
         },
         {
-          title: "8. Operational Implications for IT Leadership",
+          title: "8. Methodological Lessons & Future Production Roadmap",
+          subtitle: "Key takeaways and planned production enhancements",
           content: [
-            "1. Shift Schedule Rebalancing: Staggering Tier-2 agent shifts to overlap during peak ticket transition hours (07:00–09:00 and 15:00–17:00) eliminates the +3.1-hour handoff bottleneck.",
-            "2. Automated Priority Classification: Rule-based routing of incoming tickets directly to specialized teams bypasses the 45-minute manual triage queue, recovering overall SLA compliance to the 95.0% target."
+            "1. Denominator Discipline Matters: Mixing unresolved backlog tickets into historical SLA compliance metrics distorts operational reality; maintaining strict eligibility boundaries is essential for management credibility.",
+            "2. Mean vs. Median in Operations: Highly right-skewed operational distributions require dual reporting; medians capture typical user experience while arithmetic means highlight tail risk.",
+            "3. Production Roadmap: Next planned engineering phases include replacing simulated demo authentication with Okta/Azure AD SAML 2.0 SSO, linking dataService.ts to an active Supabase/PostgreSQL instance, and deploying a containerized FastAPI endpoint on Google Cloud Run for live LightGBM inference."
           ]
         }
       ],
-      disclaimer: "Academic dissertation project conducted with demonstration ticket datasets."
+      disclaimer: "Independent academic case study based on 8,000 synthetic ticket transactions across calendar year 2024. Does not represent actual corporate incident records or commercial enterprise endorsement."
     }
   },
   {

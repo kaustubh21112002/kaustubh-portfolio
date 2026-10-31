@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { X, ArrowRight, ArrowLeft, ShieldAlert, CheckCircle2, FileText, ChevronDown, ChevronUp, Layers, HelpCircle, Activity, Info, AlertTriangle, Database, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Project, getProjectEvidenceLink } from '../../data/projects';
 import { StratosDQMatrix } from './StratosDQMatrix';
+import { ITSupportArchitectureInteractive } from './ITSupportArchitectureInteractive';
 import { DecisionIntelligenceBlock } from './DecisionIntelligenceBlock';
 import { ShareProjectButton } from './ShareProjectButton';
 import { getAdjacentProjects } from './projectNavigation';
@@ -447,6 +448,13 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
                     {project.id === 'stratos-governance' && section.title.includes('10 Governed Validation Controls') && (
                       <div className="mt-5">
                         <StratosDQMatrix />
+                      </div>
+                    )}
+
+                    {/* Interactive IT Support Platform Architecture & Evidence */}
+                    {project.id === 'it-support-analytics' && section.title.includes('Interactive Architecture') && (
+                      <div className="mt-5">
+                        <ITSupportArchitectureInteractive />
                       </div>
                     )}
 
