@@ -148,7 +148,7 @@ export const FlagshipPhonePe: React.FC = () => {
             </h2>
             <button
               onClick={() => setIsExportModalOpen(true)}
-              aria-label="Export one-page executive valuation brief (Print/PDF)"
+              aria-label="Export One-Page Brief: valuation summary (Print/PDF)"
               className="self-start sm:self-auto inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white text-black hover:bg-neutral-200 text-xs font-mono font-bold transition-all active:scale-95 cursor-pointer shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
             >
               <FileDown className="w-4 h-4 text-red-600" />

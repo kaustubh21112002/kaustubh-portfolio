@@ -419,7 +419,7 @@ export const ContactSection: React.FC = () => {
                   <button
                     type="button"
                     onClick={launchMailClient}
-                    aria-label="Open in default mail client application"
+                    aria-label="Open Mail Client: default mail application"
                     className="min-h-[44px] flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 hover:text-white font-mono text-xs tracking-wider transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
                   >
                     <Mail className="w-3.5 h-3.5 text-white/70" />
@@ -429,7 +429,7 @@ export const ContactSection: React.FC = () => {
                   <button
                     type="button"
                     onClick={copyFormattedMessage}
-                    aria-label="Copy formatted message to clipboard for webmail"
+                    aria-label="Copy Message: copy formatted message to clipboard"
                     className="min-h-[44px] flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 hover:text-white font-mono text-xs tracking-wider transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
                   >
                     <Copy className="w-3.5 h-3.5 text-white/70" />

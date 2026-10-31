@@ -49,18 +49,18 @@ const methodologySteps = [
 const verifiedProofPoints = [
   {
     metric: '₹41,631 Cr',
-    label: 'Implied Pre-IPO Equity Valuation',
-    subtext: '5-year explicit DCF (FY26E–FY30E) discounted at 14.92% CAPM WACC, plus ₹8,199 Cr net liquidity (₹8,915 Cr liquid assets less ₹716 Cr debt)'
+    label: 'Model-Implied Equity Valuation',
+    subtext: 'PhonePe educational DCF (FY26E–FY30E) at 14.92% CAPM WACC, plus ₹8,199 Cr net liquidity bridge (cash + investments less debt)'
   },
   {
     metric: '50,000',
-    label: 'Audited Orders Governed',
-    subtext: 'Controlled order corpus: 15,630 exception flags audited across 14,156 unique orders across 10 DQ controls'
+    label: 'STRATOS Governed Order Corpus',
+    subtext: 'Controlled retail corpus: 15,630 exception flags audited across 14,156 unique orders across 10 automated DQ validation controls'
   },
   {
-    metric: '10,000+',
-    label: 'Support Tickets Modeled',
-    subtext: 'Multivariate linear regression modeling resolution duration (hours) across MySQL star-schema pipelines'
+    metric: '8,000',
+    label: 'Synthetic Tickets Modeled',
+    subtext: 'IT Support Analytics (CY 2024): 6,612 completed tickets (87.9% retrospective SLA compliance), 1,388 open backlog, and intake ML estimation'
   }
 ];
 
@@ -244,11 +244,10 @@ const PersonalStoryVideo: React.FC = () => {
       <video
         ref={videoRef}
         poster="/images/personal-story-poster.webp"
-        autoPlay
         loop
         muted={isMuted}
         playsInline
-        preload="metadata"
+        preload="none"
         onLoadedMetadata={handleLoadedMetadata}
         onError={() => setHasError(true)}
         onClick={togglePlayback}

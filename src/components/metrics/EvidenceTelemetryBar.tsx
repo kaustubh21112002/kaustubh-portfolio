@@ -23,13 +23,13 @@ export const EvidenceTelemetryBar: React.FC = () => {
             <ShieldCheck className="w-3.5 h-3.5 text-red-500 shrink-0" aria-hidden="true" />
             <span>Verified Quantitative Telemetry</span>
           </div>
-          <span className="hidden sm:inline text-neutral-400 dark:text-white/40 text-[10px]">
+          <span className="hidden sm:inline text-neutral-600 dark:text-white/70 text-[10px]">
             Model Outputs & Governed Data Volumes • Click to Inspect Evidence
           </span>
         </div>
 
         {/* 4-Column Responsive Evidence Metrics Grid */}
-        <dl className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
+        <div role="region" aria-label="Quantitative evidence indicators" className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
           {telemetryMetrics.map((item: TelemetryMetric) => (
             <div
               key={item.id}
@@ -49,7 +49,7 @@ export const EvidenceTelemetryBar: React.FC = () => {
               <div>
                 {/* Metric Type Badge */}
                 <div className="flex items-center justify-between gap-1 mb-2">
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-neutral-500 dark:text-white/40 truncate font-semibold">
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-neutral-700 dark:text-white/70 truncate font-semibold">
                     {item.type}
                   </span>
                   <ExternalLink
@@ -59,28 +59,26 @@ export const EvidenceTelemetryBar: React.FC = () => {
                 </div>
 
                 {/* Quantitative Value */}
-                <dd className="text-xl sm:text-2xl lg:text-3xl font-extrabold font-mono tracking-tight text-neutral-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors leading-none my-1">
+                <div className="text-xl sm:text-2xl lg:text-3xl font-extrabold font-mono tracking-tight text-neutral-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors leading-none my-1">
                   {item.value}
                   {item.unit && (
                     <span className="text-xs sm:text-sm font-semibold ml-1.5 text-neutral-500 dark:text-white/60">
                       {item.unit}
                     </span>
                   )}
-                </dd>
+                </div>
               </div>
 
               {/* Metric Label & Extraction Subtext */}
               <div className="mt-3 pt-2.5 border-t border-neutral-200/60 dark:border-white/5">
-                <dt className="text-xs font-semibold text-neutral-800 dark:text-white/90 leading-tight">
-                  {item.label}
-                </dt>
-                <p className="text-[10px] font-mono text-neutral-500 dark:text-white/40 truncate mt-1">
+                <div className="text-xs font-semibold text-neutral-800 dark:text-white/90 leading-tight">{item.label}</div>
+                <p className="text-[10px] font-mono text-neutral-700 dark:text-white/70 truncate mt-1">
                   {item.sourceLocation}
                 </p>
               </div>
             </div>
           ))}
-        </dl>
+        </div>
       </div>
     </section>
   );

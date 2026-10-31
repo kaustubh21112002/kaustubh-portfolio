@@ -228,19 +228,20 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
 
           {/* Headline */}
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.12] mb-3 sm:mb-4">
-            Business Analytics <br className="sm:hidden" />& Research.
+            Turning Complex Data into <br className="hidden sm:inline" />
+            Decisive Financial Insights.
           </h1>
 
           {/* Description */}
           <p className="text-white/85 text-xs sm:text-sm lg:text-base leading-relaxed font-normal mb-5 sm:mb-6 max-w-xl">
-            Evaluating commercial decisions through quantitative valuation, relational analytics, and governed data pipelines.
+            I turn complex data into financial insights, operational intelligence, and better business decisions—bridging DCF valuation, relational SQL architecture, and governed analytics pipelines.
           </p>
 
           {/* Recruiter Quick Proof Signals (Unified Red Accent for Consistent Interaction) */}
           <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-4 sm:mb-6 text-xs sm:text-sm font-mono">
             <button
               onClick={() => scrollTo('journey')}
-              aria-label="Jump to SPIIDEO Match Analytics internship in journey section"
+              aria-label="SPIIDEO Match Analytics Intern: jump to journey section"
               className="px-2.5 py-1.5 rounded-lg bg-black/60 hover:bg-black/90 backdrop-blur-md border border-white/20 hover:border-red-400/50 text-white/95 flex items-center gap-1.5 transition-all cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 active:scale-[0.98]"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />

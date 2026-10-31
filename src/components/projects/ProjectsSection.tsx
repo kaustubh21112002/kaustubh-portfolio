@@ -214,7 +214,7 @@ export const ProjectsSection: React.FC = () => {
                   }`}
                 >
                   <span>{cat}</span>
-                  <span className={`ml-1.5 text-[11px] ${isSelected ? 'text-black/80' : 'text-white/40'}`}>
+                  <span className={`ml-1.5 text-[11px] ${isSelected ? 'text-black/90' : 'text-white/70'}`}>
                     ({count})
                   </span>
                 </button>
@@ -369,7 +369,7 @@ export const ProjectsSection: React.FC = () => {
                             <span>{evidence.label}</span>
                           </a>
                         ) : (
-                          <span className="text-xs font-mono text-white/40">Grounded in Private Workbooks</span>
+                          <span className="text-xs font-mono text-white/75">Grounded in Private Workbooks</span>
                         );
                       })()}
                     </div>
@@ -378,7 +378,7 @@ export const ProjectsSection: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => openSummaryModal(project)}
-                        aria-label={`View 30-second executive brief for ${project.title}`}
+                        aria-label={`Brief: 30-second executive summary for ${project.title}`}
                         className="min-h-[44px] inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-white/5 hover:bg-white/10 text-white/90 hover:text-white text-xs font-mono font-medium border border-white/15 transition-all duration-200 cursor-pointer shadow-sm active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
                       >
                         <FileText className="w-3.5 h-3.5 text-red-400" />
@@ -388,7 +388,7 @@ export const ProjectsSection: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => openCaseStudyModal(project)}
-                        aria-label={`Inspect full case study for ${project.title}`}
+                        aria-label={`Inspect Case Study: full quantitative review for ${project.title}`}
                         className="min-h-[44px] inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 hover:bg-white text-white hover:text-black text-xs font-mono font-bold transition-all duration-200 cursor-pointer shadow-sm active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
                       >
                         <span>Inspect Case Study</span>

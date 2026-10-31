@@ -17,13 +17,13 @@ export const telemetryMetrics: TelemetryMetric[] = [
     id: 'phonepe-implied-equity',
     value: '₹41,631',
     unit: 'Cr',
-    label: 'Implied Pre-IPO Equity Value',
+    label: 'Model-Implied Equity Value',
     category: 'Valuation',
     type: 'Financial Model Output',
     sourceFile: 'scripts/phonepe_valuation.py',
-    sourceLocation: 'Flagship Section (02) & Excel Model (MCA/NPCI data)',
-    extractionMethod: 'Explicit 5-year DCF (FY26E–FY30E) discounted at 14.92% CAPM WACC, plus ₹8,915.23 Cr gross liquid assets (cash + investments) less ₹716.00 Cr debt = +₹8,199.23 Cr net liquidity.',
-    contextAndCaveats: 'Method: 5-year explicit DCF (FY26E–FY30E) | Discount Rate: 14.92% WACC | Terminal Value: Exit Multiple & Perpetuity Blend. Independent academic valuation.',
+    sourceLocation: 'Flagship Section (02) & Excel Model (MCA/NPCI public data)',
+    extractionMethod: 'PhonePe educational 5-year explicit DCF (FY26E–FY30E) discounted at 14.92% CAPM WACC, plus ₹8,915.23 Cr liquid assets less ₹716.00 Cr debt = +₹8,199.23 Cr net liquidity.',
+    contextAndCaveats: 'Method: 5-year explicit DCF (FY26E–FY30E) | Discount Rate: 14.92% WACC | Terminal Value: Exit Multiple & Perpetuity Blend. Independent educational model output.',
     targetSectionHref: '#flagship'
   },
   {
@@ -41,15 +41,15 @@ export const telemetryMetrics: TelemetryMetric[] = [
   },
   {
     id: 'mysql-support-pipeline',
-    value: '10,000+',
-    unit: 'Incidents',
+    value: '8,000',
+    unit: 'Tickets',
     label: 'Support Tickets Modeled',
     category: 'Database Architecture',
     type: 'Relational Architecture Volume',
     sourceFile: 'src/data/projects.ts',
-    sourceLocation: 'MySQL Customer Support System Case Study',
-    extractionMethod: 'Star-schema dimensional warehouse modeling, Power BI DAX measures, and multivariate regression on resolution duration time.',
-    contextAndCaveats: 'Method: Multivariate regression predicting resolution duration (hours) across priority tiers on 10,000+ support ticket records.',
+    sourceLocation: 'IT Support Analytics Platform Case Study',
+    extractionMethod: 'Star-schema dimensional warehouse modeling (tickets fact + 5 conformed dimensions), calendar-hour SLA compliance evaluation (87.9%), and intake duration prediction.',
+    contextAndCaveats: 'Dataset Scope: 8,000 synthetic ticket transactions (CY 2024) | Completed: 6,612 (87.9% SLA) | Backlog: 1,388 open tickets.',
     targetSectionHref: '#projects'
   },
   {

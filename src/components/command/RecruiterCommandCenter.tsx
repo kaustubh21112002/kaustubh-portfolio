@@ -165,7 +165,7 @@ export const RecruiterCommandCenter: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => openSummaryModal(proj)}
-                        aria-label={`View 30-second executive brief for ${proj.title}`}
+                        aria-label={`30s Brief: executive summary for ${proj.title}`}
                         className="min-h-[38px] inline-flex items-center gap-1.5 text-xs font-mono font-medium text-white/80 hover:text-white bg-white/5 hover:bg-white/10 px-3.5 py-1.5 rounded-lg border border-white/10 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
                       >
                         <FileText className="w-3.5 h-3.5 text-red-400" />
@@ -187,7 +187,7 @@ export const RecruiterCommandCenter: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => openCaseStudyModal(proj)}
-                          aria-label={`Inspect full case study for ${proj.title}`}
+                          aria-label={`Case Study: full quantitative review for ${proj.title}`}
                           className="min-h-[38px] inline-flex items-center gap-1.5 text-xs font-mono font-bold text-white group-hover:text-red-400 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 px-2 py-1 rounded"
                         >
                           <span>Case Study</span>

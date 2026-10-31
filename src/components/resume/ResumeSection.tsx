@@ -44,7 +44,7 @@ export const ResumeSection: React.FC = () => {
                 <a
                   href={portfolioConfig.resumePath}
                   download="Kaustubh_Nandurkar_Resume.pdf"
-                  aria-label="Download verified resume PDF"
+                  aria-label="Download Resume (PDF): verified resume file"
                   className="flex items-center gap-2 px-7 py-3.5 rounded-full bg-white text-black font-bold text-sm tracking-wide transition-all hover:bg-white/90 shadow-[0_0_25px_rgba(255,255,255,0.35)] active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
                 >
                   <Download className="w-4 h-4" />
@@ -55,7 +55,7 @@ export const ResumeSection: React.FC = () => {
                   href={portfolioConfig.resumePath}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label="View verified resume PDF in browser window"
+                  aria-label="View PDF in Browser: verified resume window"
                   className="flex items-center gap-2 px-6 py-3.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/20 text-white font-medium text-sm transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
                 >
                   <Eye className="w-4 h-4 text-white/75" />
