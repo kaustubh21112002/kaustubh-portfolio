@@ -1,0 +1,92 @@
+name: Slack Deployment & Release Notification
+
+on:
+  push:
+    branches:
+      - main
+  deployment_status:
+  workflow_dispatch:
+
+jobs:
+  notify-slack:
+    name: Dispatch Slack Release Notification
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # For deployment_status events, only run if the deployment state is success
+    if: github.event_name != 'deployment_status' || github.event.deployment_status.state == 'success'
+
+    steps:
+      - name: Verify Webhook Secret Presence
+        id: check-secret
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          if [ -z "$SLACK_WEBHOOK_URL" ]; then
+            echo "SLACK_WEBHOOK_URL secret is not configured in repository. Skipping dispatch."
+            echo "configured=false" >> $GITHUB_OUTPUT
+          else
+            echo "configured=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Send Slack Release Notification
+        if: steps.check-secret.outputs.configured == 'true'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_REF: ${{ github.ref_name }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          COMMIT_MSG: ${{ github.event.head_commit.message }}
+        run: |
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          SHORT_SHA=$(echo "$GITHUB_SHA" | cut -c1-7)
+
+          PAYLOAD=$(jq -n \
+            --arg event "$GITHUB_EVENT_NAME" \
+            --arg sha "$SHORT_SHA" \
+            --arg branch "$GITHUB_REF" \
+            --arg actor "$GITHUB_ACTOR" \
+            --arg msg "$COMMIT_MSG" \
+            --arg time "$TIMESTAMP" \
+            '{
+              text: "🚀 Portfolio Deployment / Release Notification: \($sha) (\($event))",
+              blocks: [
+                {
+                  type: "header",
+                  text: {
+                    type: "plain_text",
+                    text: "🚀 Portfolio Release Notification",
+                    emoji: true
+                  }
+                },
+                {
+                  type: "section",
+                  fields: [
+                    { type: "mrkdwn", text: "*Commit:*\n`\($sha)`" },
+                    { type: "mrkdwn", text: "*Event:*\n`\($event)`" },
+                    { type: "mrkdwn", text: "*Branch/Ref:*\n`\($branch)`" },
+                    { type: "mrkdwn", text: "*Actor:*\n\($actor)" },
+                    { type: "mrkdwn", text: "*Timestamp:*\n\($time)" }
+                  ]
+                },
+                (if $msg != "" then {
+                  type: "section",
+                  text: {
+                    type: "mrkdwn",
+                    text: "*Message:*\n>>> \($msg)"
+                  }
+                } else empty end)
+              ]
+            }')
+
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+            -H 'Content-Type: application/json' \
+            -d "$PAYLOAD" \
+            "$SLACK_WEBHOOK_URL")
+
+          if [ "$RESPONSE" -ne 200 ]; then
+            echo "ERROR: Slack webhook failed with HTTP status $RESPONSE"
+            exit 1
+          fi
+
+          echo "Successfully delivered Slack release notification."
