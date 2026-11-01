@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense, lazy } from 'react';
 import {
   TrendingUp,
   ShieldCheck,
@@ -16,9 +16,12 @@ import {
 import { projects, Project } from '../../data/projects';
 import { getResumeSkillCategories } from '../../data/skills';
 import { portfolioConfig } from '../../config/portfolio';
-import { ProjectSummaryModal } from '../projects/ProjectSummaryModal';
-import { CaseStudyModal } from '../projects/CaseStudyModal';
 import { setProjectUrlParam } from '../projects/projectNavigation';
+import { ModalFallback } from '../projects/ModalFallback';
+
+// Genuine lazy loading for modal experiences
+const ProjectSummaryModal = lazy(() => import('../projects/ProjectSummaryModal').then(m => ({ default: m.ProjectSummaryModal })));
+const CaseStudyModal = lazy(() => import('../projects/CaseStudyModal').then(m => ({ default: m.CaseStudyModal })));
 
 export const RecruiterCommandCenter: React.FC = () => {
   const [activeSummaryProject, setActiveSummaryProject] = useState<Project | null>(null);
@@ -281,24 +284,30 @@ export const RecruiterCommandCenter: React.FC = () => {
       </div>
 
       {/* Recruiter Quick Executive Brief Modal */}
-      <ProjectSummaryModal
-        project={activeSummaryProject}
-        isOpen={activeSummaryProject !== null}
-        onClose={closeModals}
-        onInspectFullCaseStudy={(p) => {
-          openCaseStudyModal(p);
-        }}
-      />
+      {activeSummaryProject && (
+        <Suspense fallback={<ModalFallback />}>
+          <ProjectSummaryModal
+            project={activeSummaryProject}
+            isOpen={activeSummaryProject !== null}
+            onClose={closeModals}
+            onInspectFullCaseStudy={(p) => {
+              openCaseStudyModal(p);
+            }}
+          />
+        </Suspense>
+      )}
 
       {/* Case Study Deep Dive Modal */}
       {activeModalProject && (
-        <CaseStudyModal
-          project={activeModalProject}
-          onClose={closeModals}
-          onSelectProject={(nextP) => {
-            openCaseStudyModal(nextP);
-          }}
-        />
+        <Suspense fallback={<ModalFallback />}>
+          <CaseStudyModal
+            project={activeModalProject}
+            onClose={closeModals}
+            onSelectProject={(nextP) => {
+              openCaseStudyModal(nextP);
+            }}
+          />
+        </Suspense>
       )}
     </section>
   );

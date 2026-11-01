@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { ThemeProvider } from './context/ThemeContext';
 import { Header } from './components/navigation/Header';
 import { MagneticCursor } from './components/common/MagneticCursor';
@@ -7,7 +7,7 @@ import { HeroSection } from './components/hero/HeroSection';
 import { RecruiterCommandCenter } from './components/command/RecruiterCommandCenter';
 import { EvidenceTelemetryBar } from './components/metrics/EvidenceTelemetryBar';
 import { AboutSection } from './components/about/AboutSection';
-import { FlagshipPhonePe } from './components/flagship/FlagshipPhonePe';
+import { DeferredFlagshipPhonePe } from './components/common/DeferredFlagshipPhonePe';
 import { ProjectsSection } from './components/projects/ProjectsSection';
 import { JourneySection } from './components/journey/JourneySection';
 import { SkillsSection } from './components/skills/SkillsSection';
@@ -109,7 +109,7 @@ export function App() {
           <AboutSection />
 
           {/* Section (02): Flagship Valuation — PhonePe Pre-IPO DCF Model & Reconciled Per-Share Value */}
-          <FlagshipPhonePe />
+          <DeferredFlagshipPhonePe />
 
           {/* Section (03): Selected Analytics Projects (STRATOS, SPIIDEO, IT Support, SmartBank) */}
           <ProjectsSection />
