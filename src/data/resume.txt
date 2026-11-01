@@ -1,0 +1,16 @@
+Professional Overview:
+Analytics Engineer and Business Intelligence Specialist with expertise in financial modeling, data governance, and decision intelligence.
+
+Core Competencies:
+- Financial & Valuation Modeling: Discounted Cash Flow (DCF), Sensitivity Analysis, Terminal Value Calculation.
+- Data Engineering & Governance: Data Quality Matrix (DQ), Controlled KPIs, Source-of-Truth Integrity.
+- Full-Stack & BI Architecture: React, TypeScript, Vite, Python, SQL, REST APIs, Vercel Serverless Functions.
+
+Featured Independent Projects:
+1. PhonePe Pre-IPO Equity Research & DCF Valuation: Dynamic sensitivity modeling, WACC and growth rate matrix analysis, reconciling EV and Equity Value.
+2. STRATOS AI Retail Decision Intelligence: Controlled metric governance, automated anomaly detection (DQ-10 Revenue checks).
+3. Sports Match Event Tracking & Video Analytics: Computer vision and analytics pipeline for pitch tracking and performance metrics.
+4. IT Support Service Intelligence & Resolution Prediction: Support operations telemetry and resolution forecasting.
+5. SmartBank 360 FinTech Credibility Analysis: Financial reporting audit and unit economics evaluation.
+6. EquiTrack Analytics OS: News sentiment intelligence and financial data pipelines.
+

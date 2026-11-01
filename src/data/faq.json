@@ -1,0 +1,28 @@
+[
+  {
+    "category": "Portfolio & Identity",
+    "question": "Who is Kaustubh Nandurkar?",
+    "answer": "Kaustubh Nandurkar is an Analytics Engineer and BI Architect specializing in Decision Intelligence, Controlled Financial Modeling, and Data Governance."
+  },
+  {
+    "category": "Flagship Project",
+    "question": "What is the PhonePe valuation model in this portfolio?",
+    "answer": "The PhonePe valuation model is a pre-IPO Discounted Cash Flow (DCF) model and equity research sensitivity framework reconciling Enterprise Value (₹33,432 Cr) and Equity Value (₹41,631 Cr) across dynamic WACC and terminal growth matrices."
+  },
+  {
+    "category": "Governance",
+    "question": "What is STRATOS AI and its data quality governance framework?",
+    "answer": "STRATOS is a governed retail decision intelligence platform enforcing controlled business metrics and automated data quality validation (including DQ-10 controlled revenue review)."
+  },
+  {
+    "category": "Technical Expertise",
+    "question": "What primary tools and technologies are featured in this portfolio?",
+    "answer": "The portfolio features TypeScript, React, Vite, Tailwind CSS, Python, SQL, Apps Script, and Google Sheets controlled financial modeling."
+  },
+  {
+    "category": "Contact",
+    "question": "How can I contact Kaustubh?",
+    "answer": "You can reach Kaustubh through the Contact section of this portfolio via the direct message dispatcher, email at kaustubhnandurkar21@gmail.com, LinkedIn, or WhatsApp click-to-chat."
+  }
+]
+
