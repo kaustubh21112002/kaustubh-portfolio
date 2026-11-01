@@ -367,6 +367,76 @@ async function runTests() {
         slackAlertDispatched && !slackPayloadContainsIpOrQuestion
       );
 
+      // -----------------------------------------------------------------------
+      // Test H.3: UTC Midnight Rollover resets daily counter and Slack alert guard
+      // -----------------------------------------------------------------------
+      // Advance fake clock by overriding globalThis.Date temporarily
+      const RealDate = globalThis.Date;
+      const tomorrowUtc = new Date(Date.now() + 25 * 60 * 60 * 1000); // 25 hours later (guaranteed next UTC date)
+
+      class MockDate extends RealDate {
+        constructor(...args) {
+          if (args.length === 0) {
+            super(tomorrowUtc.getTime());
+          } else {
+            super(...args);
+          }
+        }
+        static now() {
+          return tomorrowUtc.getTime();
+        }
+      }
+
+      globalThis.Date = MockDate;
+
+      let newDaySlackAlertDispatched = false;
+      mockFetchHandler = async (url, options) => {
+        if (String(url).includes('hooks.slack.com')) {
+          newDaySlackAlertDispatched = true;
+          return { ok: true, status: 200, text: async () => 'ok' };
+        }
+        return { ok: true, status: 200, json: async () => ({ choices: [{ message: { content: 'new day ok' } }] }) };
+      };
+
+      // Day 2, Request 1: Should be ACCEPTED (counter was reset)
+      const resNextDay1 = createMockRes();
+      await handler({
+        method: 'POST',
+        headers: { origin: CANONICAL_ORIGIN, 'x-forwarded-for': getUniqueIp() },
+        body: { question: 'Next day Q1' }
+      }, resNextDay1);
+
+      // Day 2, Request 2: Should be ACCEPTED
+      const resNextDay2 = createMockRes();
+      await handler({
+        method: 'POST',
+        headers: { origin: CANONICAL_ORIGIN, 'x-forwarded-for': getUniqueIp() },
+        body: { question: 'Next day Q2' }
+      }, resNextDay2);
+
+      // Day 2, Request 3: Daily cap reached -> 429 and triggers new day Slack alert
+      const resNextDay3 = createMockRes();
+      await handler({
+        method: 'POST',
+        headers: { origin: CANONICAL_ORIGIN, 'x-forwarded-for': getUniqueIp() },
+        body: { question: 'Next day Q3' }
+      }, resNextDay3);
+
+      await new Promise(r => setTimeout(r, 50));
+
+      assert(
+        'Test H.3: UTC midnight rollover resets daily cap counter (new day queries accepted)',
+        resNextDay1.statusCode === 200 && resNextDay2.statusCode === 200 && resNextDay3.statusCode === 429
+      );
+
+      assert(
+        'Test H.4: UTC midnight rollover resets Slack alert guard (alert fires for new day breach)',
+        newDaySlackAlertDispatched === true
+      );
+
+      // Restore real Date
+      globalThis.Date = RealDate;
+
       // Reset mock handler and restore default daily cap
       mockFetchHandler = null;
       process.env.AI_DAILY_CAP = '100';
@@ -541,3 +611,4 @@ runTests().catch((err) => {
   console.error('Test suite runner encountered an unhandled error:', err);
   process.exit(1);
 });
+
