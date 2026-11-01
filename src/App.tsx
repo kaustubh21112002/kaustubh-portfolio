@@ -15,6 +15,7 @@ import { ResearchSection } from './components/research/ResearchSection';
 import { ResumeSection } from './components/resume/ResumeSection';
 import { FAQSection } from './components/faq/FAQSection';
 import { ContactSection } from './components/contact/ContactSection';
+import { FeedbackWidget } from './components/feedback/FeedbackWidget';
 
 export function App() {
   const [activeSection, setActiveSection] = useState('hero');
@@ -135,6 +136,9 @@ export function App() {
 
         {/* 4. Floating Back to Top Button */}
         <BackToTop />
+
+        {/* 5. Discreet Visitor Feedback Widget */}
+        <FeedbackWidget />
       </div>
     </ThemeProvider>
   );
