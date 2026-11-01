@@ -16,6 +16,7 @@ import { ResumeSection } from './components/resume/ResumeSection';
 import { FAQSection } from './components/faq/FAQSection';
 import { ContactSection } from './components/contact/ContactSection';
 import { FeedbackWidget } from './components/feedback/FeedbackWidget';
+import { PortfolioAssistant } from './components/assistant/PortfolioAssistant';
 
 export function App() {
   const [activeSection, setActiveSection] = useState('hero');
@@ -139,6 +140,9 @@ export function App() {
 
         {/* 5. Discreet Visitor Feedback Widget */}
         <FeedbackWidget />
+
+        {/* 6. Portfolio AI Assistant Widget */}
+        <PortfolioAssistant />
       </div>
     </ThemeProvider>
   );
