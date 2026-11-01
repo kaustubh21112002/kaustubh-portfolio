@@ -1,11 +1,15 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { X, ArrowRight, ArrowLeft, ShieldAlert, CheckCircle2, FileText, ChevronDown, ChevronUp, Layers, HelpCircle, Activity, Info, AlertTriangle, Database, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useEffect, useState, useRef, useMemo, Suspense, lazy } from 'react';
+import { X, ArrowRight, ArrowLeft, ShieldAlert, CheckCircle2, FileText, ChevronDown, ChevronUp, Layers, HelpCircle, Activity, Info, AlertTriangle, Database, ExternalLink, ChevronLeft, ChevronRight, Target, Cpu, TrendingUp } from 'lucide-react';
 import { Project, getProjectEvidenceLink } from '../../data/projects';
-import { StratosDQMatrix } from './StratosDQMatrix';
-import { ITSupportArchitectureInteractive } from './ITSupportArchitectureInteractive';
+import projectsData from '../../data/projects.json';
+import { ProjectDataSchema } from '../../data/projectSchema';
 import { DecisionIntelligenceBlock } from './DecisionIntelligenceBlock';
 import { ShareProjectButton } from './ShareProjectButton';
 import { getAdjacentProjects } from './projectNavigation';
+
+// Dynamically import heavy interactive project workspaces
+const StratosDQMatrix = lazy(() => import('./StratosDQMatrix').then(m => ({ default: m.StratosDQMatrix })));
+const ITSupportArchitectureInteractive = lazy(() => import('./ITSupportArchitectureInteractive').then(m => ({ default: m.ITSupportArchitectureInteractive })));
 
 interface CaseStudyModalProps {
   project: Project | null;
@@ -22,6 +26,25 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
   const targetFocusIdRef = useRef<string | null>(null);
   const evidenceLink = project ? getProjectEvidenceLink(project) : null;
   const adjacent = project ? getAdjacentProjects(project.id) : null;
+
+  // Resolve central project metadata from projects.json
+  const centralizedMeta = useMemo(() => {
+    if (!project) return null;
+    return (projectsData as unknown as ProjectDataSchema[]).find((p) => p.id === project.id) || null;
+  }, [project?.id]);
+
+  // Sourced metrics, case-study sections, and disclaimer from central data with fallback
+  const caseStudySections = useMemo(() => {
+    return centralizedMeta?.caseStudy?.sections || project?.caseStudy?.sections || [];
+  }, [centralizedMeta, project]);
+
+  const modalMetrics = useMemo(() => {
+    return centralizedMeta?.keyMetrics || project?.keyMetrics || [];
+  }, [centralizedMeta, project]);
+
+  const modalDisclaimer = useMemo(() => {
+    return centralizedMeta?.caseStudy?.disclaimer || project?.caseStudy?.disclaimer;
+  }, [centralizedMeta, project]);
 
   useEffect(() => {
     // Reset to expand first section when project changes
@@ -142,10 +165,10 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
   };
 
   const toggleAllSections = () => {
-    if (expandedSections.size === project.caseStudy.sections.length) {
+    if (expandedSections.size === caseStudySections.length) {
       setExpandedSections(new Set());
     } else {
-      setExpandedSections(new Set(project.caseStudy.sections.map((_, i) => i)));
+      setExpandedSections(new Set(caseStudySections.map((_, i) => i)));
     }
   };
 
@@ -190,13 +213,21 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-mono uppercase tracking-widest mb-3">
             <span>{project.category}</span>
             <span>•</span>
-            <span>{project.status}</span>
+            <span>{centralizedMeta?.status || project.status}</span>
+            {centralizedMeta?.lastUpdated && (
+              <>
+                <span>•</span>
+                <span className="text-white/60">Updated: {centralizedMeta.lastUpdated}</span>
+              </>
+            )}
           </div>
 
           <h2 id="case-study-title" className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
-            {project.title}
+            {centralizedMeta?.title || project.title}
           </h2>
-          <p className="text-white/75 text-sm sm:text-base mt-2 font-mono">{project.tagline}</p>
+          <p className="text-white/75 text-sm sm:text-base mt-2 font-mono">
+            {centralizedMeta?.oneLineSummary || project.tagline}
+          </p>
         </div>
 
         {/* Quick Recruiter Section Navigation */}
@@ -262,7 +293,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
                 onClick={() => scrollToTarget('modal-sections')}
                 className="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 hover:text-white transition-colors shrink-0 cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-400"
               >
-                Case Study ({project.caseStudy.sections.length} Sections)
+                Case Study ({caseStudySections.length} Sections)
               </button>
               {project.limitations && project.limitations.length > 0 && (
                 <button
@@ -293,7 +324,80 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
             </div>
           )}
 
-          <DecisionIntelligenceBlock project={project} layout="modal" showMetricsGrid={false} />
+          {/* Sourced Problem, Data, Method & Result from projects.json */}
+          {centralizedMeta && (
+            <div className="space-y-4">
+              {centralizedMeta.problem && (
+                <div className="p-4 sm:p-5 rounded-2xl bg-[#141722] border border-white/10 hover:border-white/20 transition-all">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="p-1.5 rounded-lg bg-red-500/15 text-red-400 border border-red-500/25">
+                      <Target className="w-4 h-4" />
+                    </span>
+                    <span className="text-xs font-mono font-bold uppercase tracking-wider text-red-400">
+                      1. Commercial Dilemma & Business Problem
+                    </span>
+                  </div>
+                  <p className="text-white/90 text-xs sm:text-sm leading-relaxed font-sans">
+                    {centralizedMeta.problem}
+                  </p>
+                </div>
+              )}
+
+              {centralizedMeta.method && (
+                <div className="p-4 sm:p-5 rounded-2xl bg-[#141722] border border-white/10 hover:border-white/20 transition-all">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="p-1.5 rounded-lg bg-blue-500/15 text-blue-400 border border-blue-500/25">
+                      <Cpu className="w-4 h-4" />
+                    </span>
+                    <span className="text-xs font-mono font-bold uppercase tracking-wider text-blue-400">
+                      2. Quantitative Methodology & Analytical Framework
+                    </span>
+                  </div>
+                  <p className="text-white/90 text-xs sm:text-sm leading-relaxed font-sans mb-3">
+                    {centralizedMeta.method}
+                  </p>
+                  {centralizedMeta.tools && centralizedMeta.tools.length > 0 && (
+                    <div className="pt-2.5 border-t border-white/10 flex flex-wrap gap-1.5 items-center">
+                      <span className="text-[11px] font-mono text-white/50 mr-1">Methods / Stack:</span>
+                      {centralizedMeta.tools.map((tool) => (
+                        <span
+                          key={tool}
+                          className="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-[11px] font-mono text-white/80"
+                        >
+                          {tool}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {centralizedMeta.result && (
+                <div className="p-4 sm:p-5 rounded-2xl bg-[#141722] border border-emerald-500/30 hover:border-emerald-500/50 transition-all bg-gradient-to-b from-[#141722] to-emerald-950/10">
+                  <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="p-1.5 rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">
+                        <TrendingUp className="w-4 h-4" />
+                      </span>
+                      <span className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-400">
+                        3. Key Quantitative Evidence & Reconciled Findings
+                      </span>
+                    </div>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                      {project.category === 'Equity Research' ? 'MODEL RECONCILED' : 'GOVERNED ARTIFACT'}
+                    </span>
+                  </div>
+                  <p className="text-white/90 text-xs sm:text-sm leading-relaxed font-sans">
+                    {centralizedMeta.result}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {!centralizedMeta && (
+            <DecisionIntelligenceBlock project={project} layout="modal" showMetricsGrid={false} />
+          )}
         </div>
 
         {/* Dataset Scope & Governance Architecture Panel */}
@@ -353,7 +457,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
           </div>
         )}
 
-        {/* Key Metrics Grid */}
+        {/* Key Metrics Grid Sourced from Central Metadata with Fallback */}
         <div id="modal-metrics" className="mb-8">
           <div className="flex items-center justify-between text-xs font-mono text-white/75 uppercase tracking-wider mb-3">
             <span>Project Metrics & Indicators</span>
@@ -362,7 +466,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
             </span>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {project.keyMetrics.map((m, idx) => (
+            {modalMetrics.map((m, idx) => (
               <div key={idx} className="p-4 rounded-2xl bg-black/40 border border-white/10 flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between text-xs text-white/75 font-mono uppercase tracking-wider gap-1">
@@ -385,13 +489,13 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
         <div id="modal-sections" className="space-y-4 mb-8">
           <div className="flex items-center justify-between pb-2 border-b border-white/10">
             <div className="text-xs font-mono text-white/75 uppercase tracking-wider">
-              Case Study Architecture ({project.caseStudy.sections.length} Governed Sections)
+              Case Study Architecture ({caseStudySections.length} Governed Sections)
             </div>
             <button
               onClick={toggleAllSections}
               className="text-xs font-mono text-red-400 hover:text-red-300 font-semibold transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 rounded-md px-1"
             >
-              {expandedSections.size === project.caseStudy.sections.length ? 'Collapse All Sections' : 'Expand All Sections'}
+              {expandedSections.size === caseStudySections.length ? 'Collapse All Sections' : 'Expand All Sections'}
             </button>
           </div>
 
@@ -415,8 +519,8 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
             </div>
           )}
 
-          {/* Expandable Case Study Sections */}
-          {project.caseStudy.sections.map((section, sIdx) => {
+          {/* Expandable Case Study Sections Sourced from Central Metadata */}
+          {caseStudySections.map((section, sIdx) => {
             const isExpanded = expandedSections.has(sIdx);
             return (
               <div key={sIdx} className="rounded-2xl bg-white/[0.02] border border-white/10 overflow-hidden transition-colors">
@@ -447,14 +551,28 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
                     {/* Interactive STRATOS Data Quality Matrix (Integrated into Governance Section) */}
                     {project.id === 'stratos-governance' && section.title.includes('10 Governed Validation Controls') && (
                       <div className="mt-5">
-                        <StratosDQMatrix />
+                        <Suspense fallback={
+                          <div className="p-8 rounded-2xl bg-[#0e121e] border border-white/10 flex items-center justify-center gap-2 text-xs font-mono text-white/50">
+                            <div className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
+                            <span>Loading STRATOS DQ Matrix...</span>
+                          </div>
+                        }>
+                          <StratosDQMatrix />
+                        </Suspense>
                       </div>
                     )}
 
                     {/* Interactive IT Support Platform Architecture & Evidence */}
                     {project.id === 'it-support-analytics' && section.title.includes('Interactive Architecture') && (
                       <div className="mt-5">
-                        <ITSupportArchitectureInteractive />
+                        <Suspense fallback={
+                          <div className="p-8 rounded-2xl bg-[#0a0d16] border border-blue-500/25 flex items-center justify-center gap-2 text-xs font-mono text-white/50">
+                            <div className="w-2 h-2 rounded-full bg-blue-500 animate-ping" />
+                            <span>Loading Interactive Architecture...</span>
+                          </div>
+                        }>
+                          <ITSupportArchitectureInteractive />
+                        </Suspense>
                       </div>
                     )}
 
@@ -645,9 +763,9 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
         </div>
 
         {/* Disclaimer */}
-        {project.caseStudy.disclaimer && (
+        {modalDisclaimer && (
           <div className="mt-6 p-4 rounded-2xl bg-black/50 border border-white/5 text-xs text-white/75 font-mono leading-relaxed">
-            <strong>Disclosure:</strong> {project.caseStudy.disclaimer}
+            <strong>Disclosure:</strong> {modalDisclaimer}
           </div>
         )}
       </div>

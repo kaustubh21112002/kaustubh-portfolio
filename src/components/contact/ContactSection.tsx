@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
-import { Mail, Linkedin, Github, Send, Copy, Check, MapPin, Phone, Info, AlertCircle, FileText } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { Mail, Linkedin, Github, Send, Copy, Check, MapPin, Phone, Info, AlertCircle, FileText, MessageCircle } from 'lucide-react';
 import { portfolioConfig } from '../../config/portfolio';
+import { AvailabilityBlock } from '../common/AvailabilityBlock';
+import projectsData from '../../data/projects.json';
+import { getLatestProjectUpdateDate, ProjectDataSchema } from '../../data/projectSchema';
 
 const MAX_MESSAGE_LENGTH = 1500;
 
@@ -15,6 +18,10 @@ export const ContactSection: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [copyStatus, setCopyStatus] = useState<'idle' | 'copied' | 'failed'>('idle');
   const [validationError, setValidationError] = useState<string | null>(null);
+
+  const lastUpdatedDisplay = useMemo(() => {
+    return getLatestProjectUpdateDate(projectsData as unknown as ProjectDataSchema[]);
+  }, []);
 
   const handleCopyEmail = () => {
     navigator.clipboard.writeText(portfolioConfig.socials.email);
@@ -150,7 +157,7 @@ export const ContactSection: React.FC = () => {
   };
 
   return (
-    <section id="contact" className="py-28 sm:py-36 px-4 sm:px-6 lg:px-8 bg-[#0e1017] text-white border-t border-white/10">
+    <section id="contact" className="py-16 sm:py-24 lg:py-32 px-4 sm:px-6 lg:px-8 bg-[#0e1017] text-white border-t border-white/10">
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/70 text-xs font-mono uppercase tracking-widest mb-3">
@@ -168,7 +175,7 @@ export const ContactSection: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           {/* Direct Channels */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="p-8 rounded-3xl bg-[#141722] border border-white/10 space-y-6 shadow-xl">
+            <div className="p-5 sm:p-8 rounded-3xl bg-[#141722] border border-white/10 space-y-5 sm:space-y-6 shadow-xl">
               <div>
                 <h3 className="text-xl font-bold text-white mb-2">Direct Contact Channels</h3>
                 <p className="text-xs text-white/75 leading-relaxed">
@@ -221,6 +228,30 @@ export const ContactSection: React.FC = () => {
                 </div>
               )}
 
+              {/* WhatsApp Direct Recruiter Chat Box */}
+              <div className="p-4 rounded-2xl bg-emerald-500/[0.04] border border-emerald-500/20 hover:border-emerald-500/40 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-3 overflow-hidden">
+                  <div className="p-2.5 rounded-xl bg-emerald-500/15 text-emerald-400 shrink-0">
+                    <MessageCircle className="w-5 h-5" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-xs font-mono text-emerald-400/90 uppercase font-semibold">WhatsApp Messaging</div>
+                    <span className="text-xs font-mono text-white/70 block truncate">Direct & Pre-filled</span>
+                  </div>
+                </div>
+
+                <a
+                  href={`https://wa.me/918080001550?text=${encodeURIComponent('Hi, I visited your portfolio and would like to connect regarding a professional opportunity. Could we discuss further?')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Chat on WhatsApp with Kaustubh (opens in new tab)"
+                  className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 hover:text-emerald-200 text-xs font-mono font-bold border border-emerald-500/40 transition-all w-full sm:w-auto shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 active:scale-95"
+                >
+                  <MessageCircle className="w-3.5 h-3.5" />
+                  <span>Chat on WhatsApp</span>
+                </a>
+              </div>
+
               {/* Social Links */}
               <div className="space-y-3">
                 <a
@@ -237,7 +268,7 @@ export const ContactSection: React.FC = () => {
                       <div className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors">
                         LinkedIn Profile
                       </div>
-                      <div className="text-xs font-mono text-white/75">linkedin.com/in/kaustubhnandurkar</div>
+                      <div className="text-xs font-mono text-white/75 break-all sm:break-normal">linkedin.com/in/kaustubhnandurkar</div>
                     </div>
                   </div>
                   <span className="text-xs font-mono text-white/75 group-hover:text-white transition-colors">
@@ -259,7 +290,7 @@ export const ContactSection: React.FC = () => {
                       <div className="text-xs font-bold text-white group-hover:text-purple-400 transition-colors">
                         GitHub Profile
                       </div>
-                      <div className="text-xs font-mono text-white/75">github.com/kaustubh21112002</div>
+                      <div className="text-xs font-mono text-white/75 break-all sm:break-normal">github.com/kaustubh21112002</div>
                     </div>
                   </div>
                   <span className="text-xs font-mono text-white/75 group-hover:text-white transition-colors">
@@ -273,13 +304,16 @@ export const ContactSection: React.FC = () => {
                 <span>Location: {portfolioConfig.location}</span>
               </div>
             </div>
+
+            {/* Compact Availability Block */}
+            <AvailabilityBlock />
           </div>
 
           {/* Direct Email Dispatcher */}
           <div className="lg:col-span-7">
             <form
               onSubmit={handleSubmit}
-              className="p-8 rounded-3xl bg-[#141722] border border-white/10 space-y-5 shadow-xl"
+              className="p-5 sm:p-8 rounded-3xl bg-[#141722] border border-white/10 space-y-5 shadow-xl"
             >
               {/* Hidden honeypot field for spam bots */}
               <div aria-hidden="true" style={{ display: 'none', position: 'absolute', left: '-9999px' }}>
@@ -480,10 +514,15 @@ export const ContactSection: React.FC = () => {
 
         {/* Footer */}
         <div className="mt-20 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-white/75">
-          <div>
-            © {new Date().getFullYear()} {portfolioConfig.fullName}. All analytical methodologies preserved.
+          <div className="space-y-1 text-center sm:text-left">
+            <div>
+              © {new Date().getFullYear()} {portfolioConfig.fullName}. All analytical methodologies preserved.
+            </div>
+            <div className="text-[11px] text-white/50">
+              Last updated: <span className="text-white/80 font-semibold">{lastUpdatedDisplay}</span>
+            </div>
           </div>
-          <div>
+          <div className="text-center sm:text-right">
             Independent Research & Portfolio Demonstration
           </div>
         </div>

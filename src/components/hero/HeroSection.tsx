@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { ArrowDown, Download, Mail, ChevronRight, Copy, Check } from 'lucide-react';
+import { ArrowDown, Download, Mail, ChevronRight, Copy, Check, MessageCircle } from 'lucide-react';
 import { portfolioConfig } from '../../config/portfolio';
 import { AvailabilityIndicator } from '../common/AvailabilityIndicator';
 
@@ -323,6 +323,18 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
                 <span className="sr-only">{copiedEmail ? 'Copied' : 'Copy email'}</span>
               </button>
             </div>
+
+            {/* Recruiter WhatsApp Click-to-Chat CTA */}
+            <a
+              href={`https://wa.me/918080001550?text=${encodeURIComponent('Hi, I visited your portfolio and would like to connect regarding a professional opportunity. Could we discuss further?')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Chat with Kaustubh on WhatsApp (opens in new tab)"
+              className="min-h-[48px] flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 hover:text-emerald-200 border border-emerald-500/30 hover:border-emerald-500/50 font-medium text-sm tracking-wide transition-all active:scale-95 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+            >
+              <MessageCircle className="w-4 h-4 text-emerald-400" />
+              <span>Chat on WhatsApp</span>
+            </a>
           </div>
         </div>
 

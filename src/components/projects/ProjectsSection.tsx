@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, Suspense, lazy } from 'react';
 import {
   Search,
   Filter,
@@ -13,14 +13,19 @@ import {
   SlidersHorizontal
 } from 'lucide-react';
 import { projects, Project, getProjectEvidenceLink } from '../../data/projects';
-import { CaseStudyModal } from './CaseStudyModal';
-import { ProjectSummaryModal } from './ProjectSummaryModal';
+import projectsData from '../../data/projects.json';
+import { ProjectDataSchema } from '../../data/projectSchema';
+import { ModalFallback } from './ModalFallback';
 import {
   parseProjectUrlParams,
   setProjectUrlParam,
   getProjectById,
   isValidProjectId
 } from './projectNavigation';
+
+// Genuine lazy loading for modal experiences
+const CaseStudyModal = lazy(() => import('./CaseStudyModal').then(m => ({ default: m.CaseStudyModal })));
+const ProjectSummaryModal = lazy(() => import('./ProjectSummaryModal').then(m => ({ default: m.ProjectSummaryModal })));
 
 export const ProjectsSection: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
@@ -113,7 +118,27 @@ export const ProjectsSection: React.FC = () => {
     setSearchQuery('');
   };
 
-  const getStatusBadge = (status: Project['status']) => {
+  // Fast lookup map for centralized projects.json metadata
+  const centralizedMetadataMap = useMemo(() => {
+    const map = new Map<string, ProjectDataSchema>();
+    (projectsData as unknown as ProjectDataSchema[]).forEach((p) => {
+      map.set(p.id, p);
+    });
+    return map;
+  }, []);
+
+  const getStatusBadge = (status: Project['status'], jsonStatus?: ProjectDataSchema['status']) => {
+    if (jsonStatus) {
+      switch (jsonStatus) {
+        case 'In progress':
+          return 'bg-amber-500/10 text-amber-400 border-amber-500/30';
+        case 'Paused':
+          return 'bg-neutral-500/10 text-neutral-400 border-neutral-500/30';
+        case 'Completed':
+        default:
+          return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
+      }
+    }
     switch (status) {
       case 'Professional Internship':
         return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
@@ -207,11 +232,10 @@ export const ProjectsSection: React.FC = () => {
                   type="button"
                   onClick={() => setSelectedCategory(cat)}
                   aria-pressed={isSelected}
-                  className={`px-3 py-1.5 rounded-full text-xs font-mono tracking-wide transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 ${
-                    isSelected
+                  className={`px-3 py-1.5 rounded-full text-xs font-mono tracking-wide transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 ${isSelected
                       ? 'bg-white text-black font-bold shadow-md scale-105'
                       : 'bg-black/30 text-white/70 hover:bg-white/10 hover:text-white border border-white/5'
-                  }`}
+                    }`}
                 >
                   <span>{cat}</span>
                   <span className={`ml-1.5 text-[11px] ${isSelected ? 'text-black/90' : 'text-white/70'}`}>
@@ -249,15 +273,20 @@ export const ProjectsSection: React.FC = () => {
           <div data-testid="project-cards-grid" className="grid grid-cols-1 lg:grid-cols-2 gap-7 sm:gap-9">
             {filteredProjects.map((project, pIdx) => {
               const isFeatured = pIdx === 0 && selectedCategory === 'All' && !searchQuery;
+              const jsonMeta = centralizedMetadataMap.get(project.id);
+              const displayTitle = jsonMeta?.title || project.title;
+              const displayStatus = jsonMeta?.status || project.status;
+              const displaySummary = jsonMeta?.oneLineSummary || project.summary;
+              const displayTools = jsonMeta?.tools && jsonMeta.tools.length > 0 ? jsonMeta.tools : project.tools;
+              const statusBadgeClass = getStatusBadge(project.status, jsonMeta?.status);
               return (
                 <article
                   key={project.id}
                   data-project-id={project.id}
-                  className={`flex flex-col justify-between p-6 sm:p-8 rounded-3xl transition-all duration-300 shadow-xl group ${
-                    isFeatured
+                  className={`flex flex-col justify-between p-5 sm:p-8 rounded-3xl transition-all duration-300 shadow-xl group ${isFeatured
                       ? 'bg-[#161a28] border border-white/20 hover:border-red-500/40 lg:col-span-2'
                       : 'bg-[#141722] border border-white/10 hover:border-white/20'
-                  }`}
+                    }`}
                 >
                   <div>
                     {/* Meta Header */}
@@ -266,8 +295,8 @@ export const ProjectsSection: React.FC = () => {
                         <span className="px-3 py-0.5 rounded-full bg-white/5 border border-white/15 text-xs font-mono text-red-400 font-medium">
                           {project.category}
                         </span>
-                        <span className={`px-2.5 py-0.5 rounded-full text-xs font-mono border ${getStatusBadge(project.status)}`}>
-                          {project.status}
+                        <span className={`px-2.5 py-0.5 rounded-full text-xs font-mono border ${statusBadgeClass}`}>
+                          {displayStatus}
                         </span>
                         {isFeatured && (
                           <span className="px-2.5 py-0.5 rounded-full text-[11px] font-mono bg-red-500/15 border border-red-500/30 text-red-300 font-semibold uppercase tracking-wider">
@@ -275,12 +304,14 @@ export const ProjectsSection: React.FC = () => {
                           </span>
                         )}
                       </div>
-                      <span className="text-xs font-mono text-white/60">{project.date}</span>
+                      <span className="text-xs font-mono text-white/60">
+                        {jsonMeta?.lastUpdated ? `Updated: ${jsonMeta.lastUpdated}` : project.date}
+                      </span>
                     </div>
 
                     {/* Project Title & Tagline */}
                     <h3 className={`${isFeatured ? 'text-2xl sm:text-3xl lg:text-4xl' : 'text-xl sm:text-2xl'} font-extrabold text-white tracking-tight leading-snug group-hover:text-red-400 transition-colors`}>
-                      {project.title}
+                      {displayTitle}
                     </h3>
                     <p className="text-white/70 text-xs sm:text-sm mt-1.5 font-mono mb-4">
                       {project.tagline}
@@ -291,18 +322,18 @@ export const ProjectsSection: React.FC = () => {
                       <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.03] border border-white/10 text-xs font-mono text-white/80 mb-5">
                         <Database className="w-3.5 h-3.5 text-blue-400 shrink-0" />
                         <span className="text-white/50 text-[11px] uppercase tracking-wider font-semibold">Data Scope:</span>
-                        <span className="truncate">{project.datasetScope.scale}</span>
+                        <span className="truncate">{jsonMeta?.data || project.datasetScope.scale}</span>
                       </div>
                     )}
 
-                    {/* Card Content Brief */}
+                    {/* Card Content Brief: Centrally driven summary & objective */}
                     {project.cardBrief ? (
                       <div className="space-y-2.5 text-xs sm:text-sm leading-relaxed mb-5 font-sans">
                         <div className="p-3.5 rounded-2xl bg-black/40 border border-white/5 border-l-2 border-l-amber-400">
                           <span className="text-[11px] font-mono uppercase text-amber-400 font-bold block mb-1">
-                            Analytical Objective
+                            Analytical Objective & Summary
                           </span>
-                          <p className="text-white/85 leading-relaxed">{project.cardBrief.objective}</p>
+                          <p className="text-white/85 leading-relaxed">{displaySummary}</p>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
@@ -310,25 +341,25 @@ export const ProjectsSection: React.FC = () => {
                             <span className="text-[10px] font-mono uppercase text-blue-400 font-bold block mb-0.5">
                               Methods & Architecture
                             </span>
-                            <p className="text-white/80 text-xs">{project.cardBrief.methods}</p>
+                            <p className="text-white/80 text-xs line-clamp-3">{jsonMeta?.method || project.cardBrief.methods}</p>
                           </div>
                           <div className="p-3 rounded-xl bg-purple-500/[0.03] border border-white/5 border-l-2 border-l-purple-400">
                             <span className="text-[10px] font-mono uppercase text-purple-400 font-bold block mb-0.5">
-                              Deliverable
+                              Deliverable & Result
                             </span>
-                            <p className="text-white/80 text-xs">{project.cardBrief.keyDeliverable}</p>
+                            <p className="text-white/80 text-xs line-clamp-3">{jsonMeta?.result || project.cardBrief.keyDeliverable}</p>
                           </div>
                         </div>
                       </div>
                     ) : (
                       <div className="space-y-2 text-xs sm:text-sm leading-relaxed mb-5 font-sans">
-                        <p className="text-white/85 line-clamp-3">{project.summary}</p>
+                        <p className="text-white/85 line-clamp-3">{displaySummary}</p>
                       </div>
                     )}
 
-                    {/* Metrics Grid */}
+                    {/* Metrics Grid Sourced from Central Metadata with Fallback */}
                     <div className="grid grid-cols-2 gap-2.5 mb-5 font-mono">
-                      {project.keyMetrics.slice(0, 4).map((metric, mIdx) => (
+                      {(jsonMeta?.keyMetrics || project.keyMetrics).slice(0, 4).map((metric, mIdx) => (
                         <div key={mIdx} className="p-3 rounded-2xl bg-black/40 border border-white/5">
                           <span className="text-[10px] text-white/50 uppercase block truncate">
                             {metric.label}
@@ -340,9 +371,9 @@ export const ProjectsSection: React.FC = () => {
                       ))}
                     </div>
 
-                    {/* Tools Tags */}
+                    {/* Tools Tags Sourced from Central Metadata */}
                     <div className="flex flex-wrap gap-1.5 mb-6">
-                      {project.tools.map((tool, tIdx) => (
+                      {displayTools.map((tool, tIdx) => (
                         <span
                           key={tIdx}
                           className="px-2.5 py-1 rounded-lg bg-white/5 text-white/70 text-[11px] font-mono border border-white/5"
@@ -404,24 +435,30 @@ export const ProjectsSection: React.FC = () => {
       </div>
 
       {/* Recruiter Quick Executive Brief Modal */}
-      <ProjectSummaryModal
-        project={activeSummaryProject}
-        isOpen={activeSummaryProject !== null}
-        onClose={closeModals}
-        onInspectFullCaseStudy={(p) => {
-          openCaseStudyModal(p);
-        }}
-      />
+      {activeSummaryProject && (
+        <Suspense fallback={<ModalFallback />}>
+          <ProjectSummaryModal
+            project={activeSummaryProject}
+            isOpen={activeSummaryProject !== null}
+            onClose={closeModals}
+            onInspectFullCaseStudy={(p) => {
+              openCaseStudyModal(p);
+            }}
+          />
+        </Suspense>
+      )}
 
       {/* Case Study Deep-Dive Modal */}
       {activeModalProject && (
-        <CaseStudyModal
-          project={activeModalProject}
-          onClose={closeModals}
-          onSelectProject={(nextP) => {
-            openCaseStudyModal(nextP);
-          }}
-        />
+        <Suspense fallback={<ModalFallback />}>
+          <CaseStudyModal
+            project={activeModalProject}
+            onClose={closeModals}
+            onSelectProject={(nextP) => {
+              openCaseStudyModal(nextP);
+            }}
+          />
+        </Suspense>
       )}
     </section>
   );

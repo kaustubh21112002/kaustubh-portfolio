@@ -52,23 +52,33 @@
     line-height: 1.6;
   }
 
-  /* Fix 15: Ensure mobile body readability floor (at least 16px on mobile screens) */
+  /* Mobile typography and spacing tokens (Phase 5.13 scale) */
+  :root {
+    --text-hero: clamp(1.875rem, 5vw, 2.125rem);      /* 30-34px */
+    --text-section: clamp(1.4375rem, 4vw, 1.625rem);  /* 23-26px */
+    --text-card: clamp(1.0625rem, 2.5vw, 1.1875rem);  /* 17-19px */
+    --text-body: clamp(0.875rem, 2vw, 1rem);          /* 14-16px */
+    --text-meta: clamp(0.6875rem, 1.5vw, 0.8125rem);  /* 11-13px */
+    --text-tech: 0.6875rem;                           /* 11px minimum */
+  }
+
   @media (max-width: 768px) {
     body {
-      font-size: 16px;
-    }
-    p, li, dd {
-      font-size: clamp(1rem, 4vw, 1.125rem);
+      font-size: 15px;
+      line-height: 1.55;
     }
   }
 
-  /* Universal minimum text size floor (no text rendered below 14px anywhere) */
-  .text-\[9px\], .text-\[10px\], .text-\[11px\], .text-\[12px\], .text-\[13px\] {
-    font-size: 14px !important;
+  /* Technical microcopy minimum floor: avoid illegible text under 11px */
+  .text-\[9px\], .text-\[10px\] {
+    font-size: 11px !important;
   }
-  .text-xs {
-    font-size: 14px !important;
-    line-height: 1.5 !important;
+
+  /* Responsive touch and tap ergonomics */
+  @media (max-width: 640px) {
+    button, a {
+      touch-action: manipulation;
+    }
   }
 
   /* Custom subtle scrollbar */
