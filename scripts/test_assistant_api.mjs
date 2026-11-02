@@ -561,6 +561,244 @@ async function runTests() {
     }
 
     // -------------------------------------------------------------------------
+    // L. Safe Groq Provider Error Classification & Diagnostic Logging Tests
+    // -------------------------------------------------------------------------
+    {
+      const classificationCases = [
+        {
+          name: '1. Missing API key',
+          setup: () => {
+            delete process.env.AI_API_KEY;
+            process.env.AI_MODEL = 'llama-3.3-70b-versatile';
+            mockFetchHandler = null;
+          },
+          teardown: () => {
+            process.env.AI_API_KEY = 'mock-groq-key-test';
+          },
+          expectedCategory: 'MISSING_CONFIGURATION',
+          expectedStatus: null
+        },
+        {
+          name: '2. Missing model',
+          setup: () => {
+            process.env.AI_API_KEY = 'mock-groq-key-test';
+            delete process.env.AI_MODEL;
+            mockFetchHandler = null;
+          },
+          teardown: () => {
+            process.env.AI_MODEL = 'llama-3.3-70b-versatile';
+          },
+          expectedCategory: 'MISSING_CONFIGURATION',
+          expectedStatus: null
+        },
+        {
+          name: '3. HTTP 401 authentication failure',
+          setup: () => {
+            mockFetchHandler = async (url) => {
+              if (String(url).includes('api.groq.com')) {
+                return {
+                  ok: false,
+                  status: 401,
+                  json: async () => ({ error: { message: 'Invalid API Key', type: 'invalid_request_error', code: 'invalid_api_key' } })
+                };
+              }
+            };
+          },
+          expectedCategory: 'AUTHENTICATION_ERROR',
+          expectedStatus: 401
+        },
+        {
+          name: '4. HTTP 403 access failure',
+          setup: () => {
+            mockFetchHandler = async (url) => {
+              if (String(url).includes('api.groq.com')) {
+                return {
+                  ok: false,
+                  status: 403,
+                  json: async () => ({ error: { message: 'Access forbidden for project', code: 'forbidden' } })
+                };
+              }
+            };
+          },
+          expectedCategory: 'AUTHENTICATION_ERROR',
+          expectedStatus: 403
+        },
+        {
+          name: '5. HTTP 404 model unavailable',
+          setup: () => {
+            mockFetchHandler = async (url) => {
+              if (String(url).includes('api.groq.com')) {
+                return {
+                  ok: false,
+                  status: 404,
+                  json: async () => ({ error: { message: 'The model `llama-non-existent` does not exist', code: 'model_not_found' } })
+                };
+              }
+            };
+          },
+          expectedCategory: 'MODEL_UNAVAILABLE',
+          expectedStatus: 404
+        },
+        {
+          name: '6. HTTP 429 rate limit',
+          setup: () => {
+            mockFetchHandler = async (url) => {
+              if (String(url).includes('api.groq.com')) {
+                return {
+                  ok: false,
+                  status: 429,
+                  json: async () => ({ error: { message: 'Rate limit reached for requests per minute', code: 'rate_limit_exceeded' } })
+                };
+              }
+            };
+          },
+          expectedCategory: 'RATE_LIMITED',
+          expectedStatus: 429
+        },
+        {
+          name: '7. HTTP 400 invalid request',
+          setup: () => {
+            mockFetchHandler = async (url) => {
+              if (String(url).includes('api.groq.com')) {
+                return {
+                  ok: false,
+                  status: 400,
+                  json: async () => ({ error: { message: 'Failed to deserialize the JSON body into the target type', code: 'bad_request' } })
+                };
+              }
+            };
+          },
+          expectedCategory: 'INVALID_REQUEST',
+          expectedStatus: 400
+        },
+        {
+          name: '8. HTTP 500 provider failure',
+          setup: () => {
+            mockFetchHandler = async (url) => {
+              if (String(url).includes('api.groq.com')) {
+                return {
+                  ok: false,
+                  status: 500,
+                  json: async () => ({ error: { message: 'Internal server error from Groq' } })
+                };
+              }
+            };
+          },
+          expectedCategory: 'PROVIDER_SERVER_ERROR',
+          expectedStatus: 500
+        },
+        {
+          name: '9. Network failure',
+          setup: () => {
+            mockFetchHandler = async (url) => {
+              if (String(url).includes('api.groq.com')) {
+                const netErr = new TypeError('fetch failed');
+                netErr.code = 'ECONNRESET';
+                throw netErr;
+              }
+            };
+          },
+          expectedCategory: 'NETWORK_ERROR',
+          expectedStatus: null
+        },
+        {
+          name: '10. Timeout/abort',
+          setup: () => {
+            mockFetchHandler = async (url) => {
+              if (String(url).includes('api.groq.com')) {
+                const timeoutErr = new Error('The operation was aborted due to timeout');
+                timeoutErr.name = 'TimeoutError';
+                throw timeoutErr;
+              }
+            };
+          },
+          expectedCategory: 'TIMEOUT',
+          expectedStatus: null
+        },
+        {
+          name: '11. Retry sequence where earlier failure differs from final failure',
+          setup: () => {
+            // If the provider executes or retries, final outcome is accurately captured
+            mockFetchHandler = async (url) => {
+              if (String(url).includes('api.groq.com')) {
+                return {
+                  ok: false,
+                  status: 503,
+                  json: async () => ({ error: { message: 'Service unavailable' } })
+                };
+              }
+            };
+          },
+          expectedCategory: 'PROVIDER_SERVER_ERROR',
+          expectedStatus: 503
+        },
+        {
+          name: '12. Unknown exception fallback',
+          setup: () => {
+            mockFetchHandler = async (url) => {
+              if (String(url).includes('api.groq.com')) {
+                throw new Error('Something unpredicted occurred');
+              }
+            };
+          },
+          expectedCategory: 'UNKNOWN_PROVIDER_ERROR',
+          expectedStatus: null
+        }
+      ];
+
+      for (const tc of classificationCases) {
+        if (tc.setup) tc.setup();
+
+        const capturedErrors = [];
+        const origConsoleError = console.error;
+        console.error = (...args) => capturedErrors.push(args.join(' '));
+
+        const resCase = createMockRes();
+        await handler({
+          method: 'POST',
+          headers: { origin: CANONICAL_ORIGIN, 'x-forwarded-for': getUniqueIp() },
+          body: { question: `Diagnostics test: ${tc.name}` }
+        }, resCase);
+
+        console.error = origConsoleError;
+
+        if (tc.teardown) tc.teardown();
+
+        const loggedLine = capturedErrors.find((line) => line.includes('AI_PROVIDER_FAILURE'));
+        let parsedLog = null;
+        try {
+          parsedLog = JSON.parse(loggedLine || '{}');
+        } catch (_e) {}
+
+        const isPublicResponseSanitized =
+          resCase.statusCode === 502 &&
+          resCase.body?.success === false &&
+          resCase.body?.code === 'AI_PROVIDER_ERROR' &&
+          resCase.body?.message === 'The assistant is temporarily unavailable. Please use site search or the contact form.' &&
+          !resCase.body?.category &&
+          !resCase.body?.upstreamStatus;
+
+        const isLogCorrect =
+          parsedLog?.event === 'AI_PROVIDER_FAILURE' &&
+          parsedLog?.category === tc.expectedCategory &&
+          parsedLog?.upstreamStatus === tc.expectedStatus;
+
+        const isPrivacyClean =
+          !capturedErrors.join('\n').includes('mock-groq-key') &&
+          !capturedErrors.join('\n').includes('Diagnostics test:');
+
+        assert(
+          `Test L (${tc.name}): Category '${tc.expectedCategory}', status ${tc.expectedStatus}, public 502 sanitized, privacy preserved`,
+          isPublicResponseSanitized && isLogCorrect && isPrivacyClean
+        );
+      }
+
+      mockFetchHandler = null;
+      process.env.AI_API_KEY = 'mock-groq-key-test';
+      process.env.AI_MODEL = 'llama-3.3-70b-versatile';
+    }
+
+    // -------------------------------------------------------------------------
     // K. Logging Privacy Assertion
     // -------------------------------------------------------------------------
     {

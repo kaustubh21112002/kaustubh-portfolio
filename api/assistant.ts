@@ -2,7 +2,12 @@
 // Strict security: Origin verification, honeypot protection, in-memory rate limiting, daily cap,
 // sanitized Slack alert dispatch, and restricted portfolio-only system instructions.
 
-import { generateChatCompletion, type ChatMessage } from './lib/groqProvider.js';
+import {
+  generateChatCompletion,
+  GroqProviderError,
+  type ChatMessage,
+  type ProviderErrorCategory
+} from './lib/groqProvider.js';
 import { buildPortfolioContext } from './lib/portfolioContext.js';
 
 export interface AssistantRequestBody {
@@ -334,7 +339,7 @@ export default async function handler(
     { role: 'user', content: question }
   ];
 
-  // 8. Provider Invocation (Groq)
+  // 8. Provider Invocation (Groq) with Safe Structured Diagnostics
   try {
     const answer = await generateChatCompletion(messages, {
       temperature: 0.2,
@@ -347,7 +352,22 @@ export default async function handler(
       message: 'Answer generated successfully.',
       answer
     });
-  } catch (_providerError) {
+  } catch (providerError: any) {
+    let category: ProviderErrorCategory = 'UNKNOWN_PROVIDER_ERROR';
+    let upstreamStatus: number | undefined;
+
+    if (providerError instanceof GroqProviderError) {
+      category = providerError.category;
+      upstreamStatus = providerError.status;
+    }
+
+    // Concise structured diagnostic: Never logs API keys, headers, bodies, visitor questions, IP addresses, or raw messages
+    console.error(JSON.stringify({
+      event: 'AI_PROVIDER_FAILURE',
+      category,
+      upstreamStatus: upstreamStatus ?? null
+    }));
+
     res.status(502).json({
       success: false,
       code: 'AI_PROVIDER_ERROR',
