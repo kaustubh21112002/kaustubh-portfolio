@@ -2,8 +2,8 @@
 // Strict security: Origin verification, honeypot protection, in-memory rate limiting, daily cap,
 // sanitized Slack alert dispatch, and restricted portfolio-only system instructions.
 
-import { generateChatCompletion, ChatMessage } from './lib/groqProvider';
-import { buildPortfolioContext } from './lib/portfolioContext';
+import { generateChatCompletion, type ChatMessage } from './lib/groqProvider.js';
+import { buildPortfolioContext } from './lib/portfolioContext.js';
 
 export interface AssistantRequestBody {
   question?: string;
