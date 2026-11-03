@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useMemo, Suspense, lazy } from 'react';
-import { X, ArrowRight, ArrowLeft, ShieldAlert, CheckCircle2, FileText, ChevronDown, ChevronUp, Layers, HelpCircle, Activity, Info, AlertTriangle, Database, ExternalLink, ChevronLeft, ChevronRight, Target, Cpu, TrendingUp } from 'lucide-react';
+import { X, ArrowRight, ArrowLeft, ShieldAlert, CheckCircle2, FileText, ChevronDown, ChevronUp, Layers, HelpCircle, Activity, Info, AlertTriangle, Database, ExternalLink, ChevronLeft, ChevronRight, Target, Cpu, TrendingUp, Sparkles, BookOpen, Compass, AlertCircle } from 'lucide-react';
 import { Project, getProjectEvidenceLink } from '../../data/projects';
 import projectsData from '../../data/projects.json';
 import { ProjectDataSchema } from '../../data/projectSchema';
@@ -228,6 +228,21 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
           <p className="text-white/75 text-sm sm:text-base mt-2 font-mono">
             {centralizedMeta?.oneLineSummary || project.tagline}
           </p>
+
+          {/* Primary Recruiter Takeaway Callout */}
+          <div className="mt-4 p-3.5 rounded-2xl bg-gradient-to-r from-red-500/10 via-amber-500/10 to-transparent border border-red-500/25 flex items-start gap-3">
+            <span className="p-1 rounded-lg bg-red-500/20 text-red-400 mt-0.5 shrink-0">
+              <Sparkles className="w-4 h-4" />
+            </span>
+            <div className="min-w-0">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-amber-400 font-bold block">
+                Primary Analytical Takeaway
+              </span>
+              <p className="text-xs sm:text-sm text-white/90 font-sans leading-relaxed mt-0.5">
+                {project.keyFinding}
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Quick Recruiter Section Navigation */}
@@ -387,9 +402,19 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
                       {project.category === 'Equity Research' ? 'MODEL RECONCILED' : 'GOVERNED ARTIFACT'}
                     </span>
                   </div>
-                  <p className="text-white/90 text-xs sm:text-sm leading-relaxed font-sans">
+                  <p className="text-white/90 text-xs sm:text-sm leading-relaxed font-sans mb-3">
                     {centralizedMeta.result}
                   </p>
+                  {project.businessImplication && (
+                    <div className="pt-2.5 border-t border-white/10">
+                      <span className="text-[10px] font-mono uppercase tracking-wider text-purple-300 font-semibold block mb-0.5">
+                        Strategic & Commercial Implication
+                      </span>
+                      <p className="text-white/80 text-xs font-sans leading-relaxed">
+                        {project.businessImplication}
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
