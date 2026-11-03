@@ -10,7 +10,12 @@ import {
   ExternalLink,
   Briefcase,
   FileText,
-  SlidersHorizontal
+  SlidersHorizontal,
+  Target,
+  Cpu,
+  TrendingUp,
+  Compass,
+  CheckCircle2
 } from 'lucide-react';
 import { projects, Project, getProjectEvidenceLink } from '../../data/projects';
 import projectsData from '../../data/projects.json';
@@ -29,6 +34,8 @@ const ProjectSummaryModal = lazy(() => import('./ProjectSummaryModal').then(m =>
 
 export const ProjectsSection: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [selectedCapability, setSelectedCapability] = useState<string>('All');
+  const [expandedStorylines, setExpandedStorylines] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeModalProject, setActiveModalProject] = useState<Project | null>(null);
   const [activeSummaryProject, setActiveSummaryProject] = useState<Project | null>(null);
@@ -89,6 +96,24 @@ export const ProjectsSection: React.FC = () => {
     'FinTech Strategy'
   ], []);
 
+  // Analytical Positioning Capabilities: Allows recruiters to filter by core competency
+  const capabilities = useMemo(() => [
+    { id: 'All', label: 'All Analytical Modes' },
+    { id: 'financial-analytics', label: 'Financial & Equity Analytics', match: (p: Project) => p.category === 'Equity Research' || p.category === 'FinTech Strategy' },
+    { id: 'data-governance', label: 'Data Governance & KPI Integrity', match: (p: Project) => p.category === 'Data Governance' },
+    { id: 'business-analytics', label: 'Business & Operations Analytics', match: (p: Project) => p.category === 'Business Analytics' || p.category === 'Sports Analytics' },
+    { id: 'predictive-ml', label: 'Predictive Modeling & Heuristics', match: (p: Project) => p.tools.some(t => /LightGBM|Regression|Prediction|Predictive/i.test(t)) }
+  ], []);
+
+  const toggleStoryline = (id: string) => {
+    setExpandedStorylines(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
   // Filter and search computation grounded strictly in verified project attributes
   const filteredProjects = useMemo(() => {
     return projects.filter((project) => {
@@ -96,7 +121,13 @@ export const ProjectsSection: React.FC = () => {
       const categoryMatch = selectedCategory === 'All' || project.category === selectedCategory;
       if (!categoryMatch) return false;
 
-      // 2. Search match across title, tagline, summary, problem statement, tools, and category
+      // 2. Analytical capability match
+      if (selectedCapability !== 'All') {
+        const cap = capabilities.find(c => c.id === selectedCapability);
+        if (cap && cap.match && !cap.match(project)) return false;
+      }
+
+      // 3. Search match across title, tagline, summary, problem statement, tools, and category
       if (!searchQuery.trim()) return true;
       const q = searchQuery.toLowerCase().trim();
 
@@ -109,12 +140,13 @@ export const ProjectsSection: React.FC = () => {
 
       return titleMatch || taglineMatch || summaryMatch || problemMatch || categoryTextMatch || toolsMatch;
     });
-  }, [selectedCategory, searchQuery]);
+  }, [selectedCategory, selectedCapability, searchQuery, capabilities]);
 
-  const hasActiveFilters = selectedCategory !== 'All' || searchQuery.trim().length > 0;
+  const hasActiveFilters = selectedCategory !== 'All' || selectedCapability !== 'All' || searchQuery.trim().length > 0;
 
   const handleResetFilters = () => {
     setSelectedCategory('All');
+    setSelectedCapability('All');
     setSearchQuery('');
   };
 
@@ -245,6 +277,32 @@ export const ProjectsSection: React.FC = () => {
               );
             })}
           </div>
+
+          {/* Analytical Capability Filter (Recruiter Competency Lens) */}
+          <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-white/5">
+            <span className="text-[11px] font-mono text-amber-400/80 uppercase tracking-wider mr-1 hidden sm:inline flex items-center gap-1">
+              <SlidersHorizontal className="w-3 h-3 inline text-amber-400" />
+              <span>Competency:</span>
+            </span>
+            {capabilities.map((cap) => {
+              const isCapSelected = selectedCapability === cap.id;
+              return (
+                <button
+                  key={cap.id}
+                  type="button"
+                  onClick={() => setSelectedCapability(cap.id)}
+                  aria-pressed={isCapSelected}
+                  className={`px-3 py-1 rounded-full text-[11px] font-mono transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-400 ${
+                    isCapSelected
+                      ? 'bg-amber-400/20 text-amber-300 font-bold border border-amber-400/40 shadow-sm'
+                      : 'bg-white/[0.03] text-white/60 hover:text-white hover:bg-white/10 border border-white/5'
+                  }`}
+                >
+                  {cap.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Empty State when zero projects match filters */}
@@ -356,6 +414,88 @@ export const ProjectsSection: React.FC = () => {
                         <p className="text-white/85 line-clamp-3">{displaySummary}</p>
                       </div>
                     )}
+
+                    {/* Recruiter Storyline Toggle & 8-Point Structured Deep-Dive */}
+                    <div className="mb-5">
+                      <button
+                        type="button"
+                        onClick={() => toggleStoryline(project.id)}
+                        className="w-full flex items-center justify-between p-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/10 text-xs font-mono text-white/80 transition-colors cursor-pointer"
+                        aria-expanded={expandedStorylines.has(project.id)}
+                        aria-label={`Toggle recruiter analytical storyline for ${displayTitle}`}
+                      >
+                        <span className="flex items-center gap-2">
+                          <Compass className="w-3.5 h-3.5 text-amber-400" />
+                          <span className="font-semibold text-white/90">
+                            {expandedStorylines.has(project.id) ? 'Hide 8-Point Recruiter Storyline' : 'View 8-Point Recruiter Storyline'}
+                          </span>
+                        </span>
+                        <span className="text-[11px] text-amber-400/90 font-mono">
+                          {expandedStorylines.has(project.id) ? '▲ Close Storyline' : '▼ Problem → Impact'}
+                        </span>
+                      </button>
+
+                      {expandedStorylines.has(project.id) && (
+                        <div className="mt-3 p-4 rounded-2xl bg-black/60 border border-white/10 space-y-3.5 text-xs animate-in fade-in duration-200">
+                          {/* 1. Business Problem */}
+                          <div className="border-l-2 border-red-400 pl-3">
+                            <span className="text-[10px] font-mono uppercase text-red-400 font-bold block">
+                              1. Commercial Dilemma & Business Problem
+                            </span>
+                            <p className="text-white/85 mt-0.5 leading-relaxed font-sans">{project.problemStatement}</p>
+                          </div>
+
+                          {/* 2. Analytical Objective */}
+                          <div className="border-l-2 border-amber-400 pl-3">
+                            <span className="text-[10px] font-mono uppercase text-amber-400 font-bold block">
+                              2. Project Objective
+                            </span>
+                            <p className="text-white/85 mt-0.5 leading-relaxed font-sans">{project.cardBrief?.objective || displaySummary}</p>
+                          </div>
+
+                          {/* 3 & 4. Data & Methods */}
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                            <div className="border-l-2 border-blue-400 pl-3">
+                              <span className="text-[10px] font-mono uppercase text-blue-400 font-bold block">
+                                3. Data Scope & Methodology
+                              </span>
+                              <p className="text-white/80 mt-0.5 text-[11px] leading-relaxed font-sans">{project.approach}</p>
+                            </div>
+                            <div className="border-l-2 border-cyan-400 pl-3">
+                              <span className="text-[10px] font-mono uppercase text-cyan-400 font-bold block">
+                                4. Key Analytical Tools
+                              </span>
+                              <div className="flex flex-wrap gap-1 mt-1">
+                                {displayTools.map((t, idx) => (
+                                  <span key={idx} className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[10px] font-mono text-white/80">
+                                    {t}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* 5 & 6. Analysis & Key Findings */}
+                          <div className="border-l-2 border-emerald-400 pl-3">
+                            <span className="text-[10px] font-mono uppercase text-emerald-400 font-bold block">
+                              5 & 6. Empirical Analysis & Reconciled Findings
+                            </span>
+                            <p className="text-white/85 mt-0.5 leading-relaxed font-sans">{project.keyFinding}</p>
+                          </div>
+
+                          {/* 7 & 8. Business Implications & Deliverable */}
+                          <div className="border-l-2 border-purple-400 pl-3">
+                            <span className="text-[10px] font-mono uppercase text-purple-400 font-bold block">
+                              7 & 8. Business Implications & Final Deliverables
+                            </span>
+                            <p className="text-white/85 mt-0.5 leading-relaxed font-sans mb-1">{project.businessImplication}</p>
+                            <span className="text-[11px] font-mono text-purple-300/90 block pt-1 border-t border-white/5">
+                              Deliverable: {project.cardBrief?.keyDeliverable || jsonMeta?.result}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
 
                     {/* Metrics Grid Sourced from Central Metadata with Fallback */}
                     <div className="grid grid-cols-2 gap-2.5 mb-5 font-mono">
