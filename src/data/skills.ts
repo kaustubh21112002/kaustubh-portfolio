@@ -3,6 +3,8 @@ export interface SkillItem {
   context: string;
   evidence: string;
   isCoreTool?: boolean;
+  projectId?: 'phonepe-valuation' | 'stratos-governance' | 'spiideo-sports-analytics' | 'it-support-analytics' | 'smartbank-360' | 'equitrack-analytics-os';
+  projectTitle?: string;
 }
 
 export interface SkillGroup {
@@ -22,12 +24,12 @@ export const skillGroups: SkillGroup[] = [
     iconName: 'TrendingUp',
     accent: 'border-red-500/30 hover:border-red-500/50',
     skills: [
-      { name: 'DCF Modeling', context: '5-year explicit FCFF forecasting, mid-year discounting, working capital schedules', evidence: 'PhonePe Pre-IPO DCF Workbook', isCoreTool: true },
-      { name: 'CAPM / WACC Analysis', context: 'Beta estimation (1.35), risk-free rate calibration, market equity risk premium', evidence: 'PhonePe Cost of Capital (14.92%)' },
-      { name: 'Terminal Value Reconciliation', context: 'Gordon Growth perpetuity vs. Exit Multiple (13.15x EBITDA) blending', evidence: '₹19,554 Cr PV Terminal Value' },
-      { name: 'EV-to-Equity Bridge', context: 'Liquid investments, treasury cash additions, debt obligation deductions', evidence: '₹41,631 Cr Implied Equity Value' },
-      { name: 'Sensitivity & Scenario Matrix', context: 'Multi-variable WACC and exit multiple flex tables with bull/base/bear cases', evidence: 'PhonePe Scenario Module' },
-      { name: 'FinTech Unit Economics', context: 'Customer acquisition cost (CAC) vs. LTV horizon, Basel III capital adequacy', evidence: 'SmartBank 360 Credibility Report' }
+      { name: 'DCF Modeling', context: '5-year explicit FCFF forecasting, mid-year discounting, working capital schedules', evidence: 'PhonePe Pre-IPO DCF Workbook', isCoreTool: true, projectId: 'phonepe-valuation', projectTitle: 'PhonePe Valuation' },
+      { name: 'CAPM / WACC Analysis', context: 'Beta estimation (1.35), risk-free rate calibration, market equity risk premium', evidence: 'PhonePe Cost of Capital (14.92%)', projectId: 'phonepe-valuation', projectTitle: 'PhonePe Valuation' },
+      { name: 'Terminal Value Reconciliation', context: 'Gordon Growth perpetuity vs. Exit Multiple (13.15x EBITDA) blending', evidence: '₹19,554 Cr PV Terminal Value', projectId: 'phonepe-valuation', projectTitle: 'PhonePe Valuation' },
+      { name: 'EV-to-Equity Bridge', context: 'Liquid investments, treasury cash additions, debt obligation deductions', evidence: '₹41,631 Cr Implied Equity Value', projectId: 'phonepe-valuation', projectTitle: 'PhonePe Valuation' },
+      { name: 'Sensitivity & Scenario Matrix', context: 'Multi-variable WACC and exit multiple flex tables with bull/base/bear cases', evidence: 'PhonePe Scenario Module', projectId: 'phonepe-valuation', projectTitle: 'PhonePe Valuation' },
+      { name: 'FinTech Unit Economics', context: 'Customer acquisition cost (CAC) vs. LTV horizon, Basel III capital adequacy', evidence: 'SmartBank 360 Credibility Report', projectId: 'smartbank-360', projectTitle: 'SmartBank 360' }
     ]
   },
   {
@@ -37,10 +39,10 @@ export const skillGroups: SkillGroup[] = [
     iconName: 'BarChart3',
     accent: 'border-emerald-500/30 hover:border-emerald-500/50',
     skills: [
-      { name: 'Power BI & DAX', context: 'Calculated measures for MTTA, MTTR, SLA compliance, moving averages', evidence: 'IT Support Incident Analytics', isCoreTool: true },
-      { name: 'KPI Tree Modeling', context: '30/30 corporate KPI traceability from revenue down to unit conversion', evidence: 'STRATOS AI KPI Engine', isCoreTool: true },
-      { name: 'Operational Bottleneck Detection', context: 'Queue theory, shift-change handover variance, tier escalation latency', evidence: '10,000+ Support Ticket Logs' },
-      { name: 'Executive Storytelling', context: 'Translating quantitative anomalies into What Matters → What Changed → Why', evidence: 'STRATOS Decision Architecture' }
+      { name: 'Power BI & DAX', context: 'Calculated measures for MTTA, MTTR, SLA compliance, moving averages', evidence: 'IT Support Incident Analytics', isCoreTool: true, projectId: 'it-support-analytics', projectTitle: 'IT Support Intelligence' },
+      { name: 'KPI Tree Modeling', context: '30/30 corporate KPI traceability from revenue down to unit conversion', evidence: 'STRATOS AI KPI Engine', isCoreTool: true, projectId: 'stratos-governance', projectTitle: 'STRATOS AI Governance' },
+      { name: 'Operational Bottleneck Detection', context: 'Queue theory, shift-change handover variance, tier escalation latency', evidence: '10,000+ Support Ticket Logs', projectId: 'it-support-analytics', projectTitle: 'IT Support Intelligence' },
+      { name: 'Executive Storytelling', context: 'Translating quantitative anomalies into What Matters → What Changed → Why', evidence: 'STRATOS Decision Architecture', projectId: 'stratos-governance', projectTitle: 'STRATOS AI Governance' }
     ]
   },
   {
@@ -50,10 +52,10 @@ export const skillGroups: SkillGroup[] = [
     iconName: 'Database',
     accent: 'border-blue-500/30 hover:border-blue-500/50',
     skills: [
-      { name: 'Star-Schema Architecture', context: 'Fact tables linked to normalized dimension tables (Category, Department, Agent)', evidence: 'MySQL Fact_Tickets Schema', isCoreTool: true },
-      { name: 'Relational Modeling (MySQL / PostgreSQL)', context: 'Primary/foreign key constraints, indexing for aggregations, referential integrity', evidence: 'IT Support Database & STRATOS', isCoreTool: true },
-      { name: 'Complex SQL Aggregations', context: 'Window functions, CTEs, partition-by time series groupings, joins', evidence: 'Forensic Transaction Reconciliation', isCoreTool: true },
-      { name: 'Data Normalization', context: '3NF normalization reducing redundancy while supporting analytical star schemas', evidence: 'Undergraduate Database Foundations' }
+      { name: 'Star-Schema Architecture', context: 'Fact tables linked to normalized dimension tables (Category, Department, Agent)', evidence: 'MySQL Fact_Tickets Schema', isCoreTool: true, projectId: 'it-support-analytics', projectTitle: 'IT Support Intelligence' },
+      { name: 'Relational Modeling (MySQL / PostgreSQL)', context: 'Primary/foreign key constraints, indexing for aggregations, referential integrity', evidence: 'IT Support Database & STRATOS', isCoreTool: true, projectId: 'it-support-analytics', projectTitle: 'IT Support Intelligence' },
+      { name: 'Complex SQL Aggregations', context: 'Window functions, CTEs, partition-by time series groupings, joins', evidence: 'Forensic Transaction Reconciliation', isCoreTool: true, projectId: 'stratos-governance', projectTitle: 'STRATOS AI Governance' },
+      { name: 'Data Normalization', context: '3NF normalization reducing redundancy while supporting analytical star schemas', evidence: 'Undergraduate Database Foundations', projectId: 'it-support-analytics', projectTitle: 'IT Support Intelligence' }
     ]
   },
   {
@@ -63,10 +65,10 @@ export const skillGroups: SkillGroup[] = [
     iconName: 'Code2',
     accent: 'border-amber-500/30 hover:border-amber-500/50',
     skills: [
-      { name: 'Pandas & NumPy', context: 'Data cleaning, pivot tables, vectorized operations, missingness profiling', evidence: '10,000+ Incident Ticket Dataset', isCoreTool: true },
-      { name: 'Scikit-Learn Regression', context: 'Ordinary Least Squares (OLS) and tree ensembles for duration driver prediction', evidence: 'IT Ticket Duration Regression' },
-      { name: 'Exploratory Data Analysis (EDA)', context: 'Correlation matrices, distribution skewness checks, outlier detection', evidence: 'Academic Dissertation Pipeline' },
-      { name: 'Matplotlib & Seaborn', context: 'Statistical distribution plotting, regression residuals, heatmaps', evidence: 'Python Analytics Notebooks' }
+      { name: 'Pandas & NumPy', context: 'Data cleaning, pivot tables, vectorized operations, missingness profiling', evidence: '10,000+ Incident Ticket Dataset', isCoreTool: true, projectId: 'it-support-analytics', projectTitle: 'IT Support Intelligence' },
+      { name: 'Scikit-Learn Regression', context: 'Ordinary Least Squares (OLS) and tree ensembles for duration driver prediction', evidence: 'IT Ticket Duration Regression', projectId: 'it-support-analytics', projectTitle: 'IT Support Intelligence' },
+      { name: 'Exploratory Data Analysis (EDA)', context: 'Correlation matrices, distribution skewness checks, outlier detection', evidence: 'Academic Dissertation Pipeline', projectId: 'it-support-analytics', projectTitle: 'IT Support Intelligence' },
+      { name: 'Matplotlib & Seaborn', context: 'Statistical distribution plotting, regression residuals, heatmaps', evidence: 'Python Analytics Notebooks', projectId: 'it-support-analytics', projectTitle: 'IT Support Intelligence' }
     ]
   },
   {
@@ -76,10 +78,10 @@ export const skillGroups: SkillGroup[] = [
     iconName: 'ShieldCheck',
     accent: 'border-purple-500/30 hover:border-purple-500/50',
     skills: [
-      { name: 'PRESERVE → DOCUMENT → FLAG → GOVERN', context: 'Zero silent data imputation; unmapped channels preserved as Unspecified', evidence: 'STRATOS Core Governance Protocol', isCoreTool: true },
-      { name: 'Forensic Data Reconciliation', context: '15,630 exception occurrences audited across 14,156 unique orders (10 rules)', evidence: 'STRATOS Transaction Audit', isCoreTool: true },
-      { name: 'Validation Control Design', context: '10 automated validation controls (DQ-01–DQ-10) covering ledger imbalances and attribution gaps', evidence: 'Control Ledger Systems (DQ-10)', isCoreTool: true },
-      { name: 'Financial Control DQ-10 Audit', context: 'Surfacing Net Revenue > Gross Revenue anomalies transparently as REVIEW', evidence: 'PhonePe & STRATOS Model Audits' }
+      { name: 'PRESERVE → DOCUMENT → FLAG → GOVERN', context: 'Zero silent data imputation; unmapped channels preserved as Unspecified', evidence: 'STRATOS Core Governance Protocol', isCoreTool: true, projectId: 'stratos-governance', projectTitle: 'STRATOS AI Governance' },
+      { name: 'Forensic Data Reconciliation', context: '15,630 exception occurrences audited across 14,156 unique orders (10 rules)', evidence: 'STRATOS Transaction Audit', isCoreTool: true, projectId: 'stratos-governance', projectTitle: 'STRATOS AI Governance' },
+      { name: 'Validation Control Design', context: '10 automated validation controls (DQ-01–DQ-10) covering ledger imbalances and attribution gaps', evidence: 'Control Ledger Systems (DQ-10)', isCoreTool: true, projectId: 'stratos-governance', projectTitle: 'STRATOS AI Governance' },
+      { name: 'Financial Control DQ-10 Audit', context: 'Surfacing Net Revenue > Gross Revenue anomalies transparently as REVIEW', evidence: 'PhonePe & STRATOS Model Audits', projectId: 'stratos-governance', projectTitle: 'STRATOS AI Governance' }
     ]
   },
   {
@@ -89,10 +91,10 @@ export const skillGroups: SkillGroup[] = [
     iconName: 'Cpu',
     accent: 'border-cyan-500/30 hover:border-cyan-500/50',
     skills: [
-      { name: 'Spiideo Camera & Tracking Systems', context: 'Multi-camera match event tagging, spatial coordinate alignment, quality assurance', evidence: 'SPIIDEO Sports Analytics Internship' },
-      { name: 'Microsoft Excel Advanced Modeling', context: 'Financial workbooks, Goal Seek, Data Tables, index/match, financial formulas', evidence: 'DCF of PhonePe.xlsx Audit', isCoreTool: true },
-      { name: 'Version Control (Git & GitHub)', context: 'Branch management, semantic commits, GitHub repository deployment', evidence: 'kaustubh-portfolio Repository' },
-      { name: 'React 18 & TypeScript', context: 'Interactive analytical dashboards, Canvas 2D graphics, Vite build pipeline', evidence: 'Portfolio & STRATOS Prototype', isCoreTool: true }
+      { name: 'Spiideo Camera & Tracking Systems', context: 'Multi-camera match event tagging, spatial coordinate alignment, quality assurance', evidence: 'SPIIDEO Sports Analytics Internship', projectId: 'spiideo-sports-analytics', projectTitle: 'Spiideo Sports' },
+      { name: 'Microsoft Excel Advanced Modeling', context: 'Financial workbooks, Goal Seek, Data Tables, index/match, financial formulas', evidence: 'DCF of PhonePe.xlsx Audit', isCoreTool: true, projectId: 'phonepe-valuation', projectTitle: 'PhonePe Valuation' },
+      { name: 'Version Control (Git & GitHub)', context: 'Branch management, semantic commits, GitHub repository deployment', evidence: 'kaustubh-portfolio Repository', projectId: 'equitrack-analytics-os', projectTitle: 'EquiTrack OS' },
+      { name: 'React 18 & TypeScript', context: 'Interactive analytical dashboards, Canvas 2D graphics, Vite build pipeline', evidence: 'Portfolio & STRATOS Prototype', isCoreTool: true, projectId: 'equitrack-analytics-os', projectTitle: 'EquiTrack OS' }
     ]
   }
 ];

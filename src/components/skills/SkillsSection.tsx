@@ -9,7 +9,8 @@ import {
   Layers,
   CheckCircle2,
   ExternalLink,
-  ChevronRight
+  ChevronRight,
+  FolderOpen
 } from 'lucide-react';
 import { skillGroups, SkillGroup } from '../../data/skills';
 
@@ -114,13 +115,26 @@ export const SkillsSection: React.FC = () => {
                     key={sIdx}
                     className="p-3.5 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-white/15 transition-colors"
                   >
-                    <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                      <span className="font-bold text-white text-sm font-sans">
-                        {skill.name}
-                      </span>
-                      <span className="text-xs font-mono text-red-400 bg-red-500/10 px-2.5 py-0.5 rounded-full border border-red-500/20">
-                        {skill.evidence}
-                      </span>
+                    <div className="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="font-bold text-white text-sm font-sans">
+                          {skill.name}
+                        </span>
+                        <span className="text-xs font-mono text-red-400 bg-red-500/10 px-2.5 py-0.5 rounded-full border border-red-500/20">
+                          {skill.evidence}
+                        </span>
+                      </div>
+                      {skill.projectId && (
+                        <a
+                          href={`/?project=${skill.projectId}&view=case-study`}
+                          aria-label={`View case study evidence for ${skill.name} in ${skill.projectTitle || skill.projectId}`}
+                          className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/5 hover:bg-white/10 text-white/70 hover:text-white border border-white/10 text-[11px] font-mono transition-all group focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-400"
+                        >
+                          <FolderOpen className="w-3 h-3 text-red-400 group-hover:scale-110 transition-transform" />
+                          <span>{skill.projectTitle || 'Case Study'}</span>
+                          <span className="text-[10px] text-white/50 group-hover:text-white transition-colors">↗</span>
+                        </a>
+                      )}
                     </div>
                     <p className="text-xs text-white/80 leading-relaxed font-sans">
                       {skill.context}
