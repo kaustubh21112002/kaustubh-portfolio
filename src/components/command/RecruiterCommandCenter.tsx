@@ -11,7 +11,8 @@ import {
   Cpu,
   Layers,
   CheckCircle2,
-  Download
+  Download,
+  FileSearch
 } from 'lucide-react';
 import { projects, Project } from '../../data/projects';
 import { getResumeSkillCategories } from '../../data/skills';
@@ -22,10 +23,12 @@ import { ModalFallback } from '../projects/ModalFallback';
 // Genuine lazy loading for modal experiences
 const ProjectSummaryModal = lazy(() => import('../projects/ProjectSummaryModal').then(m => ({ default: m.ProjectSummaryModal })));
 const CaseStudyModal = lazy(() => import('../projects/CaseStudyModal').then(m => ({ default: m.CaseStudyModal })));
+const JobMatchModal = lazy(() => import('../tools/JobMatchModal').then(m => ({ default: m.JobMatchModal })));
 
 export const RecruiterCommandCenter: React.FC = () => {
   const [activeSummaryProject, setActiveSummaryProject] = useState<Project | null>(null);
   const [activeModalProject, setActiveModalProject] = useState<Project | null>(null);
+  const [isJobMatchOpen, setIsJobMatchOpen] = useState(false);
   const [activeCapabilityTab, setActiveCapabilityTab] = useState<number>(0);
 
   // Retrieve 3 primary flagship projects directly from authoritative repository data
@@ -86,6 +89,17 @@ export const RecruiterCommandCenter: React.FC = () => {
 
           {/* Recruiter Action Dock */}
           <div className="flex flex-wrap items-center gap-3 shrink-0">
+            {/* New Evidence Matcher Action */}
+            <button
+              type="button"
+              onClick={() => setIsJobMatchOpen(true)}
+              aria-label="Open Job Description Match Analyzer"
+              className="min-h-[44px] inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-red-500/15 hover:bg-red-500/25 text-red-300 hover:text-red-200 border border-red-500/35 hover:border-red-500/60 font-bold font-mono text-xs tracking-wide transition-all duration-200 cursor-pointer shadow-sm active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+            >
+              <FileSearch className="w-3.5 h-3.5 text-red-400" />
+              <span>Job Match Analyzer</span>
+            </button>
+
             {/* Primary Action: Explore Projects */}
             <button
               onClick={() => scrollTo('projects')}
@@ -306,6 +320,16 @@ export const RecruiterCommandCenter: React.FC = () => {
             onSelectProject={(nextP) => {
               openCaseStudyModal(nextP);
             }}
+          />
+        </Suspense>
+      )}
+
+      {/* Recruiter Job Description Match Analyzer Modal */}
+      {isJobMatchOpen && (
+        <Suspense fallback={<ModalFallback />}>
+          <JobMatchModal
+            isOpen={isJobMatchOpen}
+            onClose={() => setIsJobMatchOpen(false)}
           />
         </Suspense>
       )}
