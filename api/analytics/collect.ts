@@ -2,8 +2,8 @@
 // Collects privacy-safe first-party visitor telemetry.
 // Strict security: Rate limiting, origin checking, schema validation, zero PII retention.
 
-import { validateAnalyticsPayload, AnalyticsEventPayload } from '../lib/analyticsContract';
-import { getAnalyticsStorage } from '../lib/analyticsStorage';
+import { validateAnalyticsPayload, AnalyticsEventPayload } from '../lib/analyticsContract.js';
+import { getAnalyticsStorage } from '../lib/analyticsStorage.js';
 
 export interface VercelRequest {
   method?: string;

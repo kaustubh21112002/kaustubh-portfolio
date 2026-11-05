@@ -11,7 +11,7 @@
  *    it returns an explicit STANDBY / UNCONFIGURED status with full payload preview.
  */
 
-import { DailyAggregateMetrics } from './analyticsStorage';
+import { DailyAggregateMetrics } from './analyticsStorage.js';
 
 export interface GoogleSheetsSyncConfig {
   sheetId?: string;

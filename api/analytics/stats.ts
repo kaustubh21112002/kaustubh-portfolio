@@ -3,8 +3,8 @@
 // Rejects unauthenticated requests with 401 Unauthorized.
 // Returns truthful telemetry metadata and unconfigured storage warnings.
 
-import { getAnalyticsStorage } from '../lib/analyticsStorage';
-import { syncDailyAggregatesToSheets } from '../lib/sheetsSync';
+import { getAnalyticsStorage } from '../lib/analyticsStorage.js';
+import { syncDailyAggregatesToSheets } from '../lib/sheetsSync.js';
 
 export interface VercelRequest {
   method?: string;

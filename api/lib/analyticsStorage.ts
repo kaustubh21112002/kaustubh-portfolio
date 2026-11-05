@@ -11,7 +11,7 @@
  * 4. Never fabricates numbers, benchmarks, or persistent unique visitor counts.
  */
 
-import { AnalyticsEventPayload } from './analyticsContract';
+import { AnalyticsEventPayload } from './analyticsContract.js';
 
 export interface DailyAggregateMetrics {
   date: string; // YYYY-MM-DD (UTC)
