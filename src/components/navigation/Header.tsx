@@ -1,3 +1,5 @@
+import { PortfolioIntelligenceModal } from '../analytics/PortfolioIntelligenceModal';
+import { trackAnalyticsEvent } from '../../lib/analytics';
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, Download, Search } from 'lucide-react';
 import { portfolioConfig } from '../../config/portfolio';
@@ -12,6 +14,7 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({ activeSection = 'hero' }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [intelligenceOpen, setIntelligenceOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const mobileMenuButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -33,6 +36,11 @@ export const Header: React.FC<HeaderProps> = ({ activeSection = 'hero' }) => {
   // Global Ctrl+K / Cmd+K listener
   useEffect(() => {
     const handleGlobalSearchKey = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'i') {
+        e.preventDefault();
+        setIntelligenceOpen(prev => !prev);
+        return;
+      }
       if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault();
         setIsSearchOpen(prev => !prev);
@@ -237,6 +245,7 @@ export const Header: React.FC<HeaderProps> = ({ activeSection = 'hero' }) => {
             </button>
           </div>
         </nav>
+      <PortfolioIntelligenceModal isOpen={intelligenceOpen} onClose={() => setIntelligenceOpen(false)} />
       </header>
 
       {/* Mobile Editorial Drawer */}

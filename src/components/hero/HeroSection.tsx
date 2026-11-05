@@ -1,3 +1,4 @@
+import { trackAnalyticsEvent } from '../../lib/analytics';
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { ArrowDown, Download, Mail, ChevronRight, Copy, Check, MessageCircle } from 'lucide-react';
 import { portfolioConfig } from '../../config/portfolio';
@@ -287,6 +288,7 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
             <a
               href={portfolioConfig.resumePath}
               download="Kaustubh_Nandurkar_Resume.pdf"
+              onClick={() => trackAnalyticsEvent('resume_download', { path: '/Kaustubh_Nandurkar_Resume.pdf' })}
               aria-label="Download verified resume PDF from hero section"
               className="min-h-[48px] flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 hover:border-white/40 font-semibold text-sm tracking-wide transition-all duration-200 active:scale-95 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
             >

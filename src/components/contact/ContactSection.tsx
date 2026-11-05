@@ -1,3 +1,4 @@
+import { trackAnalyticsEvent } from '../../lib/analytics';
 import React, { useState, useMemo } from 'react';
 import { Mail, Linkedin, Github, Send, Copy, Check, MapPin, Phone, Info, AlertCircle, FileText, MessageCircle } from 'lucide-react';
 import { portfolioConfig } from '../../config/portfolio';
@@ -24,6 +25,7 @@ export const ContactSection: React.FC = () => {
   }, []);
 
   const handleCopyEmail = () => {
+    trackAnalyticsEvent('email_click', { path: '#contact' });
     navigator.clipboard.writeText(portfolioConfig.socials.email);
     setCopiedEmail(true);
     setTimeout(() => setCopiedEmail(false), 2000);
@@ -86,6 +88,7 @@ export const ContactSection: React.FC = () => {
 
   // Launch default mail client via mailto:
   const launchMailClient = () => {
+    trackAnalyticsEvent('email_click', { path: '#contact' });
     const subject = encodeURIComponent(`[Portfolio Inquiry] ${formData.subject.trim() || 'Opportunity Discussion'}`);
     const body = encodeURIComponent(
       `Name: ${formData.name.trim()}\nEmail: ${formData.email.trim()}\n\nMessage:\n${formData.message.trim()}`
@@ -96,6 +99,7 @@ export const ContactSection: React.FC = () => {
 
   // Primary submission: Attempt direct serverless dispatch first
   const handleSubmit = async (e: React.FormEvent) => {
+    trackAnalyticsEvent('contact_click', { path: '#contact' });
     e.preventDefault();
     if (isSubmitting) return;
 

@@ -1,4 +1,5 @@
 import { Project, projects } from '../../data/projects';
+import { trackAnalyticsEvent } from '../../lib/analytics';
 
 export const CANONICAL_PROJECT_IDS = [
   'phonepe-valuation',
@@ -74,6 +75,10 @@ export function setProjectUrlParam(projectId: string | null, view: 'case-study' 
 
   // Use pushState so browser Back/Forward operates as history steps
   window.history.pushState({ projectId, view }, '', url.toString());
+
+  if (projectId && isValidProjectId(projectId)) {
+    trackAnalyticsEvent('project_view', { projectId, path: url.pathname + url.search });
+  }
 }
 
 /**

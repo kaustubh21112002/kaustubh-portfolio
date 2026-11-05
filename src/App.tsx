@@ -1,3 +1,4 @@
+import { trackAnalyticsEvent } from './lib/analytics';
 import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { ThemeProvider } from './context/ThemeContext';
 import { Header } from './components/navigation/Header';
@@ -22,6 +23,12 @@ export function App() {
   const [activeSection, setActiveSection] = useState('hero');
 
   useEffect(() => {
+    // Guard: Records initial page load only. Does not provide complete SPA route-view tracking across dynamic query state changes.
+    if (!(window as any).__hasTrackedInitialPage) {
+      trackAnalyticsEvent('page_view', { path: window.location.pathname });
+      (window as any).__hasTrackedInitialPage = true;
+    }
+
     const handleScroll = () => {
       const sections = [
         'hero',
