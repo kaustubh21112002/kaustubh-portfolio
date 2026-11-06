@@ -15,6 +15,7 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": [
-    "api/**/*.ts"
+    "api/**/*.ts",
+    "server/**/*.ts"
   ]
 }

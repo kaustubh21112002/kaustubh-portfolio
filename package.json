@@ -12,9 +12,11 @@
     "build": "tsc && tsc -p tsconfig.api.json && vite build",
     "vercel-build": "tsc && tsc -p tsconfig.api.json && vite build",
     "preview": "vite preview",
+    "test:analytics": "node --experimental-strip-types scripts/test_analytics_contract_v2.mjs",
     "build:resume:canonical": "node --experimental-strip-types scripts/generate_resume_pdf.mjs --overwrite-canonical"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.2.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.475.0",
     "react": "^18.3.1",

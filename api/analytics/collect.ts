@@ -2,8 +2,9 @@
 // Collects privacy-safe first-party visitor telemetry.
 // Strict security: Rate limiting, origin checking, schema validation, zero PII retention.
 
-import { validateAnalyticsPayload, AnalyticsEventPayload } from '../lib/analyticsContract.js';
-import { getAnalyticsStorage } from '../lib/analyticsStorage.js';
+import { validateAnalyticsPayload, AnalyticsEventPayload } from '../../server/lib/analyticsContract.js';
+import { getAnalyticsStorage } from '../../server/lib/analyticsStorage.js';
+import { validateCollectionOrigin } from '../../server/lib/originValidator.js';
 
 export interface VercelRequest {
   method?: string;
@@ -20,8 +21,6 @@ export interface VercelResponse {
 }
 
 // In-memory sliding-window rate limit for collection (max 60 events per minute per IP)
-// NOTE: Rate limiting is per serverless instance and provides best-effort abuse protection, not a globally enforced limit.
-// The application does not intentionally persist or log IP addresses, but hosting infrastructure (e.g. Vercel) may independently process or log request metadata.
 const RATE_LIMIT_WINDOW_MS = 60 * 1000;
 const MAX_EVENTS_PER_WINDOW = 60;
 const ipEventTimestamps = new Map<string, number[]>();
@@ -50,21 +49,11 @@ function checkRateLimit(ip: string): boolean {
   return true;
 }
 
-export const CANONICAL_PRODUCTION_HOST = 'kaustubh-portfolio-six.vercel.app';
-
-function isAllowedOrigin(originHeader: string | undefined): boolean {
-  if (!originHeader) return true; // Beacon and same-origin requests might not send Origin
-  try {
-    const parsed = new URL(originHeader);
-    const host = parsed.hostname;
-    if (host === 'localhost' || host === '127.0.0.1') return true;
-    if (host === CANONICAL_PRODUCTION_HOST) return true;
-    if (host.endsWith('.vercel.app')) return true;
-    return false;
-  } catch {
-    return false;
-  }
-}
+declare const process: {
+  env: {
+    [key: string]: string | undefined;
+  };
+};
 
 export default async function handler(req: VercelRequest, res: VercelResponse): Promise<void> {
   // 1. Only allow POST
@@ -78,12 +67,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
     return;
   }
 
-  // 2. Origin Check
-  const origin = (req.headers.origin || req.headers.referer) as string | undefined;
-  if (!isAllowedOrigin(origin)) {
+  // 2. Origin & Referer Validation
+  const originCheck = validateCollectionOrigin(req.headers.origin, req.headers.referer);
+  if (!originCheck.isAuthorized) {
     res.status(403).json({
       success: false,
-      code: 'FORBIDDEN_ORIGIN',
+      code: 'CSRF_ORIGIN_REJECTED',
       message: 'Request origin is not authorized.'
     });
     return;
@@ -95,7 +84,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
   if (!checkRateLimit(ip)) {
     res.status(429).json({
       success: false,
-      code: 'RATE_LIMITED',
+      code: 'RATE_LIMIT_EXCEEDED',
       message: 'Event submission limit exceeded. Please try again later.'
     });
     return;
@@ -120,22 +109,38 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
   if (!validation.isValid) {
     res.status(400).json({
       success: false,
-      code: 'INVALID_EVENT_PAYLOAD',
+      code: validation.code || 'INVALID_EVENT_PAYLOAD',
       message: validation.error || 'Event validation failed.'
     });
     return;
   }
 
   const event = body as AnalyticsEventPayload;
-
-  // 5. Ingestion via Storage Abstraction
   const storage = getAnalyticsStorage();
-  await storage.recordEvent(event);
 
-  res.setHeader('Cache-Control', 'no-store, max-age=0');
-  res.status(200).json({
-    success: true,
-    code: 'EVENT_INGESTED',
-    message: 'Event recorded successfully in first-party analytics pipeline.'
-  });
+  // 5. Ingestion via Storage Abstraction with Honest Storage Status Check
+  const dbUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL;
+
+  try {
+    await storage.recordEvent(
+      event,
+      validation.normalizedPath || '/',
+      validation.cleanedMetadata || {}
+    );
+
+    res.setHeader('Cache-Control', 'no-store, max-age=0');
+    res.status(200).json({
+      success: true,
+      code: dbUrl ? 'EVENT_RECORDED' : 'DIAGNOSTIC_BUFFER_ACCEPTED',
+      message: dbUrl
+        ? 'Event recorded successfully in durable analytics pipeline.'
+        : 'Event accepted in diagnostic buffer only. Persistent storage unconfigured.'
+    });
+  } catch (err: any) {
+    res.status(503).json({
+      success: false,
+      code: 'STORAGE_UNAVAILABLE',
+      message: 'Durable storage is currently unavailable.'
+    });
+  }
 }

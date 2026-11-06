@@ -331,6 +331,7 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
               href={`https://wa.me/918080001550?text=${encodeURIComponent('Hi, I visited your portfolio and would like to connect regarding a professional opportunity. Could we discuss further?')}`}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackAnalyticsEvent('whatsapp_click', { path: window.location.pathname })}
               aria-label="Chat with Kaustubh on WhatsApp (opens in new tab)"
               className="min-h-[48px] flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 hover:text-emerald-200 border border-emerald-500/30 hover:border-emerald-500/50 font-medium text-sm tracking-wide transition-all active:scale-95 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
             >

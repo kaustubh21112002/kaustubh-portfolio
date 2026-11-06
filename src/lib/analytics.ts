@@ -14,7 +14,7 @@ import {
   ReferrerCategory,
   DeviceCategory,
   AnalyticsEventPayload
-} from '../../api/lib/analyticsContract';
+} from '../../server/lib/analyticsContract';
 
 /**
  * Categorizes document.referrer into broad privacy-preserving buckets.

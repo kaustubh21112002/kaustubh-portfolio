@@ -221,6 +221,7 @@ export const Header: React.FC<HeaderProps> = ({ activeSection = 'hero' }) => {
             <a
               href={portfolioConfig.resumePath}
               download="Kaustubh_Nandurkar_Resume.pdf"
+              onClick={() => trackAnalyticsEvent('resume_download', { path: '/Kaustubh_Nandurkar_Resume.pdf' })}
               aria-label="Download verified resume PDF"
               className="hidden sm:flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-full bg-neutral-900 text-white hover:bg-neutral-800 dark:bg-white dark:text-black dark:hover:bg-white/90 transition-transform active:scale-95 shadow-sm font-mono tracking-tight focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
               title="Download Verified Resume PDF"
@@ -367,6 +368,7 @@ export const Header: React.FC<HeaderProps> = ({ activeSection = 'hero' }) => {
             <a
               href={portfolioConfig.resumePath}
               download="Kaustubh_Nandurkar_Resume.pdf"
+              onClick={() => trackAnalyticsEvent('resume_download', { path: '/Kaustubh_Nandurkar_Resume.pdf' })}
               aria-label="Download verified resume PDF"
               className="w-full flex items-center justify-center gap-2 py-3 rounded-full bg-white text-black font-bold text-sm tracking-wide transition-all hover:bg-white/95 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 shadow-md font-mono"
             >
