@@ -7,8 +7,8 @@ import {
   GroqProviderError,
   type ChatMessage,
   type ProviderErrorCategory
-} from './lib/groqProvider.js';
-import { buildPortfolioContext } from './lib/portfolioContext.js';
+} from '../server/lib/groqProvider.js';
+import { buildPortfolioContext } from '../server/lib/portfolioContext.js';
 
 export interface AssistantRequestBody {
   question?: string;
