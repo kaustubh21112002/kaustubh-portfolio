@@ -1,0 +1,36 @@
+# Environment Variables
+.env*
+
+# Local Agent & Configuration State
+.codex/
+.agents/
+skills-lock.json
+
+# Local Contracts, Migrations & Testing Suites
+ENV-CONTRACTS.md
+scripts/
+migrations/
+
+# Internal Documentation & Specs
+docs/
+project_docs/
+AGENTS.md
+API.md
+ARCHITECTURE.md
+AUTH_SECURITY.md
+CHANGE-SCOPE.md
+DATABASE.md
+DEBUGGING.md
+DECISIONS.md
+DESIGN.md
+FEATURES.md
+FILE-MAP.md
+INTEGRATIONS.md
+MCP.md
+PLAN.md
+PRD.md
+PROJECT_CONTEXT.md
+README.md
+SETUP.md
+TESTING.md
+

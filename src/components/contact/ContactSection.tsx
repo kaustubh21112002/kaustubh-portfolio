@@ -1,3 +1,4 @@
+import { trackAnalyticsEvent } from '../../lib/analytics';
 import React, { useState, useMemo } from 'react';
 import { Mail, Linkedin, Github, Send, Copy, Check, MapPin, Phone, Info, AlertCircle, FileText, MessageCircle } from 'lucide-react';
 import { portfolioConfig } from '../../config/portfolio';
@@ -24,6 +25,7 @@ export const ContactSection: React.FC = () => {
   }, []);
 
   const handleCopyEmail = () => {
+    trackAnalyticsEvent('email_click', { path: '#contact' });
     navigator.clipboard.writeText(portfolioConfig.socials.email);
     setCopiedEmail(true);
     setTimeout(() => setCopiedEmail(false), 2000);
@@ -86,6 +88,7 @@ export const ContactSection: React.FC = () => {
 
   // Launch default mail client via mailto:
   const launchMailClient = () => {
+    trackAnalyticsEvent('email_click', { path: '#contact' });
     const subject = encodeURIComponent(`[Portfolio Inquiry] ${formData.subject.trim() || 'Opportunity Discussion'}`);
     const body = encodeURIComponent(
       `Name: ${formData.name.trim()}\nEmail: ${formData.email.trim()}\n\nMessage:\n${formData.message.trim()}`
@@ -96,6 +99,7 @@ export const ContactSection: React.FC = () => {
 
   // Primary submission: Attempt direct serverless dispatch first
   const handleSubmit = async (e: React.FormEvent) => {
+    trackAnalyticsEvent('contact_click', { path: '#contact' });
     e.preventDefault();
     if (isSubmitting) return;
 
@@ -244,6 +248,7 @@ export const ContactSection: React.FC = () => {
                   href={`https://wa.me/918080001550?text=${encodeURIComponent('Hi, I visited your portfolio and would like to connect regarding a professional opportunity. Could we discuss further?')}`}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackAnalyticsEvent('whatsapp_click', { path: '#contact' })}
                   aria-label="Chat on WhatsApp with Kaustubh (opens in new tab)"
                   className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 hover:text-emerald-200 text-xs font-mono font-bold border border-emerald-500/40 transition-all w-full sm:w-auto shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 active:scale-95"
                 >

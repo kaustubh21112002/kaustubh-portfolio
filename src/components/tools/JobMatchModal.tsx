@@ -1,3 +1,4 @@
+import { trackAnalyticsEvent } from '../../lib/analytics';
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
   FileSearch,
@@ -99,6 +100,7 @@ export const JobMatchModal: React.FC<JobMatchModalProps> = ({ isOpen, onClose })
   }, [isOpen]);
 
   const handleAnalyze = () => {
+    trackAnalyticsEvent('job_match_use', { metadata: { roleLength: jobTitle.length, hasCompany: !!company } });
     const trimmed = description.trim();
     if (!trimmed) {
       setErrorMessage('Please paste a job description to analyze.');
