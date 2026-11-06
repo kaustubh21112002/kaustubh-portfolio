@@ -1,7 +1,7 @@
 import { PortfolioIntelligenceModal } from '../analytics/PortfolioIntelligenceModal';
 import { trackAnalyticsEvent } from '../../lib/analytics';
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, X, Download, Search } from 'lucide-react';
+import { Menu, X, Download, Search, Activity } from 'lucide-react';
 import { portfolioConfig } from '../../config/portfolio';
 import { ThemeToggle } from '../common/ThemeToggle';
 import { QuickSearchModal } from '../common/QuickSearchModal';
@@ -203,6 +203,17 @@ export const Header: React.FC<HeaderProps> = ({ activeSection = 'hero' }) => {
 
           {/* Desktop Utilities: Search, Resume, Theme */}
           <div className="flex items-center gap-1.5">
+            {/* Portfolio Intelligence Trigger Button */}
+            <button
+              onClick={() => setIntelligenceOpen(true)}
+              aria-label="Open Portfolio Intelligence private telemetry (Ctrl+Shift+I)"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-mono text-neutral-600 dark:text-white/80 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 cursor-pointer"
+              title="Portfolio Intelligence OS (Ctrl+Shift+I)"
+            >
+              <Activity className="w-3.5 h-3.5 text-blue-500" />
+              <span className="hidden xl:inline font-semibold text-[11px]">TELEMETRY</span>
+            </button>
+
             {/* Quick Search Trigger Button */}
             <button
               onClick={() => setIsSearchOpen(true)}
@@ -246,7 +257,6 @@ export const Header: React.FC<HeaderProps> = ({ activeSection = 'hero' }) => {
             </button>
           </div>
         </nav>
-      <PortfolioIntelligenceModal isOpen={intelligenceOpen} onClose={() => setIntelligenceOpen(false)} />
       </header>
 
       {/* Mobile Editorial Drawer */}
@@ -357,6 +367,22 @@ export const Header: React.FC<HeaderProps> = ({ activeSection = 'hero' }) => {
 
           {/* Bottom Actions & Controls */}
           <div className="w-full max-w-md mx-auto pt-5 border-t border-white/10 flex flex-col gap-3.5">
+            {/* Mobile Portfolio Intelligence Trigger */}
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                setIntelligenceOpen(true);
+              }}
+              aria-label="Open Portfolio Intelligence private telemetry dashboard"
+              className="w-full min-h-[44px] flex items-center justify-between p-3 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs font-mono hover:bg-blue-500/20 transition-colors cursor-pointer"
+            >
+              <div className="flex items-center gap-2">
+                <Activity className="w-3.5 h-3.5 text-blue-400" />
+                <span className="font-semibold">Portfolio Intelligence OS</span>
+              </div>
+              <span className="text-[10px] text-blue-400/70 font-mono uppercase tracking-wider">Private</span>
+            </button>
+
             {/* Expanded 3-state Theme Selector */}
             <div className="space-y-1.5">
               <div className="text-[10px] font-mono uppercase text-white/50 tracking-wider font-semibold">
@@ -391,6 +417,9 @@ export const Header: React.FC<HeaderProps> = ({ activeSection = 'hero' }) => {
 
       {/* Global Quick Search Modal */}
       <QuickSearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+
+      {/* Portfolio Intelligence Telemetry Modal */}
+      <PortfolioIntelligenceModal isOpen={intelligenceOpen} onClose={() => setIntelligenceOpen(false)} />
     </>
   );
 };

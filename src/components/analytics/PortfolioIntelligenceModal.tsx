@@ -63,8 +63,24 @@ export const PortfolioIntelligenceModal: React.FC<PortfolioIntelligenceModalProp
     if (!isOpen) {
       setErrorMessage(null);
       setPassphrase('');
+      return;
     }
-  }, [isOpen]);
+
+    document.body.style.overflow = 'hidden';
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        onClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = 'unset';
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
 
   // Fetch telemetry from authenticated dashboard endpoint
   const fetchTelemetry = async () => {
@@ -329,9 +345,14 @@ export const PortfolioIntelligenceModal: React.FC<PortfolioIntelligenceModalProp
       role="dialog"
       aria-modal="true"
       aria-labelledby="intelligence-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 lg:p-6 bg-black/85 backdrop-blur-md overflow-y-auto"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          onClose();
+        }
+      }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 lg:p-6 bg-black/85 backdrop-blur-md overflow-y-auto pointer-events-auto"
     >
-      <div className="relative w-full max-w-4xl max-h-[92vh] rounded-3xl bg-[#0e1017] border border-white/15 text-white shadow-2xl flex flex-col overflow-hidden my-auto animate-in fade-in zoom-in-95 duration-200">
+      <div className="relative w-full max-w-4xl max-h-[92vh] rounded-3xl bg-[#0e1017] border border-white/15 text-white shadow-2xl flex flex-col overflow-hidden my-auto animate-in fade-in zoom-in-95 duration-200 pointer-events-auto">
         {/* Header */}
         <div className="p-5 sm:p-6 border-b border-white/10 flex items-start justify-between gap-4 bg-white/[0.02]">
           <div className="space-y-1">
