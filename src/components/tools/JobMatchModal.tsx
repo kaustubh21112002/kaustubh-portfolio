@@ -1,5 +1,5 @@
 import { trackAnalyticsEvent } from '../../lib/analytics';
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import {
   FileSearch,
   X,
@@ -15,16 +15,31 @@ import {
   Briefcase,
   Building2,
   TrendingUp,
-  Cpu
+  Cpu,
+  UploadCloud,
+  FileText,
+  UserCheck,
+  PackageCheck
 } from 'lucide-react';
 import { analyzeJobDescription } from '../../data/jobMatchEngine';
 import { MatchAnalysisReport, RequirementVerdict } from '../../data/jobMatchKnowledge';
+import { evaluateCandidateJobFit, type CandidateFitReport } from '../../data/candidateJobFitScorer';
+import { generateTailoredApplicationPackage, type DocumentTailoringPackage } from '../../data/documentTailoringAssistant';
 import { setProjectUrlParam } from '../projects/projectNavigation';
+import { ResumeUpload } from '../candidate/ResumeUpload';
+import { CandidateReview } from '../candidate/CandidateReview';
+import { ApplicationPackageModal } from '../candidate/ApplicationPackageModal';
+import { InterviewIntelligenceModal } from '../candidate/InterviewIntelligenceModal';
+import { ApplicationKanbanBoard } from '../candidate/ApplicationKanbanBoard';
+import { CandidateClaimStore } from '../../lib/candidateClaimStore';
+import type { ResumeIngestionResult } from '../../lib/resumeIngestionService';
 
 interface JobMatchModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
+
+export type MatchInputMode = 'PASTE_JD' | 'UPLOAD_RESUME' | 'REVIEW_CLAIMS' | 'KANBAN_PIPELINE';
 
 const SAMPLE_JOB_PROFILES = [
   {
@@ -48,12 +63,21 @@ const SAMPLE_JOB_PROFILES = [
 ];
 
 export const JobMatchModal: React.FC<JobMatchModalProps> = ({ isOpen, onClose }) => {
+  const [mode, setMode] = useState<MatchInputMode>('PASTE_JD');
   const [jobTitle, setJobTitle] = useState('');
   const [company, setCompany] = useState('');
   const [description, setDescription] = useState('');
   const [report, setReport] = useState<MatchAnalysisReport | null>(null);
+  const [candidateFitReport, setCandidateFitReport] = useState<CandidateFitReport | null>(null);
+  const [tailoringPackage, setTailoringPackage] = useState<DocumentTailoringPackage | null>(null);
+  const [isPackageModalOpen, setIsPackageModalOpen] = useState(false);
+  const [isInterviewModalOpen, setIsInterviewModalOpen] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // In-memory candidate claim store for client-side review & matching
+  const claimStore = useMemo(() => new CandidateClaimStore(), []);
+  const [extractedClaimsCount, setExtractedClaimsCount] = useState(0);
 
   const modalRef = useRef<HTMLDivElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -123,6 +147,15 @@ export const JobMatchModal: React.FC<JobMatchModalProps> = ({ isOpen, onClose })
       try {
         const result = analyzeJobDescription(trimmed, { jobTitle, company });
         setReport(result);
+
+        // If candidate claims are present in the store, evaluate personalized fit
+        const claims = claimStore.listClaims();
+        if (claims.length > 0) {
+          const fit = evaluateCandidateJobFit(trimmed, claims, { jobTitle, company });
+          setCandidateFitReport(fit);
+        } else {
+          setCandidateFitReport(null);
+        }
       } catch (err: any) {
         setErrorMessage(err.message || 'Unable to evaluate job description.');
       } finally {
@@ -133,11 +166,30 @@ export const JobMatchModal: React.FC<JobMatchModalProps> = ({ isOpen, onClose })
 
   const handleReset = () => {
     setReport(null);
+    setCandidateFitReport(null);
     setDescription('');
     setJobTitle('');
     setCompany('');
     setErrorMessage(null);
+    setMode('PASTE_JD');
   };
+
+  const handleExtractionComplete = useCallback((ingestResult: ResumeIngestionResult) => {
+    if (ingestResult.isSuccess && ingestResult.extractedClaims.length > 0) {
+      for (const claim of ingestResult.extractedClaims) {
+        try {
+          claimStore.addClaim(claim);
+        } catch {
+          // Skip duplicates
+        }
+      }
+      setExtractedClaimsCount(claimStore.listClaims().length);
+      setMode('REVIEW_CLAIMS');
+      setErrorMessage(null);
+    } else {
+      setErrorMessage(ingestResult.errorMessage || 'No readable claims extracted from PDF.');
+    }
+  }, [claimStore]);
 
   const handleLoadSample = (sampleIndex: number) => {
     const sample = SAMPLE_JOB_PROFILES[sampleIndex];
@@ -179,7 +231,7 @@ export const JobMatchModal: React.FC<JobMatchModalProps> = ({ isOpen, onClose })
               Job Description Match Analyzer
             </h2>
             <p className="text-xs sm:text-sm text-white/70 font-sans">
-              Paste any job description to compare requirements against governed portfolio deliverables, workbooks, and case studies.
+              Evaluate role fit, paste job descriptions, or ingest resumes with local client-side extraction.
             </p>
           </div>
 
@@ -193,9 +245,102 @@ export const JobMatchModal: React.FC<JobMatchModalProps> = ({ isOpen, onClose })
           </button>
         </div>
 
+        {/* Mode Selector Tabs (Phase 8 Multi-Modal Ingestion) */}
+        {!report && (
+          <div className="px-5 sm:px-6 pt-3 pb-0 border-b border-white/10 flex items-center gap-2 bg-black/20">
+            <button
+              type="button"
+              onClick={() => { setMode('PASTE_JD'); setErrorMessage(null); }}
+              className={`px-3.5 py-2 text-xs font-mono rounded-t-lg transition-colors flex items-center gap-2 cursor-pointer ${
+                mode === 'PASTE_JD'
+                  ? 'bg-[#181c2b] text-white border-t border-x border-white/15 font-semibold'
+                  : 'text-white/60 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              <FileText className="w-3.5 h-3.5" />
+              <span>Paste Job Description</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => { setMode('UPLOAD_RESUME'); setErrorMessage(null); }}
+              className={`px-3.5 py-2 text-xs font-mono rounded-t-lg transition-colors flex items-center gap-2 cursor-pointer ${
+                mode === 'UPLOAD_RESUME'
+                  ? 'bg-[#181c2b] text-white border-t border-x border-white/15 font-semibold'
+                  : 'text-white/60 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              <UploadCloud className="w-3.5 h-3.5" />
+              <span>Upload Resume (Local PDF)</span>
+            </button>
+
+            {extractedClaimsCount > 0 && (
+              <button
+                type="button"
+                onClick={() => { setMode('REVIEW_CLAIMS'); setErrorMessage(null); }}
+                className={`px-3.5 py-2 text-xs font-mono rounded-t-lg transition-colors flex items-center gap-2 cursor-pointer ${
+                  mode === 'REVIEW_CLAIMS'
+                    ? 'bg-[#181c2b] text-white border-t border-x border-white/15 font-semibold'
+                    : 'text-white/60 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                <UserCheck className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Review Claims ({extractedClaimsCount})</span>
+              </button>
+            )}
+
+            <button
+              type="button"
+              onClick={() => { setMode('KANBAN_PIPELINE'); setErrorMessage(null); }}
+              className={`px-3.5 py-2 text-xs font-mono rounded-t-lg transition-colors flex items-center gap-2 cursor-pointer ${
+                mode === 'KANBAN_PIPELINE'
+                  ? 'bg-[#181c2b] text-white border-t border-x border-white/15 font-semibold'
+                  : 'text-white/60 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              <Briefcase className="w-3.5 h-3.5 text-red-400" />
+              <span>Pipeline Kanban</span>
+            </button>
+          </div>
+        )}
+
         {/* Content Body */}
         <div className="p-5 sm:p-6 overflow-y-auto space-y-6 flex-1">
-          {!report ? (
+          {!report && mode === 'UPLOAD_RESUME' && (
+            <div className="space-y-4">
+              <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 text-xs text-blue-200 flex items-start gap-2.5">
+                <ShieldCheck className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+                <span>
+                  <strong>Client-Side Network Isolation:</strong> Resume processing runs entirely in your local browser using <code className="font-mono text-white">pdfjs-dist</code>. Zero bytes of your resume text or personal details are uploaded or transmitted to external servers.
+                </span>
+              </div>
+              <ResumeUpload onExtractionComplete={handleExtractionComplete} />
+            </div>
+          )}
+
+          {!report && mode === 'REVIEW_CLAIMS' && (
+            <div className="space-y-4">
+              <CandidateReview
+                store={claimStore}
+                actorName="recruiter_evaluator"
+                onExit={() => setMode('PASTE_JD')}
+              />
+            </div>
+          )}
+
+          {!report && mode === 'KANBAN_PIPELINE' && (
+            <div className="space-y-4">
+              <ApplicationKanbanBoard
+                onSelectApplication={(app) => {
+                  setJobTitle(app.jobTitle);
+                  setCompany(app.companyName);
+                  setMode('PASTE_JD');
+                }}
+              />
+            </div>
+          )}
+
+          {!report && mode === 'PASTE_JD' && (
             /* INPUT SCREEN */
             <div className="space-y-5">
               {/* Optional Job Metadata */}
@@ -326,7 +471,9 @@ export const JobMatchModal: React.FC<JobMatchModalProps> = ({ isOpen, onClose })
                 </button>
               </div>
             </div>
-          ) : (
+          )}
+
+          {report && (
             /* RESULTS DASHBOARD */
             <div className="space-y-6">
               {/* Executive Summary Card */}
@@ -396,6 +543,69 @@ export const JobMatchModal: React.FC<JobMatchModalProps> = ({ isOpen, onClose })
                     {report.calculationExplanation}
                   </p>
                 </div>
+
+                {/* Candidate Confirmed Fit Banner (Phase 8.3 Integration) */}
+                {candidateFitReport && (
+                  <div className="p-4 rounded-xl bg-purple-500/10 border border-purple-500/20 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-mono font-bold text-purple-300 uppercase flex items-center gap-1.5">
+                        <UserCheck className="w-4 h-4 text-purple-400" />
+                        <span>Candidate Confirmed Fit Score</span>
+                      </span>
+                      <span className="px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-200 font-mono font-bold text-xs">
+                        {candidateFitReport.compositeScore} / 100
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-purple-200/80 font-sans leading-relaxed">
+                      {candidateFitReport.scoringExplanation}
+                    </p>
+                    {candidateFitReport.matchedEvidenceItems.length > 0 && (
+                      <div className="pt-2 border-t border-purple-500/20">
+                        <span className="text-[10px] font-mono text-purple-300/80 uppercase block mb-1">
+                          Directly Matched Candidate Claims ({candidateFitReport.matchedEvidenceItems.length}):
+                        </span>
+                        <div className="flex flex-wrap gap-1.5 mb-3">
+                          {candidateFitReport.matchedEvidenceItems.map((item, idx) => (
+                            <span
+                              key={idx}
+                              className="px-2 py-0.5 rounded bg-purple-900/40 border border-purple-400/30 text-[10px] font-mono text-purple-200"
+                            >
+                              ✓ {item.jobRequirement}: {item.claimValue}
+                            </span>
+                          ))}
+                        </div>
+
+                        {/* Phase 8.4, 8.5 & 8.6 Triggers */}
+                        <div className="pt-2 border-t border-purple-500/20 flex flex-wrap items-center justify-end gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setIsInterviewModalOpen(true)}
+                            className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 text-purple-200 font-mono text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer"
+                          >
+                            <Building2 className="w-3.5 h-3.5 text-purple-300" />
+                            <span>Interview Intelligence</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const pkg = generateTailoredApplicationPackage(
+                                candidateFitReport,
+                                claimStore.listClaims()
+                              );
+                              setTailoringPackage(pkg);
+                              setIsPackageModalOpen(true);
+                            }}
+                            className="px-3.5 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-mono text-xs font-semibold flex items-center gap-1.5 shadow-md shadow-purple-900/30 transition-all cursor-pointer"
+                          >
+                            <PackageCheck className="w-3.5 h-3.5" />
+                            <span>Prepare Application Package</span>
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* Top Matching Projects */}
@@ -556,6 +766,28 @@ export const JobMatchModal: React.FC<JobMatchModalProps> = ({ isOpen, onClose })
           )}
         </div>
       </div>
+
+      {/* Tailored Application Package & Approval Gate Modal (Phase 8.4 & 8.5) */}
+      {isPackageModalOpen && tailoringPackage && (
+        <ApplicationPackageModal
+          tailoringPackage={tailoringPackage}
+          onClose={() => setIsPackageModalOpen(false)}
+        />
+      )}
+
+      {/* Interview Intelligence & Company Briefing Modal (Phase 8.6) */}
+      {isInterviewModalOpen && candidateFitReport && (
+        <InterviewIntelligenceModal
+          companyName={company || 'Target Organization'}
+          fitReport={candidateFitReport}
+          onClose={() => setIsInterviewModalOpen(false)}
+          onSelectProject={(projId) => {
+            setIsInterviewModalOpen(false);
+            onClose();
+            setProjectUrlParam(projId);
+          }}
+        />
+      )}
     </div>
   );
 };
