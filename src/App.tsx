@@ -18,6 +18,8 @@ import { FAQSection } from './components/faq/FAQSection';
 import { ContactSection } from './components/contact/ContactSection';
 import { FeedbackWidget } from './components/feedback/FeedbackWidget';
 import { PortfolioAssistant } from './components/assistant/PortfolioAssistant';
+import { OperationsOSBanner } from './components/operations/OperationsOSBanner';
+import { EnterpriseOperationsSection } from './components/operations/EnterpriseOperationsSection';
 
 export function App() {
   const [activeSection, setActiveSection] = useState('hero');
@@ -108,11 +110,17 @@ export function App() {
           {/* Hero Section: 60 FPS Cursor-Tracking Character + Recruiter 5-Second Positioning */}
           <HeroSection />
 
+          {/* High-Impact Enterprise Operations OS Banner */}
+          <OperationsOSBanner />
+
           {/* Evidence Telemetry Bar: Verified Quantitative Outputs & Governed Data Volumes */}
           <EvidenceTelemetryBar />
 
           {/* Portfolio Command Center: Recruiter-Oriented Positioning, Top Projects & Capability Matrix */}
           <RecruiterCommandCenter />
+
+          {/* Enterprise Operations Command OS: Live Multi-Region SLA, CRM & GPU Render Clusters */}
+          <EnterpriseOperationsSection />
 
           {/* Section (01): About Me, Analytical Manifesto & 5-Stage Problem-Solving Methodology */}
           <AboutSection />
