@@ -17,6 +17,7 @@ import {
   Info
 } from 'lucide-react';
 import { AnalyticsStorageSummary, DailyAggregateMetrics } from '../../../server/lib/analyticsStorage';
+import { DynamicButton } from '../common/DynamicButton';
 
 interface PortfolioIntelligenceModalProps {
   isOpen: boolean;
@@ -39,12 +40,12 @@ const CANONICAL_PROJECT_TITLES: Record<string, string> = {
 function getUtcCalendarDateRange(daysCount: number): string[] {
   const dates: string[] = [];
   const now = new Date();
-  
+
   for (let i = daysCount - 1; i >= 0; i--) {
     const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - i));
     dates.push(d.toISOString().slice(0, 10));
   }
-  
+
   return dates;
 }
 
@@ -81,6 +82,22 @@ export const PortfolioIntelligenceModal: React.FC<PortfolioIntelligenceModalProp
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isOpen, onClose]);
+
+  // Cross-tab logout synchronization: reset authenticated state if another tab logs out
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handleStorageAuthSync = (e: StorageEvent) => {
+      if (e.key === 'portfolio_intelligence_logout_at' && e.newValue) {
+        setIsAuthenticated(false);
+        setSummary(null);
+        setPassphrase('');
+      }
+    };
+
+    window.addEventListener('storage', handleStorageAuthSync);
+    return () => window.removeEventListener('storage', handleStorageAuthSync);
+  }, []);
 
   // Fetch telemetry from authenticated dashboard endpoint
   const fetchTelemetry = async () => {
@@ -119,6 +136,13 @@ export const PortfolioIntelligenceModal: React.FC<PortfolioIntelligenceModalProp
     }
   };
 
+  // Check for existing valid session on modal open
+  useEffect(() => {
+    if (isOpen) {
+      fetchTelemetry();
+    }
+  }, [isOpen]);
+
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!passphrase.trim()) {
@@ -142,24 +166,37 @@ export const PortfolioIntelligenceModal: React.FC<PortfolioIntelligenceModalProp
       const data = await res.json().catch(() => null);
 
       if (res.status === 401) {
+        setIsAuthenticated(false);
         setErrorMessage('401 Unauthorized: Invalid administrator credentials.');
         return;
       }
 
       if (res.status === 403) {
+        setIsAuthenticated(false);
         setErrorMessage('403 Forbidden: Request origin is not permitted.');
         return;
       }
 
+      if (res.status === 429) {
+        setIsAuthenticated(false);
+        setErrorMessage(data?.message || '429 Rate Limit Exceeded: Too many attempts.');
+        return;
+      }
+
       if (res.status === 503 || data?.code === 'AUTH_UNCONFIGURED') {
+        setIsAuthenticated(false);
         setErrorMessage('503 Locked: ANALYTICS_ADMIN_HASH is unconfigured in the server environment.');
         return;
       }
 
       if (res.ok && data?.success) {
+        // Immediate state transition to unlock the dashboard
+        setIsAuthenticated(true);
         setPassphrase('');
+        setErrorMessage(null);
         await fetchTelemetry();
       } else {
+        setIsAuthenticated(false);
         setErrorMessage(data?.message || 'Authentication failed.');
       }
     } catch {
@@ -179,6 +216,12 @@ export const PortfolioIntelligenceModal: React.FC<PortfolioIntelligenceModalProp
     } catch {
       // Ignore network errors on logout
     } finally {
+      // Broadcast logout to sibling tabs
+      try {
+        localStorage.setItem('portfolio_intelligence_logout_at', Date.now().toString());
+      } catch {
+        // Ignore storage errors in restricted contexts
+      }
       setIsAuthenticated(false);
       setSummary(null);
       setPassphrase('');
@@ -415,7 +458,7 @@ export const PortfolioIntelligenceModal: React.FC<PortfolioIntelligenceModalProp
                   value={passphrase}
                   onChange={(e) => setPassphrase(e.target.value)}
                   placeholder="Enter administrator passphrase..."
-                  className="w-full px-4 py-2.5 rounded-xl bg-black/50 border border-white/15 focus:border-blue-400 text-sm text-white placeholder-white/40 font-mono transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-400"
+                  className="w-full px-4 py-2.5 rounded-xl bg-black/50 border border-white/15 focus:border-blue-400 text-sm text-white placeholder-white/40 font-mono transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-400 relative z-50 pointer-events-auto"
                 />
 
                 {errorMessage && (
@@ -425,17 +468,19 @@ export const PortfolioIntelligenceModal: React.FC<PortfolioIntelligenceModalProp
                   </div>
                 )}
 
-                <button
+                <DynamicButton
                   type="submit"
+                  stateKey={isLoading ? 'verifying' : 'idle'}
                   disabled={isLoading || !passphrase.trim()}
-                  className={`w-full py-2.5 rounded-xl font-bold font-mono text-xs tracking-wide transition-all ${
-                    isLoading || !passphrase.trim()
-                      ? 'bg-white/10 text-white/40 cursor-not-allowed'
-                      : 'bg-white text-black hover:bg-white/90 shadow-md active:scale-95 cursor-pointer'
-                  }`}
+                  width="full"
+                  variant="primary"
+                  className={`py-2.5 rounded-xl font-bold font-mono text-xs tracking-wide ${isLoading || !passphrase.trim()
+                      ? 'opacity-40 cursor-not-allowed'
+                      : 'hover:bg-white/90 shadow-md active:scale-95 cursor-pointer'
+                    }`}
                 >
                   {isLoading ? 'Verifying Credentials...' : 'Unlock Telemetry'}
-                </button>
+                </DynamicButton>
               </form>
             </div>
           ) : (
@@ -443,11 +488,10 @@ export const PortfolioIntelligenceModal: React.FC<PortfolioIntelligenceModalProp
             <div className="space-y-6">
               {/* Storage & Persistence Status Banner */}
               <div
-                className={`p-4 rounded-2xl flex items-start gap-3 text-xs font-mono ${
-                  isDurable
+                className={`p-4 rounded-2xl flex items-start gap-3 text-xs font-mono ${isDurable
                     ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-200'
                     : 'bg-amber-500/10 border border-amber-500/20 text-amber-200'
-                }`}
+                  }`}
               >
                 <Database className={`w-4 h-4 shrink-0 mt-0.5 ${isDurable ? 'text-emerald-400' : 'text-amber-400'}`} />
                 <div className="space-y-1">
@@ -472,22 +516,20 @@ export const PortfolioIntelligenceModal: React.FC<PortfolioIntelligenceModalProp
                     <button
                       type="button"
                       onClick={() => setTimeRange('7d')}
-                      className={`px-3 py-1 rounded-lg transition-all ${
-                        timeRange === '7d'
+                      className={`px-3 py-1 rounded-lg transition-all ${timeRange === '7d'
                           ? 'bg-blue-500 text-white font-bold shadow-sm'
                           : 'text-white/60 hover:text-white'
-                      }`}
+                        }`}
                     >
                       7D
                     </button>
                     <button
                       type="button"
                       onClick={() => setTimeRange('30d')}
-                      className={`px-3 py-1 rounded-lg transition-all ${
-                        timeRange === '30d'
+                      className={`px-3 py-1 rounded-lg transition-all ${timeRange === '30d'
                           ? 'bg-blue-500 text-white font-bold shadow-sm'
                           : 'text-white/60 hover:text-white'
-                      }`}
+                        }`}
                     >
                       30D
                     </button>
