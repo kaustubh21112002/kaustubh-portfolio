@@ -5,9 +5,10 @@ import { RenderFleetCenter } from './render/RenderFleetCenter';
 import { SMEDigitalTransformationCenter } from './sme/SMEDigitalTransformationCenter';
 import { FinancialStatementCenter } from './finance/FinancialStatementCenter';
 import { ERPIntegrationCenter } from './erp/ERPIntegrationCenter';
+import { CandidateIntelligenceCenter } from './candidate/CandidateIntelligenceCenter';
 
 export const EnterpriseOperationsSection: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'sla' | 'crm' | 'render' | 'sme' | 'finance' | 'erp'>('sla');
+  const [activeTab, setActiveTab] = useState<'sla' | 'crm' | 'render' | 'sme' | 'finance' | 'erp' | 'candidate'>('sla');
 
   return (
     <section id="operations-command-center" className="py-16 border-t border-slate-200 dark:border-white/10 bg-slate-100/50 dark:bg-[#07080c] transition-colors">
@@ -34,8 +35,8 @@ export const EnterpriseOperationsSection: React.FC = () => {
             <button
               onClick={() => setActiveTab('sla')}
               className={`px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all ${activeTab === 'sla'
-                  ? 'bg-cyan-500 text-white shadow-md shadow-cyan-500/20'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                ? 'bg-cyan-500 text-white shadow-md shadow-cyan-500/20'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
             >
               01 • SLA Command
@@ -43,8 +44,8 @@ export const EnterpriseOperationsSection: React.FC = () => {
             <button
               onClick={() => setActiveTab('crm')}
               className={`px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all ${activeTab === 'crm'
-                  ? 'bg-violet-500 text-white shadow-md shadow-violet-500/20'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                ? 'bg-violet-500 text-white shadow-md shadow-violet-500/20'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
             >
               02 • CRM Pipeline
@@ -52,8 +53,8 @@ export const EnterpriseOperationsSection: React.FC = () => {
             <button
               onClick={() => setActiveTab('render')}
               className={`px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all ${activeTab === 'render'
-                  ? 'bg-amber-500 text-white shadow-md shadow-amber-500/20'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                ? 'bg-amber-500 text-white shadow-md shadow-amber-500/20'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
             >
               03 • Render Fleet
@@ -61,8 +62,8 @@ export const EnterpriseOperationsSection: React.FC = () => {
             <button
               onClick={() => setActiveTab('sme')}
               className={`px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all ${activeTab === 'sme'
-                  ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/20'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/20'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
             >
               04 • SME Analytics
@@ -70,8 +71,8 @@ export const EnterpriseOperationsSection: React.FC = () => {
             <button
               onClick={() => setActiveTab('finance')}
               className={`px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all ${activeTab === 'finance'
-                  ? 'bg-blue-500 text-white shadow-md shadow-blue-500/20'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                ? 'bg-blue-500 text-white shadow-md shadow-blue-500/20'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
             >
               05 • Financial OS
@@ -79,11 +80,20 @@ export const EnterpriseOperationsSection: React.FC = () => {
             <button
               onClick={() => setActiveTab('erp')}
               className={`px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all ${activeTab === 'erp'
-                  ? 'bg-teal-500 text-white shadow-md shadow-teal-500/20'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                ? 'bg-teal-500 text-white shadow-md shadow-teal-500/20'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
             >
               06 • ERP Hub
+            </button>
+            <button
+              onClick={() => setActiveTab('candidate')}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all ${activeTab === 'candidate'
+                ? 'bg-indigo-500 text-white shadow-md shadow-indigo-500/20'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+            >
+              07 • Candidate AI
             </button>
           </div>
         </div>
@@ -96,6 +106,7 @@ export const EnterpriseOperationsSection: React.FC = () => {
           {activeTab === 'sme' && <SMEDigitalTransformationCenter />}
           {activeTab === 'finance' && <FinancialStatementCenter />}
           {activeTab === 'erp' && <ERPIntegrationCenter />}
+          {activeTab === 'candidate' && <CandidateIntelligenceCenter />}
         </div>
       </div>
     </section>

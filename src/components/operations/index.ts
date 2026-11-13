@@ -8,3 +8,4 @@ export * from './render';
 export * from './sme';
 export * from './finance';
 export * from './erp';
+export * from './candidate';
