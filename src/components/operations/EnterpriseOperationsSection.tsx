@@ -3,9 +3,10 @@ import { SLACommandCenter } from './SLACommandCenter';
 import { CRMPipelineCenter } from './crm/CRMPipelineCenter';
 import { RenderFleetCenter } from './render/RenderFleetCenter';
 import { SMEDigitalTransformationCenter } from './sme/SMEDigitalTransformationCenter';
+import { FinancialStatementCenter } from './finance/FinancialStatementCenter';
 
 export const EnterpriseOperationsSection: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'sla' | 'crm' | 'render' | 'sme'>('sla');
+  const [activeTab, setActiveTab] = useState<'sla' | 'crm' | 'render' | 'sme' | 'finance'>('sla');
 
   return (
     <section id="operations-command-center" className="py-16 border-t border-slate-200 dark:border-white/10 bg-slate-100/50 dark:bg-[#07080c] transition-colors">
@@ -31,43 +32,48 @@ export const EnterpriseOperationsSection: React.FC = () => {
           <div className="flex items-center gap-1.5 p-1 bg-slate-200 dark:bg-slate-900/90 rounded-xl border border-slate-300 dark:border-white/10 shrink-0">
             <button
               onClick={() => setActiveTab('sla')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all ${
-                activeTab === 'sla'
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all ${activeTab === 'sla'
                   ? 'bg-cyan-500 text-white shadow-md shadow-cyan-500/20'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-              }`}
+                }`}
             >
               01 • SLA Command
             </button>
             <button
               onClick={() => setActiveTab('crm')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all ${
-                activeTab === 'crm'
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all ${activeTab === 'crm'
                   ? 'bg-violet-500 text-white shadow-md shadow-violet-500/20'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-              }`}
+                }`}
             >
               02 • CRM Pipeline
             </button>
             <button
               onClick={() => setActiveTab('render')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all ${
-                activeTab === 'render'
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all ${activeTab === 'render'
                   ? 'bg-amber-500 text-white shadow-md shadow-amber-500/20'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-              }`}
+                }`}
             >
               03 • Render Fleet
             </button>
             <button
               onClick={() => setActiveTab('sme')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all ${
-                activeTab === 'sme'
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all ${activeTab === 'sme'
                   ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/20'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-              }`}
+                }`}
             >
               04 • SME Analytics
+            </button>
+            <button
+              onClick={() => setActiveTab('finance')}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all ${activeTab === 'finance'
+                  ? 'bg-blue-500 text-white shadow-md shadow-blue-500/20'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+            >
+              05 • Financial OS
             </button>
           </div>
         </div>
@@ -78,6 +84,7 @@ export const EnterpriseOperationsSection: React.FC = () => {
           {activeTab === 'crm' && <CRMPipelineCenter />}
           {activeTab === 'render' && <RenderFleetCenter />}
           {activeTab === 'sme' && <SMEDigitalTransformationCenter />}
+          {activeTab === 'finance' && <FinancialStatementCenter />}
         </div>
       </div>
     </section>
