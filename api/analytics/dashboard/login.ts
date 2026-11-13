@@ -6,6 +6,10 @@ import {
   verifyPassphrase,
   createSession
 } from '../../../server/lib/authService.js';
+import {
+  checkDistributedRateLimit,
+  setStandardSecurityHeaders
+} from '../../../server/lib/rateLimiter.js';
 
 export interface VercelRequest {
   method?: string;
@@ -26,27 +30,16 @@ declare const process: {
   };
 };
 
-// In-memory sliding-window rate limit for login attempts (max 5 per 15 minutes per IP)
-const LOGIN_RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
-const MAX_LOGIN_ATTEMPTS = 5;
-const loginAttempts = new Map<string, number[]>();
-
-function checkLoginRateLimit(ip: string): boolean {
-  const now = Date.now();
-  const timestamps = loginAttempts.get(ip) || [];
-  const valid = timestamps.filter((t) => now - t < LOGIN_RATE_LIMIT_WINDOW_MS);
-
-  if (valid.length >= MAX_LOGIN_ATTEMPTS) {
-    loginAttempts.set(ip, valid);
-    return false;
-  }
-
-  valid.push(now);
-  loginAttempts.set(ip, valid);
-  return true;
-}
+// Distributed rate limit policy: max 5 login attempts per 15 minutes per IP
+const LOGIN_RATE_LIMIT_OPTIONS = {
+  windowMs: 15 * 60 * 1000,
+  maxAttempts: 5
+};
 
 export default async function handler(req: VercelRequest, res: VercelResponse): Promise<void> {
+  // Attach standard security headers to all responses
+  setStandardSecurityHeaders(res);
+
   // 1. Only allow POST
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -69,10 +62,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
     return;
   }
 
-  // 3. Login Rate Limiting Check
+  // 3. Distributed Sliding Window Rate Limiting (Neutralizes STATE-RACE-01)
   const forwarded = req.headers['x-forwarded-for'];
   const ip = typeof forwarded === 'string' ? forwarded.split(',')[0].trim() : '127.0.0.1';
-  if (!checkLoginRateLimit(ip)) {
+  const rateLimit = await checkDistributedRateLimit(ip, 'dashboard_login', LOGIN_RATE_LIMIT_OPTIONS);
+
+  res.setHeader('X-RateLimit-Limit', String(LOGIN_RATE_LIMIT_OPTIONS.maxAttempts));
+  res.setHeader('X-RateLimit-Remaining', String(rateLimit.remaining));
+  res.setHeader('X-RateLimit-Reset', String(Math.ceil(rateLimit.resetAt / 1000)));
+
+  if (!rateLimit.allowed) {
     res.status(429).json({
       success: false,
       code: 'RATE_LIMIT_EXCEEDED',
