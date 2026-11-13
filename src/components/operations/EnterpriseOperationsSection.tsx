@@ -4,9 +4,10 @@ import { CRMPipelineCenter } from './crm/CRMPipelineCenter';
 import { RenderFleetCenter } from './render/RenderFleetCenter';
 import { SMEDigitalTransformationCenter } from './sme/SMEDigitalTransformationCenter';
 import { FinancialStatementCenter } from './finance/FinancialStatementCenter';
+import { ERPIntegrationCenter } from './erp/ERPIntegrationCenter';
 
 export const EnterpriseOperationsSection: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'sla' | 'crm' | 'render' | 'sme' | 'finance'>('sla');
+  const [activeTab, setActiveTab] = useState<'sla' | 'crm' | 'render' | 'sme' | 'finance' | 'erp'>('sla');
 
   return (
     <section id="operations-command-center" className="py-16 border-t border-slate-200 dark:border-white/10 bg-slate-100/50 dark:bg-[#07080c] transition-colors">
@@ -75,6 +76,15 @@ export const EnterpriseOperationsSection: React.FC = () => {
             >
               05 • Financial OS
             </button>
+            <button
+              onClick={() => setActiveTab('erp')}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all ${activeTab === 'erp'
+                  ? 'bg-teal-500 text-white shadow-md shadow-teal-500/20'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+            >
+              06 • ERP Hub
+            </button>
           </div>
         </div>
 
@@ -85,6 +95,7 @@ export const EnterpriseOperationsSection: React.FC = () => {
           {activeTab === 'render' && <RenderFleetCenter />}
           {activeTab === 'sme' && <SMEDigitalTransformationCenter />}
           {activeTab === 'finance' && <FinancialStatementCenter />}
+          {activeTab === 'erp' && <ERPIntegrationCenter />}
         </div>
       </div>
     </section>

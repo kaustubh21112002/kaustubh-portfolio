@@ -7,3 +7,4 @@ export * from './crm';
 export * from './render';
 export * from './sme';
 export * from './finance';
+export * from './erp';
