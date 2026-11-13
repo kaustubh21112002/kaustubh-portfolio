@@ -19,8 +19,8 @@ import {
   type CareerFunnelAnalytics,
   generateInterviewIntelligenceBriefing,
   computeCareerFunnelAnalytics
-} from '../../data/interviewIntelligenceEngine.ts';
-import type { CandidateFitReport } from '../../data/candidateJobFitScorer.ts';
+} from '../../data/interviewIntelligenceEngine';
+import type { CandidateFitReport } from '../../data/candidateJobFitScorer';
 import { setProjectUrlParam } from '../projects/projectNavigation';
 
 interface InterviewIntelligenceModalProps {

@@ -11,7 +11,7 @@
  */
 
 import type { CandidateClaim } from '../types/candidate.js';
-import type { CandidateFitReport } from './candidateJobFitScorer.ts';
+import type { CandidateFitReport } from './candidateJobFitScorer';
 
 export interface TailoredBulletPoint {
   originalClaimId: string;

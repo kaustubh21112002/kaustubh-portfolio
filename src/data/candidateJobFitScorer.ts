@@ -14,7 +14,7 @@
 
 import type { CandidateClaim } from '../types/candidate.js';
 import type { MatchAnalysisReport, RequirementMatchResult } from './jobMatchKnowledge.js';
-import { analyzeJobDescription, extractRequirementCandidates } from './jobMatchEngine.ts';
+import { analyzeJobDescription, extractRequirementCandidates } from './jobMatchEngine';
 
 export interface CandidateFitReport {
   jobTitle?: string;

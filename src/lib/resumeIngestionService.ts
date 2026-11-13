@@ -8,9 +8,9 @@
  * 4. Zero network transmission, zero cloud storage, zero logging of PII.
  */
 
-import { validatePdfFile, validatePdfBuffer, type PdfValidationResult } from './pdfValidator.ts';
-import { extractTextFromPdfBuffer, type PdfExtractionResult } from './pdfExtractor.ts';
-import { extractClaimsFromResumeText, type ExtractionResult } from './candidateExtractor.ts';
+import { validatePdfFile, validatePdfBuffer, type PdfValidationResult } from './pdfValidator';
+import { extractTextFromPdfBuffer, type PdfExtractionResult } from './pdfExtractor';
+import { extractClaimsFromResumeText, type ExtractionResult } from './candidateExtractor';
 import type { CandidateClaim } from '../types/candidate.js';
 
 export interface ResumeIngestionResult {

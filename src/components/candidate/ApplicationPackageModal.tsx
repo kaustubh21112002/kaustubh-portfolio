@@ -11,8 +11,8 @@ import {
   ChevronDown,
   ChevronUp
 } from 'lucide-react';
-import type { DocumentTailoringPackage } from '../../data/documentTailoringAssistant.ts';
-import { ApprovalGateService, type ApplicationPackageSnapshot, type ApplicationApprovalRecord } from '../../data/approvalGateService.ts';
+import type { DocumentTailoringPackage } from '../../data/documentTailoringAssistant';
+import { ApprovalGateService, type ApplicationPackageSnapshot, type ApplicationApprovalRecord } from '../../data/approvalGateService';
 
 interface ApplicationPackageModalProps {
   tailoringPackage: DocumentTailoringPackage;

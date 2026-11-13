@@ -14,7 +14,7 @@ import {
   Sparkles,
   ExternalLink
 } from 'lucide-react';
-import type { ApplicationWorkflowStatus } from '../../data/approvalGateService.ts';
+import type { ApplicationWorkflowStatus } from '../../data/approvalGateService';
 
 export interface KanbanApplicationCard {
   id: string;

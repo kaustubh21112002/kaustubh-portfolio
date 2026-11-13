@@ -11,7 +11,7 @@
  *    Computes response rates, conversion velocity, and in-demand skill frequency without external trackers.
  */
 
-import type { CandidateFitReport } from './candidateJobFitScorer.ts';
+import type { CandidateFitReport } from './candidateJobFitScorer';
 
 export interface CompanyIntelligenceBriefing {
   companyName: string;

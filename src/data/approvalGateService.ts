@@ -11,7 +11,7 @@
  * 4. Single-Use Execution Token: The oneTimeAuthToken can only be redeemed exactly once.
  */
 
-import type { DocumentTailoringPackage } from './documentTailoringAssistant.ts';
+import type { DocumentTailoringPackage } from './documentTailoringAssistant';
 
 export interface ApplicationPackageSnapshot {
   targetJobUrl: string;
