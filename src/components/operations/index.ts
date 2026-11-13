@@ -5,3 +5,4 @@ export * from './OperationsOSBanner';
 export * from './EnterpriseOperationsSection';
 export * from './crm';
 export * from './render';
+export * from './sme';

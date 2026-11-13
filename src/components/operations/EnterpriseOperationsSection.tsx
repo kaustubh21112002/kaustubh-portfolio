@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { SLACommandCenter } from './SLACommandCenter';
 import { CRMPipelineCenter } from './crm/CRMPipelineCenter';
 import { RenderFleetCenter } from './render/RenderFleetCenter';
+import { SMEDigitalTransformationCenter } from './sme/SMEDigitalTransformationCenter';
 
 export const EnterpriseOperationsSection: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'sla' | 'crm' | 'render'>('sla');
+  const [activeTab, setActiveTab] = useState<'sla' | 'crm' | 'render' | 'sme'>('sla');
 
   return (
     <section id="operations-command-center" className="py-16 border-t border-slate-200 dark:border-white/10 bg-slate-100/50 dark:bg-[#07080c] transition-colors">
@@ -58,6 +59,16 @@ export const EnterpriseOperationsSection: React.FC = () => {
             >
               03 • Render Fleet
             </button>
+            <button
+              onClick={() => setActiveTab('sme')}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all ${
+                activeTab === 'sme'
+                  ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/20'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              04 • SME Analytics
+            </button>
           </div>
         </div>
 
@@ -66,6 +77,7 @@ export const EnterpriseOperationsSection: React.FC = () => {
           {activeTab === 'sla' && <SLACommandCenter />}
           {activeTab === 'crm' && <CRMPipelineCenter />}
           {activeTab === 'render' && <RenderFleetCenter />}
+          {activeTab === 'sme' && <SMEDigitalTransformationCenter />}
         </div>
       </div>
     </section>
