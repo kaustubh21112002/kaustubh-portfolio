@@ -9,9 +9,10 @@ import { CandidateIntelligenceCenter } from './candidate/CandidateIntelligenceCe
 import { ReliabilityChaosCenter } from './reliability/ReliabilityChaosCenter';
 import { ExecutiveOutreachCenter } from './outreach/ExecutiveOutreachCenter';
 import { TelemetryPostMortemCenter } from './telemetry/TelemetryPostMortemCenter';
+import { B2BCampaignOrchestratorCenter } from './campaigns/B2BCampaignOrchestratorCenter';
 
 export const EnterpriseOperationsSection: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'sla' | 'crm' | 'render' | 'sme' | 'finance' | 'erp' | 'candidate' | 'reliability' | 'outreach' | 'telemetry'>('sla');
+  const [activeTab, setActiveTab] = useState<'sla' | 'crm' | 'render' | 'sme' | 'finance' | 'erp' | 'candidate' | 'reliability' | 'outreach' | 'telemetry' | 'campaigns'>('sla');
 
   return (
     <section id="operations-command-center" className="py-16 border-t border-slate-200 dark:border-white/10 bg-slate-100/50 dark:bg-[#07080c] transition-colors">
@@ -125,6 +126,15 @@ export const EnterpriseOperationsSection: React.FC = () => {
             >
               10 • Telemetry & RCA
             </button>
+            <button
+              onClick={() => setActiveTab('campaigns')}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all ${activeTab === 'campaigns'
+                ? 'bg-violet-600 text-white shadow-md shadow-violet-600/20'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+            >
+              11 • OutreachPulse
+            </button>
           </div>
         </div>
 
@@ -140,6 +150,7 @@ export const EnterpriseOperationsSection: React.FC = () => {
           {activeTab === 'reliability' && <ReliabilityChaosCenter />}
           {activeTab === 'outreach' && <ExecutiveOutreachCenter />}
           {activeTab === 'telemetry' && <TelemetryPostMortemCenter />}
+          {activeTab === 'campaigns' && <B2BCampaignOrchestratorCenter />}
         </div>
       </div>
     </section>
