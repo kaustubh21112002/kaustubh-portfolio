@@ -11,3 +11,4 @@ export * from './erp';
 export * from './candidate';
 export * from './reliability';
 export * from './outreach';
+export * from './telemetry';

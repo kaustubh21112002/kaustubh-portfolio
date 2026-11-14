@@ -8,9 +8,10 @@ import { ERPIntegrationCenter } from './erp/ERPIntegrationCenter';
 import { CandidateIntelligenceCenter } from './candidate/CandidateIntelligenceCenter';
 import { ReliabilityChaosCenter } from './reliability/ReliabilityChaosCenter';
 import { ExecutiveOutreachCenter } from './outreach/ExecutiveOutreachCenter';
+import { TelemetryPostMortemCenter } from './telemetry/TelemetryPostMortemCenter';
 
 export const EnterpriseOperationsSection: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'sla' | 'crm' | 'render' | 'sme' | 'finance' | 'erp' | 'candidate' | 'reliability' | 'outreach'>('sla');
+  const [activeTab, setActiveTab] = useState<'sla' | 'crm' | 'render' | 'sme' | 'finance' | 'erp' | 'candidate' | 'reliability' | 'outreach' | 'telemetry'>('sla');
 
   return (
     <section id="operations-command-center" className="py-16 border-t border-slate-200 dark:border-white/10 bg-slate-100/50 dark:bg-[#07080c] transition-colors">
@@ -115,6 +116,15 @@ export const EnterpriseOperationsSection: React.FC = () => {
             >
               09 • Executive Reports
             </button>
+            <button
+              onClick={() => setActiveTab('telemetry')}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all ${activeTab === 'telemetry'
+                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+            >
+              10 • Telemetry & RCA
+            </button>
           </div>
         </div>
 
@@ -129,6 +139,7 @@ export const EnterpriseOperationsSection: React.FC = () => {
           {activeTab === 'candidate' && <CandidateIntelligenceCenter />}
           {activeTab === 'reliability' && <ReliabilityChaosCenter />}
           {activeTab === 'outreach' && <ExecutiveOutreachCenter />}
+          {activeTab === 'telemetry' && <TelemetryPostMortemCenter />}
         </div>
       </div>
     </section>
