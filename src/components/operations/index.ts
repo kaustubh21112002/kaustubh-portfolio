@@ -15,3 +15,4 @@ export * from './telemetry';
 export * from './campaigns';
 export * from './compliance';
 export * from './agents';
+export * from './watchdog';

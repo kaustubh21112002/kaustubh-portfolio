@@ -12,9 +12,10 @@ import { TelemetryPostMortemCenter } from './telemetry/TelemetryPostMortemCenter
 import { B2BCampaignOrchestratorCenter } from './campaigns/B2BCampaignOrchestratorCenter';
 import { ComplianceAuditCenter } from './compliance/ComplianceAuditCenter';
 import { AgenticWorkflowCenter } from './agents/AgenticWorkflowCenter';
+import { SystemWatchdogCenter } from './watchdog/SystemWatchdogCenter';
 
 export const EnterpriseOperationsSection: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'sla' | 'crm' | 'render' | 'sme' | 'finance' | 'erp' | 'candidate' | 'reliability' | 'outreach' | 'telemetry' | 'campaigns' | 'compliance' | 'agents'>('sla');
+  const [activeTab, setActiveTab] = useState<'sla' | 'crm' | 'render' | 'sme' | 'finance' | 'erp' | 'candidate' | 'reliability' | 'outreach' | 'telemetry' | 'campaigns' | 'compliance' | 'agents' | 'watchdog'>('sla');
 
   return (
     <section id="operations-command-center" className="py-16 border-t border-slate-200 dark:border-white/10 bg-slate-100/50 dark:bg-[#07080c] transition-colors">
@@ -155,6 +156,15 @@ export const EnterpriseOperationsSection: React.FC = () => {
             >
               13 • Agent Mesh
             </button>
+            <button
+              onClick={() => setActiveTab('watchdog')}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all ${activeTab === 'watchdog'
+                ? 'bg-teal-600 text-white shadow-md shadow-teal-600/20'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+            >
+              14 • SentinelWatch
+            </button>
           </div>
         </div>
 
@@ -173,6 +183,7 @@ export const EnterpriseOperationsSection: React.FC = () => {
           {activeTab === 'campaigns' && <B2BCampaignOrchestratorCenter />}
           {activeTab === 'compliance' && <ComplianceAuditCenter />}
           {activeTab === 'agents' && <AgenticWorkflowCenter />}
+          {activeTab === 'watchdog' && <SystemWatchdogCenter />}
         </div>
       </div>
     </section>
