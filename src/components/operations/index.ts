@@ -14,3 +14,4 @@ export * from './outreach';
 export * from './telemetry';
 export * from './campaigns';
 export * from './compliance';
+export * from './agents';

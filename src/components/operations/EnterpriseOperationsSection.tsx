@@ -11,9 +11,10 @@ import { ExecutiveOutreachCenter } from './outreach/ExecutiveOutreachCenter';
 import { TelemetryPostMortemCenter } from './telemetry/TelemetryPostMortemCenter';
 import { B2BCampaignOrchestratorCenter } from './campaigns/B2BCampaignOrchestratorCenter';
 import { ComplianceAuditCenter } from './compliance/ComplianceAuditCenter';
+import { AgenticWorkflowCenter } from './agents/AgenticWorkflowCenter';
 
 export const EnterpriseOperationsSection: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'sla' | 'crm' | 'render' | 'sme' | 'finance' | 'erp' | 'candidate' | 'reliability' | 'outreach' | 'telemetry' | 'campaigns' | 'compliance'>('sla');
+  const [activeTab, setActiveTab] = useState<'sla' | 'crm' | 'render' | 'sme' | 'finance' | 'erp' | 'candidate' | 'reliability' | 'outreach' | 'telemetry' | 'campaigns' | 'compliance' | 'agents'>('sla');
 
   return (
     <section id="operations-command-center" className="py-16 border-t border-slate-200 dark:border-white/10 bg-slate-100/50 dark:bg-[#07080c] transition-colors">
@@ -145,6 +146,15 @@ export const EnterpriseOperationsSection: React.FC = () => {
             >
               12 • Statutory Audit
             </button>
+            <button
+              onClick={() => setActiveTab('agents')}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all ${activeTab === 'agents'
+                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+            >
+              13 • Agent Mesh
+            </button>
           </div>
         </div>
 
@@ -162,6 +172,7 @@ export const EnterpriseOperationsSection: React.FC = () => {
           {activeTab === 'telemetry' && <TelemetryPostMortemCenter />}
           {activeTab === 'campaigns' && <B2BCampaignOrchestratorCenter />}
           {activeTab === 'compliance' && <ComplianceAuditCenter />}
+          {activeTab === 'agents' && <AgenticWorkflowCenter />}
         </div>
       </div>
     </section>
