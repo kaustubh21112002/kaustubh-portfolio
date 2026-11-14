@@ -13,9 +13,10 @@ import { B2BCampaignOrchestratorCenter } from './campaigns/B2BCampaignOrchestrat
 import { ComplianceAuditCenter } from './compliance/ComplianceAuditCenter';
 import { AgenticWorkflowCenter } from './agents/AgenticWorkflowCenter';
 import { SystemWatchdogCenter } from './watchdog/SystemWatchdogCenter';
+import { CloudFinOpsCenter } from './finops/CloudFinOpsCenter';
 
 export const EnterpriseOperationsSection: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'sla' | 'crm' | 'render' | 'sme' | 'finance' | 'erp' | 'candidate' | 'reliability' | 'outreach' | 'telemetry' | 'campaigns' | 'compliance' | 'agents' | 'watchdog'>('sla');
+  const [activeTab, setActiveTab] = useState<'sla' | 'crm' | 'render' | 'sme' | 'finance' | 'erp' | 'candidate' | 'reliability' | 'outreach' | 'telemetry' | 'campaigns' | 'compliance' | 'agents' | 'watchdog' | 'finops'>('sla');
 
   return (
     <section id="operations-command-center" className="py-16 border-t border-slate-200 dark:border-white/10 bg-slate-100/50 dark:bg-[#07080c] transition-colors">
@@ -165,6 +166,15 @@ export const EnterpriseOperationsSection: React.FC = () => {
             >
               14 • SentinelWatch
             </button>
+            <button
+              onClick={() => setActiveTab('finops')}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all ${activeTab === 'finops'
+                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+            >
+              15 • CloudFinOps
+            </button>
           </div>
         </div>
 
@@ -184,6 +194,7 @@ export const EnterpriseOperationsSection: React.FC = () => {
           {activeTab === 'compliance' && <ComplianceAuditCenter />}
           {activeTab === 'agents' && <AgenticWorkflowCenter />}
           {activeTab === 'watchdog' && <SystemWatchdogCenter />}
+          {activeTab === 'finops' && <CloudFinOpsCenter />}
         </div>
       </div>
     </section>
