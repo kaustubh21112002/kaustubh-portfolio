@@ -7,9 +7,10 @@ import { FinancialStatementCenter } from './finance/FinancialStatementCenter';
 import { ERPIntegrationCenter } from './erp/ERPIntegrationCenter';
 import { CandidateIntelligenceCenter } from './candidate/CandidateIntelligenceCenter';
 import { ReliabilityChaosCenter } from './reliability/ReliabilityChaosCenter';
+import { ExecutiveOutreachCenter } from './outreach/ExecutiveOutreachCenter';
 
 export const EnterpriseOperationsSection: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'sla' | 'crm' | 'render' | 'sme' | 'finance' | 'erp' | 'candidate' | 'reliability'>('sla');
+  const [activeTab, setActiveTab] = useState<'sla' | 'crm' | 'render' | 'sme' | 'finance' | 'erp' | 'candidate' | 'reliability' | 'outreach'>('sla');
 
   return (
     <section id="operations-command-center" className="py-16 border-t border-slate-200 dark:border-white/10 bg-slate-100/50 dark:bg-[#07080c] transition-colors">
@@ -105,6 +106,15 @@ export const EnterpriseOperationsSection: React.FC = () => {
             >
               08 • Chaos Mesh
             </button>
+            <button
+              onClick={() => setActiveTab('outreach')}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all ${activeTab === 'outreach'
+                ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+            >
+              09 • Executive Reports
+            </button>
           </div>
         </div>
 
@@ -118,6 +128,7 @@ export const EnterpriseOperationsSection: React.FC = () => {
           {activeTab === 'erp' && <ERPIntegrationCenter />}
           {activeTab === 'candidate' && <CandidateIntelligenceCenter />}
           {activeTab === 'reliability' && <ReliabilityChaosCenter />}
+          {activeTab === 'outreach' && <ExecutiveOutreachCenter />}
         </div>
       </div>
     </section>
