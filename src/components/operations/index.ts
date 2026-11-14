@@ -9,3 +9,4 @@ export * from './sme';
 export * from './finance';
 export * from './erp';
 export * from './candidate';
+export * from './reliability';
