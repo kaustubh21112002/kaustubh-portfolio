@@ -10,9 +10,10 @@ import { ReliabilityChaosCenter } from './reliability/ReliabilityChaosCenter';
 import { ExecutiveOutreachCenter } from './outreach/ExecutiveOutreachCenter';
 import { TelemetryPostMortemCenter } from './telemetry/TelemetryPostMortemCenter';
 import { B2BCampaignOrchestratorCenter } from './campaigns/B2BCampaignOrchestratorCenter';
+import { ComplianceAuditCenter } from './compliance/ComplianceAuditCenter';
 
 export const EnterpriseOperationsSection: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'sla' | 'crm' | 'render' | 'sme' | 'finance' | 'erp' | 'candidate' | 'reliability' | 'outreach' | 'telemetry' | 'campaigns'>('sla');
+  const [activeTab, setActiveTab] = useState<'sla' | 'crm' | 'render' | 'sme' | 'finance' | 'erp' | 'candidate' | 'reliability' | 'outreach' | 'telemetry' | 'campaigns' | 'compliance'>('sla');
 
   return (
     <section id="operations-command-center" className="py-16 border-t border-slate-200 dark:border-white/10 bg-slate-100/50 dark:bg-[#07080c] transition-colors">
@@ -135,6 +136,15 @@ export const EnterpriseOperationsSection: React.FC = () => {
             >
               11 • OutreachPulse
             </button>
+            <button
+              onClick={() => setActiveTab('compliance')}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all ${activeTab === 'compliance'
+                ? 'bg-teal-600 text-white shadow-md shadow-teal-600/20'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+            >
+              12 • Statutory Audit
+            </button>
           </div>
         </div>
 
@@ -151,6 +161,7 @@ export const EnterpriseOperationsSection: React.FC = () => {
           {activeTab === 'outreach' && <ExecutiveOutreachCenter />}
           {activeTab === 'telemetry' && <TelemetryPostMortemCenter />}
           {activeTab === 'campaigns' && <B2BCampaignOrchestratorCenter />}
+          {activeTab === 'compliance' && <ComplianceAuditCenter />}
         </div>
       </div>
     </section>
