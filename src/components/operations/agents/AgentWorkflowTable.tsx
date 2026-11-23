@@ -142,3 +142,4 @@ export const AgentWorkflowTable: React.FC<AgentWorkflowTableProps> = ({ workflow
     </div>
   );
 };
+

@@ -79,7 +79,7 @@ export const QuickSearchModal: React.FC<QuickSearchModalProps> = ({ isOpen, onCl
         {
           id: 'journey-timeline',
           title: 'Career & Education Journey',
-          subtitle: 'MBA Sandip University, SPIIDEO Match Analytics Internship',
+          subtitle: 'INSITE ARC MEDIA LLP Annotator, SPIIDEO Internship, MBA Sandip Univ',
           category: 'Research' as const,
           targetHref: '#journey',
           badge: 'Experience'

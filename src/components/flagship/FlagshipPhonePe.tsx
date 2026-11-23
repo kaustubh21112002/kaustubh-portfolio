@@ -29,6 +29,8 @@ import {
   TerminalMethodology,
   PHONEPE_VALUATION_CONSTANTS,
 } from './valuationSensitivityMath';
+import { HoldToConfirmButton } from '../common/HoldToConfirmButton';
+import { Tooltip } from '../common/Tooltip';
 
 export const FlagshipPhonePe: React.FC = () => {
   const [activeTab, setActiveTab] = useState<
@@ -871,7 +873,15 @@ export const FlagshipPhonePe: React.FC = () => {
 
                 <div className="flex items-center justify-between p-5 rounded-2xl bg-emerald-500/10 border border-emerald-500/40 text-white">
                   <div>
-                    <span className="font-sans font-bold text-base text-emerald-300 block">Implied Share Price (Reconciled)</span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-sans font-bold text-base text-emerald-300 block">Implied Share Price (Reconciled)</span>
+                      <Tooltip
+                        content="Cell Audit Finding: Model cell C13 originally divided by Debt instead of Shares (50.66 Cr); reconciled here to ₹821.78/share."
+                        position="top"
+                      >
+                        <Info className="w-3.5 h-3.5 text-emerald-400 cursor-help" />
+                      </Tooltip>
+                    </div>
                     <span className="text-xs text-white/60 font-sans">₹41,631.22 Cr ÷ 50.66 Cr shares</span>
                   </div>
                   <span className="text-2xl font-extrabold text-emerald-400 font-mono">₹821.78 / share</span>
@@ -1104,19 +1114,23 @@ export const FlagshipPhonePe: React.FC = () => {
 
               {/* Reset Control */}
               {(waccOffset !== 0 || multipleOffset !== 0 || growthOffset !== 0 || terminalMethodology !== 'blended') && (
-                <div className="mb-6 flex justify-end">
-                  <button
-                    type="button"
-                    onClick={() => {
+                <div className="mb-6 flex justify-end items-center gap-3">
+                  <span className="text-[11px] font-mono text-white/50 hidden sm:inline">
+                    Modified Assumptions Active:
+                  </span>
+                  <HoldToConfirmButton
+                    duration={1200}
+                    variant="warning"
+                    onConfirm={() => {
                       setWaccOffset(0);
                       setMultipleOffset(0);
                       setGrowthOffset(0);
                       setTerminalMethodology('blended');
                     }}
-                    className="px-3 py-1.5 rounded-lg text-xs font-mono bg-white/5 hover:bg-white/10 text-white/80 border border-white/10 transition-colors"
+                    confirmedContent="Reset to Base Case ✓"
                   >
-                    ↺ Reset to Governed Base Case (14.92% WACC / 7.0% g / 13.15x)
-                  </button>
+                    <span>Hold to Reset Base Case (14.92% / 7% / 13.15x)</span>
+                  </HoldToConfirmButton>
                 </div>
               )}
 

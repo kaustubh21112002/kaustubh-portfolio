@@ -7,14 +7,89 @@
  * - Categorizes referrers into coarse categories ('direct', 'search', 'social', 'internal', 'other').
  * - Detects coarse device category ('desktop', 'mobile', 'tablet').
  * - Zero collection of message content, job descriptions, or user input.
+ * - In-memory page session campaign attribution: captures validated utm_* parameters on page load.
+ * - Never persists raw advertising identifiers (gclid, fbclid, etc.).
+ * - Generates random ephemeral UUIDv4 per event for idempotency / deduplication without persistent visitor identity.
  */
 
-import {
+import type {
   AnalyticsEventType,
   ReferrerCategory,
   DeviceCategory,
-  AnalyticsEventPayload
-} from '../../server/lib/analyticsContract';
+  CampaignAttribution,
+  AnalyticsEventPayload,
+  PrivacyPreferences
+} from '../types/analytics';
+
+export type {
+  AnalyticsEventType,
+  ReferrerCategory,
+  DeviceCategory,
+  CampaignAttribution,
+  AnalyticsEventPayload,
+  PrivacyPreferences
+};
+
+// In-memory campaign attribution cache for the current browser tab session
+// Not stored in localStorage or cookies; destroyed on tab close
+let activeSessionCampaign: CampaignAttribution | null = null;
+let sessionCampaignInitialized = false;
+
+// Allowed campaign parameter whitelist (alphanumeric, hyphen, underscore, max 50 chars)
+const UTM_REGEX = /^[a-zA-Z0-9._-]{1,50}$/;
+
+/**
+ * Extracts and validates UTM campaign parameters from window.location.search.
+ * Stored strictly in tab memory for the active session.
+ */
+export function initCampaignAttribution(): CampaignAttribution | null {
+  if (sessionCampaignInitialized) return activeSessionCampaign;
+  sessionCampaignInitialized = true;
+
+  if (typeof window === 'undefined' || !window.location || !window.location.search) {
+    activeSessionCampaign = null;
+    return null;
+  }
+
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const campaign: CampaignAttribution = {};
+
+    const source = params.get('utm_source');
+    const medium = params.get('utm_medium');
+    const name = params.get('utm_campaign');
+    const content = params.get('utm_content');
+    const term = params.get('utm_term');
+
+    if (source && UTM_REGEX.test(source.trim())) campaign.utmSource = source.trim().toLowerCase();
+    if (medium && UTM_REGEX.test(medium.trim())) campaign.utmMedium = medium.trim().toLowerCase();
+    if (name && UTM_REGEX.test(name.trim())) campaign.utmCampaign = name.trim().toLowerCase();
+    if (content && UTM_REGEX.test(content.trim())) campaign.utmContent = content.trim().toLowerCase();
+    if (term && UTM_REGEX.test(term.trim())) campaign.utmTerm = term.trim().toLowerCase();
+
+    activeSessionCampaign = Object.keys(campaign).length > 0 ? campaign : null;
+    return activeSessionCampaign;
+  } catch {
+    activeSessionCampaign = null;
+    return null;
+  }
+}
+
+/**
+ * Generates an ephemeral cryptographically random UUIDv4 for single-event idempotency.
+ * Not stored in localStorage or cookies; zero cross-event tracking.
+ */
+export function generateEventId(): string {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  // Fallback for environments lacking crypto.randomUUID
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
 
 /**
  * Categorizes document.referrer into broad privacy-preserving buckets.
@@ -67,20 +142,23 @@ export function getReferrerCategory(referrer: string, currentHost: string): Refe
 }
 
 /**
- * Detects coarse device category based on viewport width and userAgent heuristics.
+ * Detects coarse device category without user-agent sniffing or device fingerprinting.
  */
 export function getDeviceCategory(): DeviceCategory {
   if (typeof window === 'undefined') return 'desktop';
 
   const width = window.innerWidth;
-  if (width < 640) return 'mobile';
-  if (width < 1024) return 'tablet';
+  if (width < 768) {
+    return 'mobile';
+  } else if (width >= 768 && width < 1024) {
+    return 'tablet';
+  }
   return 'desktop';
 }
 
 /**
- * Dispatches an analytics event to the first-party serverless collector.
- * Non-blocking, fails silently to never degrade user experience.
+ * Ingests a privacy-safe analytics event to the serverless collection endpoint.
+ * Non-blocking: Uses navigator.sendBeacon when available, otherwise falls back to keepalive fetch.
  */
 export function trackAnalyticsEvent(
   eventType: AnalyticsEventType,
@@ -92,41 +170,52 @@ export function trackAnalyticsEvent(
 ): void {
   if (typeof window === 'undefined') return;
 
-  const path = options.path || window.location.pathname + window.location.search;
-  const referrerCategory = getReferrerCategory(document.referrer, window.location.hostname);
-  const deviceCategory = getDeviceCategory();
+  const path = options.path || window.location.pathname || '/';
+  const referrer = typeof document !== 'undefined' ? document.referrer : '';
+  const currentHost = window.location.hostname;
+  const campaign = initCampaignAttribution();
 
   const payload: AnalyticsEventPayload = {
+    eventId: generateEventId(),
     eventType,
     timestamp: Date.now(),
-    path: path.length > 255 ? path.substring(0, 255) : path,
-    referrerCategory,
-    deviceCategory,
-    ...(options.projectId ? { projectId: options.projectId } : {}),
-    ...(options.metadata ? { metadata: options.metadata } : {})
+    path,
+    referrerCategory: getReferrerCategory(referrer, currentHost),
+    deviceCategory: getDeviceCategory()
   };
 
-  const endpoint = '/api/analytics/collect';
-  const body = JSON.stringify(payload);
+  if (options.projectId) {
+    payload.projectId = options.projectId;
+  }
 
-  // Use sendBeacon if available, otherwise fetch with keepalive
+  if (options.metadata) {
+    payload.metadata = options.metadata;
+  }
+
+  if (campaign) {
+    payload.campaign = campaign;
+  }
+
+  const endpoint = '/api/analytics/collect';
+  const data = JSON.stringify(payload);
+
   try {
-    if (navigator.sendBeacon) {
-      const blob = new Blob([body], { type: 'application/json' });
+    if (typeof navigator !== 'undefined' && typeof navigator.sendBeacon === 'function') {
+      const blob = new Blob([data], { type: 'application/json' });
       const queued = navigator.sendBeacon(endpoint, blob);
       if (queued) return;
     }
 
+    // Fallback: asynchronous non-blocking fetch with keepalive
     fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body,
+      body: data,
       keepalive: true
     }).catch(() => {
-      // Fail silently: analytics must never disrupt user experience
+      // Fire-and-forget: ignore network drops to prevent UX degradation
     });
   } catch {
-    // Fail silently
+    // Fail silently in client
   }
 }
-

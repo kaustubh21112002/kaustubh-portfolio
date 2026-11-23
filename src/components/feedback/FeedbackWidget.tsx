@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { ThumbsUp, ThumbsDown, MessageSquare, X, Send, Check, AlertCircle } from 'lucide-react';
+import { DynamicButton } from '../common/DynamicButton';
 
-const SESSION_KEY = 'portfolio_feedback_submitted';
+const STORAGE_KEY = 'portfolio_feedback_submitted';
 
 export const FeedbackWidget: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,10 +15,25 @@ export const FeedbackWidget: React.FC = () => {
 
   useEffect(() => {
     try {
-      const stored = sessionStorage.getItem(SESSION_KEY);
-      if (stored === 'true') {
+      // Check localStorage first for cross-tab persistence, fallback to sessionStorage
+      const isSubmitted =
+        localStorage.getItem(STORAGE_KEY) === 'true' ||
+        sessionStorage.getItem(STORAGE_KEY) === 'true';
+
+      if (isSubmitted) {
         setHasPreviouslySubmitted(true);
       }
+
+      // Synchronize across open tabs if feedback is submitted in another tab
+      const handleStorageSync = (e: StorageEvent) => {
+        if (e.key === STORAGE_KEY && e.newValue === 'true') {
+          setHasPreviouslySubmitted(true);
+          setIsOpen(false);
+        }
+      };
+
+      window.addEventListener('storage', handleStorageSync);
+      return () => window.removeEventListener('storage', handleStorageSync);
     } catch {
       // Storage unavailable or disabled
     }
@@ -48,7 +64,8 @@ export const FeedbackWidget: React.FC = () => {
       if (res.ok && data?.success) {
         setStatus('success');
         try {
-          sessionStorage.setItem(SESSION_KEY, 'true');
+          localStorage.setItem(STORAGE_KEY, 'true');
+          sessionStorage.setItem(STORAGE_KEY, 'true');
         } catch {
           // Ignore storage errors
         }
@@ -195,18 +212,21 @@ export const FeedbackWidget: React.FC = () => {
                 </div>
               )}
 
-              <button
+              <DynamicButton
                 type="submit"
+                stateKey={status === 'submitting' ? 'submitting' : 'idle'}
                 disabled={!rating || status === 'submitting'}
-                className={`w-full min-h-[40px] flex items-center justify-center gap-2 py-2 px-4 rounded-xl text-xs font-mono font-bold transition-all ${
+                width="full"
+                variant="primary"
+                icon={<Send className="w-3.5 h-3.5" />}
+                className={`py-2 px-4 rounded-xl text-xs font-mono font-bold ${
                   !rating || status === 'submitting'
-                    ? 'bg-white/10 text-white/40 border border-white/5 cursor-not-allowed'
-                    : 'bg-white text-black hover:bg-white/90 shadow-md cursor-pointer active:scale-95'
-                } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400`}
+                    ? 'opacity-40 cursor-not-allowed'
+                    : 'cursor-pointer active:scale-95'
+                }`}
               >
-                <span>{status === 'submitting' ? 'Submitting...' : 'Submit Feedback'}</span>
-                <Send className="w-3.5 h-3.5" />
-              </button>
+                {status === 'submitting' ? 'Submitting...' : 'Submit Feedback'}
+              </DynamicButton>
             </form>
           )}
         </div>

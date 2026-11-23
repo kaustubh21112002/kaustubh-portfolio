@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Share2, Check, Copy } from 'lucide-react';
+import { Share2, Check } from 'lucide-react';
 import { getProjectShareUrl } from './projectNavigation';
+import { DynamicButton } from '../common/DynamicButton';
 
 export interface ShareProjectButtonProps {
   projectId: string;
@@ -52,29 +53,28 @@ export const ShareProjectButton: React.FC<ShareProjectButtonProps> = ({
 
   return (
     <div className="relative inline-flex items-center">
-      <button
-        type="button"
+      <DynamicButton
+        stateKey={copied ? 'copied' : 'idle'}
         onClick={handleCopy}
         aria-label={`Copy shareable direct link for ${projectTitle}`}
         title={`Copy link to ${projectTitle}`}
-        className={`min-h-[38px] inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-mono transition-all duration-200 cursor-pointer active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 ${
+        variant="secondary"
+        width="content"
+        icon={
+          copied ? (
+            <Check className="w-3.5 h-3.5 text-emerald-400" />
+          ) : (
+            <Share2 className="w-3.5 h-3.5 text-red-400" />
+          )
+        }
+        className={`min-h-[38px] px-3 py-1.5 rounded-full border text-xs font-mono transition-all duration-200 cursor-pointer active:scale-95 ${
           copied
             ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
             : 'bg-white/5 hover:bg-white/10 text-white/80 hover:text-white border-white/15'
         } ${className}`}
       >
-        {copied ? (
-          <>
-            <Check className="w-3.5 h-3.5 text-emerald-400" />
-            <span className="font-semibold text-emerald-300">Link Copied!</span>
-          </>
-        ) : (
-          <>
-            <Share2 className="w-3.5 h-3.5 text-red-400" />
-            <span>{compact ? 'Share' : 'Share Project'}</span>
-          </>
-        )}
-      </button>
+        {copied ? 'Link Copied!' : compact ? 'Share' : 'Share Project'}
+      </DynamicButton>
 
       {fallbackVisible && (
         <div

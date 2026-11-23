@@ -181,3 +181,4 @@ export const AgenticWorkflowCenter: React.FC = () => {
     </div>
   );
 };
+

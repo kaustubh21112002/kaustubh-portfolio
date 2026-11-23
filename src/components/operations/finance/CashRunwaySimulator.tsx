@@ -142,3 +142,4 @@ export const CashRunwaySimulator: React.FC = () => {
     </div>
   );
 };
+

@@ -32,3 +32,4 @@ SELECT * FROM (VALUES
   ('FIN-CORP-06', 'Vidarbha Steel Fab & Tube', 'Heavy Metal Fabrication', 14.1, 1.65, 1.25, 1.85, 2600000.00, 3600000.00, 'LIQUIDITY_OPTIMAL')
 ) AS v(enterprise_id, enterprise_name, sector, cash_runway_months, working_capital_ratio, quick_ratio, dscr, monthly_burn_rate_inr, operating_cash_flow_inr, liquidity_risk_status)
 WHERE NOT EXISTS (SELECT 1 FROM financial_analytics LIMIT 1);
+

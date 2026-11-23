@@ -49,6 +49,22 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
+  // Listen to cross-tab storage changes to synchronize theme instantly across open tabs
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === THEME_STORAGE_KEY && e.newValue) {
+        if (e.newValue === 'light' || e.newValue === 'dark' || e.newValue === 'system') {
+          setThemeState(e.newValue as Theme);
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
   const resolvedTheme: ResolvedTheme = useMemo(() => {
     if (theme === 'system') {
       return systemTheme;

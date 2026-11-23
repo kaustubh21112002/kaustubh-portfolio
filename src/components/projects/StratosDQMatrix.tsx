@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ShieldCheck, AlertTriangle, CheckCircle2, Filter, Info, ChevronRight, Layers, Database } from 'lucide-react';
+import { Tooltip } from '../common/Tooltip';
 
 export interface DQRule {
   id: string;
@@ -194,7 +195,15 @@ export const StratosDQMatrix: React.FC = () => {
         </div>
 
         <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30">
-          <span className="text-xs font-mono text-amber-300 font-semibold block">DQ-10 Financial</span>
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-mono text-amber-300 font-semibold block">DQ-10 Financial</span>
+            <Tooltip
+              content="Active anomaly: Net Revenue exceeds Gross Revenue in controlled totals. Strictly preserved in REVIEW without mathematical force-balancing."
+              position="top"
+            >
+              <Info className="w-3.5 h-3.5 text-amber-400 cursor-help" />
+            </Tooltip>
+          </div>
           <span className="text-xl sm:text-2xl font-black font-mono text-amber-400 mt-1 block">REVIEW</span>
           <span className="text-[10px] text-amber-300/80 font-sans block mt-0.5">Net Rev &gt; Gross Rev</span>
         </div>

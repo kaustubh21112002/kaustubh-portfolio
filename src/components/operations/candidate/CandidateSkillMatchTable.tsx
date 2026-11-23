@@ -133,3 +133,4 @@ export const CandidateSkillMatchTable: React.FC<CandidateSkillMatchTableProps> =
     </div>
   );
 };
+

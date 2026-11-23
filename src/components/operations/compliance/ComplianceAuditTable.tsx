@@ -130,3 +130,4 @@ export const ComplianceAuditTable: React.FC<ComplianceAuditTableProps> = ({ reco
     </div>
   );
 };
+

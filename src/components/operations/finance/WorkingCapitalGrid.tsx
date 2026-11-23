@@ -120,3 +120,4 @@ export const WorkingCapitalGrid: React.FC<WorkingCapitalGridProps> = ({ records 
     </div>
   );
 };
+

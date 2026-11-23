@@ -442,6 +442,14 @@ export const AboutSection: React.FC = () => {
                 </div>
 
                 <div className="flex items-start gap-2.5 pt-2 border-t border-white/5">
+                  <Briefcase className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-bold text-white">Sports Data Annotator</span>
+                    <p className="text-white/75">INSITE ARC MEDIA LLP (Nov 2026 – Present • Remote)</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-2.5 pt-2 border-t border-white/5">
                   <Briefcase className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
                   <div>
                     <span className="font-bold text-white">Sports Data Analyst Intern</span>

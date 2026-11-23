@@ -32,3 +32,4 @@ INSERT INTO agentic_workflows (
 ('WF-AGENT-04', 'Multi-Region Chaos Engine', 'CHAOS_FAULT_INJECTION', 'QUEUED', 8500, 195.40, 'Gemini-2.5-Flash', 97.50, NOW() - INTERVAL '30 minutes'),
 ('WF-AGENT-05', 'Statutory GST Auditor', 'TAX_AUDIT_VERIFICATION', 'COMPLETED', 26800, 640.80, 'Gemini-2.5-Pro', 100.00, NOW() - INTERVAL '2 hours')
 ON CONFLICT (workflow_id) DO NOTHING;
+

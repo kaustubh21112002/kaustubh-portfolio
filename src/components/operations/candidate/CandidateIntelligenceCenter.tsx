@@ -181,3 +181,4 @@ export const CandidateIntelligenceCenter: React.FC = () => {
     </div>
   );
 };
+

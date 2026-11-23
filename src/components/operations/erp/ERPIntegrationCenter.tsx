@@ -124,3 +124,4 @@ export const ERPIntegrationCenter: React.FC = () => {
     </div>
   );
 };
+

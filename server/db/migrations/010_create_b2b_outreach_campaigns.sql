@@ -32,3 +32,4 @@ INSERT INTO b2b_outreach_campaigns (
 ('CMP-PULSE-104', 'OmniCommerce India Retail', 'Omnichannel Retail', 'EMAIL', 'DEMO_COMMITTED', 94.80, 'CONVERTED', 140000.00, NOW() - INTERVAL '2 days'),
 ('CMP-PULSE-105', 'Nordic Health Systems OS', 'HealthTech SaaS', 'LINKEDIN', 'TOUCHPOINT_1_DISPATCHED', 72.00, 'ACTIVE', 210000.00, NOW() - INTERVAL '3 days')
 ON CONFLICT (campaign_id) DO NOTHING;
+

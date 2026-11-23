@@ -3,6 +3,7 @@ import React, { useState, useMemo } from 'react';
 import { Mail, Linkedin, Github, Send, Copy, Check, MapPin, Phone, Info, AlertCircle, FileText, MessageCircle } from 'lucide-react';
 import { portfolioConfig } from '../../config/portfolio';
 import { AvailabilityBlock } from '../common/AvailabilityBlock';
+import { DynamicButton } from '../common/DynamicButton';
 import projectsData from '../../data/projects.json';
 import { getLatestProjectUpdateDate, ProjectDataSchema } from '../../data/projectSchema';
 
@@ -440,19 +441,22 @@ export const ContactSection: React.FC = () => {
 
               {/* Action Buttons: Primary Dispatch & Secondary Fallback Actions */}
               <div className="space-y-3 pt-2">
-                <button
+                <DynamicButton
                   type="submit"
+                  stateKey={isSubmitting ? 'submitting' : 'idle'}
                   disabled={isSubmitting}
+                  width="full"
+                  variant="primary"
                   aria-label="Send direct message"
-                  className={`w-full min-h-[48px] flex items-center justify-center gap-2 px-6 py-3.5 rounded-full font-bold text-sm tracking-wide transition-all ${
+                  icon={<Send className="w-4 h-4" />}
+                  className={`min-h-[48px] px-6 py-3.5 rounded-full font-bold text-sm tracking-wide ${
                     isSubmitting
-                       ? 'bg-white/60 text-black/60 cursor-not-allowed'
-                       : 'bg-white text-black hover:bg-white/95 shadow-[0_0_20px_rgba(255,255,255,0.25)] active:scale-95 cursor-pointer'
-                  } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400`}
+                      ? 'opacity-60 cursor-not-allowed'
+                      : 'hover:bg-white/95 shadow-[0_0_20px_rgba(255,255,255,0.25)] active:scale-95 cursor-pointer'
+                  }`}
                 >
-                  <span>{isSubmitting ? 'Transmitting Inquiry...' : 'Send Direct Message'}</span>
-                  <Send className="w-4 h-4" />
-                </button>
+                  {isSubmitting ? 'Transmitting Inquiry...' : 'Send Direct Message'}
+                </DynamicButton>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <button

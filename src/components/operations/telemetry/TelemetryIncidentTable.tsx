@@ -156,3 +156,4 @@ export const TelemetryIncidentTable: React.FC<TelemetryIncidentTableProps> = ({ 
     </div>
   );
 };
+

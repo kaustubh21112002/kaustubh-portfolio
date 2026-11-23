@@ -32,3 +32,4 @@ INSERT INTO telemetry_post_mortems (
 ('INC-2026-584', 'Headless PDF Generation Cluster', 'P2_HIGH', 18.40, 'Chromium renderer V8 memory leak under concurrent batch reports; pods recycled via liveness probe trigger.', '{"pod_oom_restarts": 4, "heap_used_mb": 1840, "remediation_action": "POD_RECYCLE_AND_CONCURRENCY_CAP"}'::jsonb, 'MITIGATED', 0.04, NOW() - INTERVAL '2 days'),
 ('INC-2026-503', 'Cross-Region Replication Link', 'P3_MODERATE', 12.10, 'Transient fiber cut between Singapore and Mumbai edges; BGP rerouted packets via secondary transit peer.', '{"latency_jitter_ms": 48, "packet_loss_pre_reroute": 4.8, "remediation_action": "BGP_TRANSIT_FAILOVER"}'::jsonb, 'RESOLVED', 0.01, NOW() - INTERVAL '3 days')
 ON CONFLICT (incident_id) DO NOTHING;
+

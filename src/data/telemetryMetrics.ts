@@ -64,5 +64,18 @@ export const telemetryMetrics: TelemetryMetric[] = [
     extractionMethod: 'Video tracking annotation and multi-stage verification for soccer and field hockey matches.',
     contextAndCaveats: 'Professional internship operational quality control on recorded match event feeds.',
     targetSectionHref: '#journey'
+  },
+  {
+    id: 'insite-arc-media-annotation',
+    value: '500 frames',
+    unit: 'QA Batch',
+    label: 'Match Video Frame Annotation',
+    category: 'Event Analytics',
+    type: 'Governed Dataset Volume',
+    sourceFile: 'src/config/portfolio.ts',
+    sourceLocation: 'Experience Section: Sports Data Annotator @ INSITE ARC MEDIA LLP',
+    extractionMethod: 'Precision frame annotation and coordinate tagging (₹120/500 frames) following 15-day training period.',
+    contextAndCaveats: 'Project/assignment-based remote sports video annotation and quality benchmark compliance.',
+    targetSectionHref: '#journey'
   }
 ];

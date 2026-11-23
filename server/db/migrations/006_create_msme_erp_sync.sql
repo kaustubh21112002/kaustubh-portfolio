@@ -32,3 +32,4 @@ SELECT * FROM (VALUES
   ('ERP-NAG-06', 'Vidarbha Logistics Warehousing', 'Busy Accounting', 'RECONCILED_SYNCED', 0, 51, 16200000.00, 'GSTR1_MATCHED', 'UDYAM-MH-31-0071842', 460)
 ) AS v(enterprise_id, enterprise_name, erp_system, sync_status, unreconciled_tx_count, ledger_count, reconciled_volume_inr, gst_status, udyam_number, sync_latency_ms)
 WHERE NOT EXISTS (SELECT 1 FROM msme_erp_sync LIMIT 1);
+

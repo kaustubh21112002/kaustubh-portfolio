@@ -1,5 +1,7 @@
-import React, { useEffect, useRef } from 'react';
-import { X, Printer, Download, ShieldAlert, CheckCircle2, AlertTriangle, Layers, Percent, TrendingUp, Scale, ExternalLink } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { X, Printer, Download, ShieldAlert, CheckCircle2, AlertTriangle, Layers, Percent, TrendingUp, Scale, ExternalLink, QrCode } from 'lucide-react';
+import { DynamicButton } from '../common/DynamicButton';
+import { QRCodeSVG } from '../common/QRCodeSVG';
 
 export interface ValuationSummaryData {
   scenario: 'bear' | 'base' | 'bull';
@@ -36,9 +38,11 @@ interface ValuationExportModalProps {
 export const ValuationExportModal: React.FC<ValuationExportModalProps> = ({ isOpen, onClose, data }) => {
   const modalRef = useRef<HTMLDivElement | null>(null);
   const printButtonRef = useRef<HTMLButtonElement | null>(null);
+  const [printState, setPrintState] = useState<'idle' | 'preparing' | 'opened'>('idle');
 
   useEffect(() => {
     if (isOpen) {
+      setPrintState('idle');
       document.body.style.overflow = 'hidden';
       requestAnimationFrame(() => {
         printButtonRef.current?.focus();
@@ -61,7 +65,14 @@ export const ValuationExportModal: React.FC<ValuationExportModalProps> = ({ isOp
   if (!isOpen) return null;
 
   const handlePrint = () => {
-    window.print();
+    setPrintState('preparing');
+    setTimeout(() => {
+      window.print();
+      setPrintState('opened');
+      setTimeout(() => {
+        setPrintState('idle');
+      }, 3000);
+    }, 150);
   };
 
   const scenarioTitles = {
@@ -99,15 +110,26 @@ export const ValuationExportModal: React.FC<ValuationExportModalProps> = ({ isOp
             </span>
           </div>
           <div className="flex items-center gap-2.5">
-            <button
+            <DynamicButton
               ref={printButtonRef}
               onClick={handlePrint}
               aria-label="Print or Save Valuation Brief as PDF"
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white text-black hover:bg-neutral-200 text-xs font-mono font-bold transition-transform active:scale-95 cursor-pointer shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+              stateKey={printState}
+              icon={
+                printState === 'opened' ? (
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                ) : (
+                  <Printer className="w-3.5 h-3.5" />
+                )
+              }
+              variant="primary"
             >
-              <Printer className="w-3.5 h-3.5" />
-              <span>Print / Save as PDF</span>
-            </button>
+              {printState === 'preparing'
+                ? 'Preparing Brief...'
+                : printState === 'opened'
+                ? 'Print Dialog Triggered'
+                : 'Print / Save as PDF'}
+            </DynamicButton>
             <button
               onClick={onClose}
               aria-label="Close valuation summary modal"
@@ -135,10 +157,23 @@ export const ValuationExportModal: React.FC<ValuationExportModalProps> = ({ isOp
                 Target Model: DCF Full • Active Scenario: <span className="font-bold uppercase text-neutral-900 dark:text-white print:text-black">{data.scenario}</span>
               </div>
             </div>
-            <div className="text-left sm:text-right text-[11px] font-mono text-neutral-600 dark:text-white/60 print:text-neutral-700">
-              <div>Author: Kaustubh K. Nandurkar</div>
-              <div>MBA Business Analytics (2025–2027)</div>
-              <div>Date: {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
+            <div className="flex items-center gap-3 self-start sm:self-auto">
+              <div className="text-left sm:text-right text-[11px] font-mono text-neutral-600 dark:text-white/60 print:text-neutral-700">
+                <div>Author: Kaustubh K. Nandurkar</div>
+                <div>MBA Business Analytics (2025–2027)</div>
+                <div>Date: {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
+              </div>
+              <div className="hidden sm:flex flex-col items-center p-1 rounded-lg border border-neutral-200 dark:border-white/10 print:border-black/20 bg-white dark:bg-black/40">
+                <QRCodeSVG
+                  value="https://kaustubh-portfolio-six.vercel.app/?project=phonepe-valuation"
+                  size={52}
+                  color="currentColor"
+                  title="Scan to open PhonePe Valuation Model"
+                />
+                <span className="text-[8px] font-mono uppercase text-neutral-500 dark:text-white/40 print:text-neutral-600 mt-0.5">
+                  Verify Model
+                </span>
+              </div>
             </div>
           </div>
 

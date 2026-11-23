@@ -4,7 +4,7 @@
 // Strictly serverless mock execution: Never invokes real Groq API or real Slack webhooks.
 
 import handler, { isValidOriginUrl } from '../api/assistant.ts';
-import { buildPortfolioContext } from '../api/lib/portfolioContext.ts';
+import { buildPortfolioContext } from '../server/lib/portfolioContext.ts';
 
 function createMockRes() {
   return {
@@ -768,7 +768,7 @@ async function runTests() {
         let parsedLog = null;
         try {
           parsedLog = JSON.parse(loggedLine || '{}');
-        } catch (_e) {}
+        } catch (_e) { }
 
         const isPublicResponseSanitized =
           resCase.statusCode === 502 &&

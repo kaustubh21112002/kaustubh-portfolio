@@ -31,3 +31,4 @@ INSERT INTO executive_outreach (
 ('LEAD-819', 'Managing Director & CTO', 'Apex Cloud Solutions Singapore', 'Managed Services (MSP)', 'MSP_SLA_Bottleneck', 'ENGAGED', 89.40, NOW() - INTERVAL '1 day'),
 ('LEAD-793', 'Enterprise Architect', 'Bharat Banking Consortium', 'Core Banking Tech', 'Data_SLA_Bottleneck', 'DOWNLOADED', 78.50, NOW() - INTERVAL '2 days')
 ON CONFLICT (lead_id) DO NOTHING;
+

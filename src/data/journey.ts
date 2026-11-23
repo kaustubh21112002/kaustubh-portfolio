@@ -14,6 +14,24 @@ export interface TimelineItem {
 
 export const timelineData: TimelineItem[] = [
   {
+    id: 'insite-arc-media-role',
+    type: 'experience',
+    title: 'Sports Data Annotator',
+    organization: 'INSITE ARC MEDIA LLP',
+    location: 'Remote / Work from Home (Nashik)',
+    period: 'Nov 2026 – Present',
+    status: 'Project-Based / Assignment-Based',
+    badgeColor: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20',
+    description: 'Project-based sports data annotation and match video analytics tagging operational sports video frames into structured downstream computer vision datasets.',
+    highlights: [
+      'Joined 23rd November 2026 as a Sports Data Annotator on a project-based, remote assignment structure.',
+      'Completed a 15-day unpaid training period mastering precision frame-by-frame tracking and tagging protocols.',
+      'Annotates match video frames with quality assurance and bounding box coordinate precision at ₹120 per 500 frames.',
+      'Maintains 1-month notice period compliance and strict analytical quality benchmarks across match tagging deliverables.'
+    ],
+    skills: ['Video Frame Annotation', 'Sports Tracking QA', 'Computer Vision Tagging', 'Data Quality Protocols']
+  },
+  {
     id: 'spiideo-internship',
     type: 'experience',
     title: 'Sports Data Analyst Intern',

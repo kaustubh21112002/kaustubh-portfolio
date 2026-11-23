@@ -34,3 +34,4 @@ INSERT INTO reliability_chaos_metrics (
 ('CLUSTER-FRA-01', 'European Compliance Archive', 'eu-central-1 (Frankfurt)', 91.20, 'CLOSED', 68.40, 'DNS_THROTTLING_SIM', 'RECOVERED', 6, 'eu-west-1 (Ireland)', NOW() - INTERVAL '30 minutes'),
 ('CLUSTER-IAD-01', 'Cross-Atlantic Backup Hub', 'us-east-1 (N. Virginia)', 87.50, 'OPEN', 185.00, 'ZONAL_BLACKHOLE_SIM', 'DEGRADED', 4, 'us-east-2 (Ohio)', NOW() - INTERVAL '2 minutes')
 ON CONFLICT (cluster_id) DO NOTHING;
+

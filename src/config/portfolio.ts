@@ -126,6 +126,16 @@ export const portfolioConfig: PortfolioConfig = {
   ],
   experience: [
     {
+      role: "Sports Data Annotator",
+      organization: "INSITE ARC MEDIA LLP",
+      period: "Nov 2026 – Present",
+      responsibilities: [
+        "Joined 23rd November 2026 in a project/assignment-based remote sports data annotator role.",
+        "Executed precision match video frame annotation and quality tagging at ₹120 per 500 frames following a 15-day unpaid training period.",
+        "Maintained high-fidelity coordinate and event classification integrity under a 1-month notice period agreement."
+      ]
+    },
+    {
       role: "Sports Data Analyst Intern",
       organization: "SPIIDEO",
       period: "June 2026 – Oct 2026",

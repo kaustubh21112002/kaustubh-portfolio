@@ -32,3 +32,4 @@ INSERT INTO regulatory_compliance (
 ('COMPL-KA-01', 'Bengaluru FinCloud Infrastructure', '29AACCP4412L1ZS', 'UDYAM-KR-03-0098124', 'GSTR_MATCHED_2B', 2.10, 0.00, NOW() - INTERVAL '2 days', 'TIER_1_EXEMPLARY'),
 ('COMPL-DL-01', 'North India Consumer Goods Corp', '07AACCN1209D1ZH', 'UDYAM-DL-01-0044910', 'STATUTORY_DEFICIT', 64.80, 895000.00, NOW() - INTERVAL '12 hours', 'TIER_3_ELEVATED')
 ON CONFLICT (compliance_id) DO NOTHING;
+

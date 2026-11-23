@@ -34,3 +34,4 @@ INSERT INTO candidate_intelligence (
 ('CAND-5520', 'Rohan Kulkarni', 'Senior MLOps & Platform Engineer', 'Applied AI / Production ML', 94.10, ARRAY['Kubernetes', 'Ray / Triton', 'PyTorch', 'Model Quantization', 'CI/CD Pipelines'], ARRAY['FPGA Programming'], 'APPROVED', '7c8d92a104ef6b539820ca1475df890123e456ba7890cd1234ef567890ab1234', NOW() - INTERVAL '1 day', 'v2.1.0'),
 ('CAND-4918', 'Priya Ramanathan', 'Enterprise FinTech Product Lead', 'B2B SaaS & Financial Tech', 81.20, ARRAY['Product Roadmap', 'Statutory Compliance', 'UPI Ecosystem', 'Agile Governance'], ARRAY['Solidity', 'Web3'], 'IN_REVIEW', 'f1029384756acbdee12485906734120895bcfa1029384756acbdee1248590673', NOW() - INTERVAL '1 day', 'v1.1.0')
 ON CONFLICT (candidate_id) DO NOTHING;
+
