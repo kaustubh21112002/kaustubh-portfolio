@@ -1,21 +1,11 @@
+import type { VercelRequest, VercelResponse } from './types';
 // Serverless Endpoint: Autonomous System Reliability & Chaos Engineering Simulator
 // Serves synthetic fault injection, circuit breaker states, p99 latency, and autonomous self-healing telemetry
 
 import { neon } from '@neondatabase/serverless';
-import { setStandardSecurityHeaders } from '../../server/lib/rateLimiter.js';
+import { setStandardSecurityHeaders } from '../lib/rateLimiter.js';
 
-export interface VercelRequest {
-  method?: string;
-  headers: Record<string, string | string[] | undefined>;
-  query?: Record<string, string | string[] | undefined>;
-  body?: unknown;
-}
 
-export interface VercelResponse {
-  status: (code: number) => VercelResponse;
-  json: (body: unknown) => void;
-  setHeader: (name: string, value: string) => void;
-}
 
 export interface ReliabilityClusterRecord {
   id: number;
@@ -267,4 +257,3 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
     });
   }
 }
-

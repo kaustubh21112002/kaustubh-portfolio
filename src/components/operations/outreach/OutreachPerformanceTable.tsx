@@ -1,5 +1,5 @@
 import React from 'react';
-import type { ExecutiveOutreachRecord } from '../../../../api/operations/executiveOutreach';
+import type { ExecutiveOutreachRecord } from '../../../../server/operations';
 
 interface OutreachPerformanceTableProps {
   leads: ExecutiveOutreachRecord[];

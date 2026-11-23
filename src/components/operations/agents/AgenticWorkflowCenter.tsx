@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import type { AgentWorkflowRecord, AgentMetrics } from '../../../../api/operations/agenticWorkflows';
+import type { AgentWorkflowRecord, AgentMetrics } from '../../../../server/operations';
 import { AgentWorkflowTable } from './AgentWorkflowTable';
 
 export const AgenticWorkflowCenter: React.FC = () => {

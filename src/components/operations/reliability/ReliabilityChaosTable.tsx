@@ -1,5 +1,5 @@
 import React from 'react';
-import type { ReliabilityClusterRecord } from '../../../../api/operations/reliabilityChaos';
+import type { ReliabilityClusterRecord } from '../../../../server/operations';
 
 interface ReliabilityChaosTableProps {
   clusters: ReliabilityClusterRecord[];

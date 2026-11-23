@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import type { IncidentPostMortemRecord, TelemetryMetrics } from '../../../../api/operations/telemetryPostMortems';
+import type { IncidentPostMortemRecord, TelemetryMetrics } from '../../../../server/operations';
 import { TelemetryIncidentTable } from './TelemetryIncidentTable';
 
 export const TelemetryPostMortemCenter: React.FC = () => {

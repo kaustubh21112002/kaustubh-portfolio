@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { IncidentPostMortemRecord } from '../../../../api/operations/telemetryPostMortems';
+import type { IncidentPostMortemRecord } from '../../../../server/operations';
 
 interface TelemetryIncidentTableProps {
   incidents: IncidentPostMortemRecord[];

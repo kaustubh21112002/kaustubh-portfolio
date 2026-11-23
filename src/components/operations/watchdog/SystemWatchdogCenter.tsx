@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import type { SystemWatchdogRecord, WatchdogMetrics } from '../../../../api/operations/systemWatchdog';
+import type { SystemWatchdogRecord, WatchdogMetrics } from '../../../../server/operations';
 import { SystemWatchdogTable } from './SystemWatchdogTable';
 
 export const SystemWatchdogCenter: React.FC = () => {

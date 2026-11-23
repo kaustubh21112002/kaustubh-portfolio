@@ -1,22 +1,11 @@
+import type { VercelRequest, VercelResponse } from './types';
 // Serverless Endpoint: B2B SLA Command Center Tickets API
 // Provides live operational queue, countdowns, and node telemetry
 
 import { neon } from '@neondatabase/serverless';
-import { setStandardSecurityHeaders } from '../../server/lib/rateLimiter.js';
+import { setStandardSecurityHeaders } from '../lib/rateLimiter.js';
 
-export interface VercelRequest {
-  method?: string;
-  headers: Record<string, string | string[] | undefined>;
-  query?: Record<string, string | string[] | undefined>;
-  body?: unknown;
-}
 
-export interface VercelResponse {
-  status: (code: number) => VercelResponse;
-  json: (body: unknown) => VercelResponse;
-  setHeader: (name: string, value: string) => VercelResponse;
-  end: () => void;
-}
 
 declare const process: {
   env: {

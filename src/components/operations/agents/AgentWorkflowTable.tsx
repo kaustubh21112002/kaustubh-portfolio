@@ -1,5 +1,5 @@
 import React from 'react';
-import type { AgentWorkflowRecord } from '../../../../api/operations/agenticWorkflows';
+import type { AgentWorkflowRecord } from '../../../../server/operations';
 
 interface AgentWorkflowTableProps {
   workflows: AgentWorkflowRecord[];

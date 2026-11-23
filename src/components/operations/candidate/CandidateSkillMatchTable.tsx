@@ -1,5 +1,5 @@
 import React from 'react';
-import type { CandidateRecord } from '../../../../api/operations/candidateIntelligence';
+import type { CandidateRecord } from '../../../../server/operations';
 
 interface CandidateSkillMatchTableProps {
   candidates: CandidateRecord[];

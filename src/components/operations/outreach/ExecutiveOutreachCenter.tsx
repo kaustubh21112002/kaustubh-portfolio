@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import type { ExecutiveOutreachRecord, OutreachMetrics } from '../../../../api/operations/executiveOutreach';
+import type { ExecutiveOutreachRecord, OutreachMetrics } from '../../../../server/operations';
 import { OutreachPerformanceTable } from './OutreachPerformanceTable';
 
 export const ExecutiveOutreachCenter: React.FC = () => {

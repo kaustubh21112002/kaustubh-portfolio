@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import type { B2BCampaignRecord, CampaignMetrics } from '../../../../api/operations/b2bCampaigns';
+import type { B2BCampaignRecord, CampaignMetrics } from '../../../../server/operations';
 import { CampaignStatusTable } from './CampaignStatusTable';
 
 export const B2BCampaignOrchestratorCenter: React.FC = () => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { RegulatoryComplianceRecord } from '../../../../api/operations/regulatoryCompliance';
+import type { RegulatoryComplianceRecord } from '../../../../server/operations';
 
 interface ComplianceAuditTableProps {
   records: RegulatoryComplianceRecord[];

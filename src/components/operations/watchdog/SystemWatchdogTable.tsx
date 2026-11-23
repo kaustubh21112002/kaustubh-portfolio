@@ -1,5 +1,5 @@
 import React from 'react';
-import type { SystemWatchdogRecord } from '../../../../api/operations/systemWatchdog';
+import type { SystemWatchdogRecord } from '../../../../server/operations';
 
 interface SystemWatchdogTableProps {
   services: SystemWatchdogRecord[];

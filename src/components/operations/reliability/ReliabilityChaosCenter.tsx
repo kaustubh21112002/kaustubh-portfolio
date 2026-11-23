@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import type { ReliabilityClusterRecord, ReliabilityMetrics } from '../../../../api/operations/reliabilityChaos';
+import type { ReliabilityClusterRecord, ReliabilityMetrics } from '../../../../server/operations';
 import { ReliabilityChaosTable } from './ReliabilityChaosTable';
 
 export const ReliabilityChaosCenter: React.FC = () => {

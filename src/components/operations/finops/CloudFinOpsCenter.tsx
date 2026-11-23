@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import type { CloudFinOpsRecord, FinOpsMetrics } from '../../../../api/operations/cloudFinOps';
+import type { CloudFinOpsRecord, FinOpsMetrics } from '../../../../server/operations';
 import { CloudFinOpsTable } from './CloudFinOpsTable';
 
 export const CloudFinOpsCenter: React.FC = () => {

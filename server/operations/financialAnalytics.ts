@@ -1,22 +1,11 @@
+import type { VercelRequest, VercelResponse } from './types';
 // Serverless Endpoint: Financial Statement & Working Capital Command Center
 // Serves liquidity metrics, working capital ratios, DSCR coverage, and cash runway projections
 
 import { neon } from '@neondatabase/serverless';
-import { setStandardSecurityHeaders } from '../../server/lib/rateLimiter.js';
+import { setStandardSecurityHeaders } from '../lib/rateLimiter.js';
 
-export interface VercelRequest {
-  method?: string;
-  headers: Record<string, string | string[] | undefined>;
-  query?: Record<string, string | string[] | undefined>;
-  body?: unknown;
-}
 
-export interface VercelResponse {
-  status: (code: number) => VercelResponse;
-  json: (body: unknown) => VercelResponse;
-  setHeader: (name: string, value: string) => VercelResponse;
-  end: () => void;
-}
 
 declare const process: {
   env: {
@@ -293,4 +282,3 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
     });
   }
 }
-

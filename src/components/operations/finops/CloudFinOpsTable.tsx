@@ -1,5 +1,5 @@
 import React from 'react';
-import type { CloudFinOpsRecord } from '../../../../api/operations/cloudFinOps';
+import type { CloudFinOpsRecord } from '../../../../server/operations';
 
 interface CloudFinOpsTableProps {
   records: CloudFinOpsRecord[];

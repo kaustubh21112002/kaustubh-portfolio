@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import type { CandidateRecord, CandidateMetrics } from '../../../../api/operations/candidateIntelligence';
+import type { CandidateRecord, CandidateMetrics } from '../../../../server/operations';
 import { CandidateSkillMatchTable } from './CandidateSkillMatchTable';
 
 export const CandidateIntelligenceCenter: React.FC = () => {

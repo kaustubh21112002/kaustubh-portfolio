@@ -1,21 +1,11 @@
+import type { VercelRequest, VercelResponse } from './types';
 // Serverless Endpoint: Automated B2B Outreach & Multi-Channel Campaign Orchestrator (OutreachPulse)
 // Serves multi-channel sequences, SLA penalty exposure, engagement scores, and pipeline conversion telemetry
 
 import { neon } from '@neondatabase/serverless';
-import { setStandardSecurityHeaders } from '../../server/lib/rateLimiter.js';
+import { setStandardSecurityHeaders } from '../lib/rateLimiter.js';
 
-export interface VercelRequest {
-  method?: string;
-  headers: Record<string, string | string[] | undefined>;
-  query?: Record<string, string | string[] | undefined>;
-  body?: unknown;
-}
 
-export interface VercelResponse {
-  status: (code: number) => VercelResponse;
-  json: (body: unknown) => void;
-  setHeader: (name: string, value: string) => void;
-}
 
 export interface B2BCampaignRecord {
   id: number;
@@ -256,4 +246,3 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
     });
   }
 }
-

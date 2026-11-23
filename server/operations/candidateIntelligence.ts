@@ -1,21 +1,11 @@
+import type { VercelRequest, VercelResponse } from './types';
 // Serverless Endpoint: Candidate Intelligence & Grounded Document Tailoring Engine
 // Serves candidate profile telemetry, skill match scores, and cryptographic SHA-256 approval verification hashes
 
 import { neon } from '@neondatabase/serverless';
-import { setStandardSecurityHeaders } from '../../server/lib/rateLimiter.js';
+import { setStandardSecurityHeaders } from '../lib/rateLimiter.js';
 
-export interface VercelRequest {
-  method?: string;
-  headers: Record<string, string | string[] | undefined>;
-  query?: Record<string, string | string[] | undefined>;
-  body?: unknown;
-}
 
-export interface VercelResponse {
-  status: (code: number) => VercelResponse;
-  json: (body: unknown) => void;
-  setHeader: (name: string, value: string) => void;
-}
 
 export interface CandidateRecord {
   id: number;

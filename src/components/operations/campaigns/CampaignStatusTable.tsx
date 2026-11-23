@@ -1,5 +1,5 @@
 import React from 'react';
-import type { B2BCampaignRecord } from '../../../../api/operations/b2bCampaigns';
+import type { B2BCampaignRecord } from '../../../../server/operations';
 
 interface CampaignStatusTableProps {
   campaigns: B2BCampaignRecord[];

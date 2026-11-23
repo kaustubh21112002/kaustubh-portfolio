@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import type { RegulatoryComplianceRecord, ComplianceMetrics } from '../../../../api/operations/regulatoryCompliance';
+import type { RegulatoryComplianceRecord, ComplianceMetrics } from '../../../../server/operations';
 import { ComplianceAuditTable } from './ComplianceAuditTable';
 
 export const ComplianceAuditCenter: React.FC = () => {
