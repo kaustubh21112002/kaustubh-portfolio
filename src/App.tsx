@@ -1,5 +1,6 @@
 import { trackAnalyticsEvent } from './lib/analytics';
 import React, { useState, useEffect, Suspense, lazy } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { ThemeProvider } from './context/ThemeContext';
 import { Header } from './components/navigation/Header';
 import { MagneticCursor } from './components/common/MagneticCursor';
@@ -158,6 +159,9 @@ export function App() {
 
         {/* 6. Portfolio AI Assistant Widget */}
         <PortfolioAssistant />
+
+        {/* 7. Vercel Web Analytics */}
+        <Analytics />
       </div>
     </ThemeProvider>
   );
