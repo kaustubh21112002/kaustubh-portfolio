@@ -19,7 +19,6 @@ import { FAQSection } from './components/faq/FAQSection';
 import { ContactSection } from './components/contact/ContactSection';
 import { FeedbackWidget } from './components/feedback/FeedbackWidget';
 import { PortfolioAssistant } from './components/assistant/PortfolioAssistant';
-import { EnterpriseOperationsSection } from './components/operations/EnterpriseOperationsSection';
 
 export function App() {
   const [activeSection, setActiveSection] = useState('hero');
@@ -115,9 +114,6 @@ export function App() {
 
           {/* Portfolio Command Center: Recruiter-Oriented Positioning, Top Projects & Capability Matrix */}
           <RecruiterCommandCenter />
-
-          {/* Enterprise Operations Command OS: Live Multi-Region SLA, CRM & GPU Render Clusters */}
-          <EnterpriseOperationsSection />
 
           {/* Section (01): About Me, Analytical Manifesto & 5-Stage Problem-Solving Methodology */}
           <AboutSection />

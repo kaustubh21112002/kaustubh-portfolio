@@ -203,17 +203,6 @@ export const Header: React.FC<HeaderProps> = ({ activeSection = 'hero' }) => {
 
           {/* Desktop Utilities: Search, Resume, Theme */}
           <div className="flex items-center gap-1.5">
-            {/* Portfolio Intelligence Trigger Button */}
-            <button
-              onClick={() => setIntelligenceOpen(true)}
-              aria-label="Open Portfolio Intelligence private telemetry (Ctrl+Shift+I)"
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-mono text-neutral-600 dark:text-white/80 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 cursor-pointer"
-              title="Portfolio Intelligence OS (Ctrl+Shift+I)"
-            >
-              <Activity className="w-3.5 h-3.5 text-blue-500" />
-              <span className="hidden xl:inline font-semibold text-[11px]">TELEMETRY</span>
-            </button>
-
             {/* Quick Search Trigger Button */}
             <button
               onClick={() => setIsSearchOpen(true)}
