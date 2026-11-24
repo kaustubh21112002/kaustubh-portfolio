@@ -19,7 +19,6 @@ import { FAQSection } from './components/faq/FAQSection';
 import { ContactSection } from './components/contact/ContactSection';
 import { FeedbackWidget } from './components/feedback/FeedbackWidget';
 import { PortfolioAssistant } from './components/assistant/PortfolioAssistant';
-import { OperationsOSBanner } from './components/operations/OperationsOSBanner';
 import { EnterpriseOperationsSection } from './components/operations/EnterpriseOperationsSection';
 
 export function App() {
@@ -110,9 +109,6 @@ export function App() {
         <main id="main-content" tabIndex={-1} className="focus:outline-none">
           {/* Hero Section: 60 FPS Cursor-Tracking Character + Recruiter 5-Second Positioning */}
           <HeroSection />
-
-          {/* High-Impact Enterprise Operations OS Banner */}
-          <OperationsOSBanner />
 
           {/* Evidence Telemetry Bar: Verified Quantitative Outputs & Governed Data Volumes */}
           <EvidenceTelemetryBar />
