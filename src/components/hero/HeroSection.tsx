@@ -193,11 +193,6 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
         {/* Top Eyebrow / Direct Contact & Availability Touchpoints (Visible on sm+ to prevent floating header collision on mobile) */}
         <div className="hidden sm:flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2.5">
-            <div className="inline-flex max-w-full min-w-0 items-center gap-2 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/20 text-white/95 text-xs font-mono tracking-wider shadow-lg">
-              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 shrink-0 rounded-full bg-red-500" />
-              <span className="truncate min-w-0">MBA Business Analytics • Sandip University</span>
-            </div>
-
             {/* Configurable Availability Indicator with Engagement Popover */}
             <AvailabilityIndicator />
           </div>
@@ -217,13 +212,6 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
           <div className="flex flex-wrap items-center gap-2 mb-2 sm:mb-2.5">
             <span className="text-white font-mono text-xs sm:text-base font-bold tracking-widest uppercase">
               Kaustubh K. Nandurkar
-            </span>
-            <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-400" />
-            <span className="text-white/75 font-mono text-xs tracking-wider">
-              MBA Business Analytics
-            </span>
-            <span className="hidden sm:inline text-white/50 font-mono text-xs tracking-wider">
-              • Sandip University
             </span>
           </div>
 
