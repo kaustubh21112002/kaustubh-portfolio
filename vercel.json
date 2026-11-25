@@ -1,10 +1,6 @@
 {
   "rewrites": [
     {
-      "source": "/api/operations/:module",
-      "destination": "/api/operations/[module]"
-    },
-    {
       "source": "/((?!api/).*)",
       "destination": "/index.html"
     }
