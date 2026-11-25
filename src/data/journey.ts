@@ -25,9 +25,9 @@ export const timelineData: TimelineItem[] = [
     description: 'Project-based sports data annotation and match video analytics tagging operational sports video frames into structured downstream computer vision datasets.',
     highlights: [
       'Joined 23rd November 2026 as a Sports Data Annotator on a project-based, remote assignment structure.',
-      'Completed a 15-day unpaid training period mastering precision frame-by-frame tracking and tagging protocols.',
-      'Annotates match video frames with quality assurance and bounding box coordinate precision at ₹120 per 500 frames.',
-      'Maintains 1-month notice period compliance and strict analytical quality benchmarks across match tagging deliverables.'
+      'Completed a 15-day unpaid training period mastering precision frame-by-frame tracking and bounding-box tagging protocols.',
+      'Annotates match video frames with coordinate precision and quality assurance benchmarks at ₹120 per 500 frames.',
+      'Maintains 1-month notice period compliance with strict data quality verification standards across all match tagging deliverables.'
     ],
     skills: ['Video Frame Annotation', 'Sports Tracking QA', 'Computer Vision Tagging', 'Data Quality Protocols']
   },

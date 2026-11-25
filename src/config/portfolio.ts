@@ -67,8 +67,8 @@ export const portfolioConfig: PortfolioConfig = {
   scriptName: "Kaustubh",
   role: "Business Analytics & Financial Valuation",
   headline: "Turning Business Questions into Analytical Insights.",
-  shortBio: "MBA in Business Analytics candidate connecting quantitative valuation, SQL & Power BI analytics pipelines, and governed data architecture.",
-  objective: "To begin my career as a Business Analyst or Data Analyst by applying my skills in SQL, Power BI, Python, PostgreSQL, and business analytics to solve real-world business problems, generate actionable insights, and support data-driven decision-making in a growth-oriented organization.",
+  shortBio: "MBA candidate in Business Analytics with a computer science foundation, bridging corporate DCF valuation, SQL relational modeling, and governed data pipelines for executive decision-making.",
+  objective: "To begin my career as a Business Analyst or Data Analyst by applying my skills in SQL (PostgreSQL/MySQL), Power BI (DAX), Python, financial modeling, and governed KPI frameworks to diagnose business performance, streamline operational reporting, and deliver defensible analytical insights.",
   location: "Nagpur / Nashik, India",
   availability: {
     status: "available",
@@ -130,9 +130,9 @@ export const portfolioConfig: PortfolioConfig = {
       organization: "INSITE ARC MEDIA LLP",
       period: "Nov 2026 – Present",
       responsibilities: [
-        "Joined 23rd November 2026 in a project/assignment-based remote sports data annotator role.",
-        "Executed precision match video frame annotation and quality tagging at ₹120 per 500 frames following a 15-day unpaid training period.",
-        "Maintained high-fidelity coordinate and event classification integrity under a 1-month notice period agreement."
+        "Joined 23rd November 2026 in a project/assignment-based remote sports data annotator role following a 15-day unpaid training period.",
+        "Executes match video frame annotation and quality tagging at ₹120 per 500 frames with strict bounding-box coordinate QA.",
+        "Maintains high-fidelity spatial event tagging and classification integrity in compliance with a 1-month notice period agreement."
       ]
     },
     {
@@ -140,9 +140,9 @@ export const portfolioConfig: PortfolioConfig = {
       organization: "SPIIDEO",
       period: "June 2026 – Oct 2026",
       responsibilities: [
-        "Tagged and validated soccer and field hockey match events using Spiideo video tracking platform.",
-        "Converted recorded match footage into structured event datasets.",
-        "Performed rigorous quality checks to ensure accurate event annotation and analytical consistency."
+        "Tagged and validated soccer and field hockey match events using the Spiideo multi-camera video tracking platform.",
+        "Converted raw match footage into structured event datasets with sub-second timestamp synchronization.",
+        "Enforced dual-pass verification protocols ensuring zero player-attribution desynchronization across exported tactical datasets."
       ]
     }
   ],
