@@ -36,7 +36,7 @@ export const timelineData: TimelineItem[] = [
     type: 'experience',
     title: 'Sports Data Analyst Intern',
     organization: 'SPIIDEO',
-    location: 'Remote / India',
+    location: 'Onsite / India',
     period: 'June 2026 – Oct 2026',
     status: 'Professional Experience',
     badgeColor: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
