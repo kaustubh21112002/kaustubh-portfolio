@@ -2,7 +2,6 @@ import { trackAnalyticsEvent } from '../../lib/analytics';
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, Download, Search } from 'lucide-react';
 import { portfolioConfig } from '../../config/portfolio';
-import { ThemeToggle } from '../common/ThemeToggle';
 import { QuickSearchModal } from '../common/QuickSearchModal';
 import { AvailabilityIndicator } from '../common/AvailabilityIndicator';
 
@@ -223,9 +222,6 @@ export const Header: React.FC<HeaderProps> = ({ activeSection = 'hero' }) => {
               <Download className="w-3.5 h-3.5" />
             </a>
 
-            {/* 3-State Theme Selector Pill */}
-            <ThemeToggle variant="compact" />
-
             {/* Mobile Menu Button */}
             <button
               ref={mobileMenuButtonRef}
@@ -349,14 +345,6 @@ export const Header: React.FC<HeaderProps> = ({ activeSection = 'hero' }) => {
 
           {/* Bottom Actions & Controls */}
           <div className="w-full max-w-md mx-auto pt-5 border-t border-white/10 flex flex-col gap-3.5">
-            {/* Expanded 3-state Theme Selector */}
-            <div className="space-y-1.5">
-              <div className="text-[10px] font-mono uppercase text-white/50 tracking-wider font-semibold">
-                Theme Appearance
-              </div>
-              <ThemeToggle variant="expanded" />
-            </div>
-
             <a
               href={portfolioConfig.resumePath}
               download="Kaustubh_Nandurkar_Resume.pdf"

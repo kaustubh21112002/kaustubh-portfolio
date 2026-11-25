@@ -6,19 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0b0d13" />
 
-    <!-- Anti-flash inline theme initializer -->
+    <!-- Anti-flash inline theme initializer (locked to dark) -->
     <script>
       (function() {
         try {
-          var stored = localStorage.getItem('portfolio-theme');
-          var theme = stored || 'dark';
-          var isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-          if (isDark) {
-            document.documentElement.classList.add('dark');
-          } else {
-            document.documentElement.classList.remove('dark');
-          }
-          document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+          document.documentElement.classList.add('dark');
+          document.documentElement.setAttribute('data-theme', 'dark');
         } catch (e) {}
       })();
     </script>

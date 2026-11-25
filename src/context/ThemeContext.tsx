@@ -33,72 +33,24 @@ function getSystemPreference(): ResolvedTheme {
 }
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [theme, setThemeState] = useState<Theme>(getInitialTheme);
-  const [systemTheme, setSystemTheme] = useState<ResolvedTheme>(getSystemPreference);
+  const theme: Theme = 'dark';
+  const resolvedTheme: ResolvedTheme = 'dark';
 
-  // Listen to OS-level system theme changes when theme is set to 'system'
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-
-    const handleChange = (e: MediaQueryListEvent) => {
-      setSystemTheme(e.matches ? 'dark' : 'light');
-    };
-
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
-  }, []);
-
-  // Listen to cross-tab storage changes to synchronize theme instantly across open tabs
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === THEME_STORAGE_KEY && e.newValue) {
-        if (e.newValue === 'light' || e.newValue === 'dark' || e.newValue === 'system') {
-          setThemeState(e.newValue as Theme);
-        }
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
-
-  const resolvedTheme: ResolvedTheme = useMemo(() => {
-    if (theme === 'system') {
-      return systemTheme;
-    }
-    return theme;
-  }, [theme, systemTheme]);
-
-  // Synchronize document classes and data-attributes
+  // Synchronize document classes and data-attributes (locked to dark)
   useEffect(() => {
     if (typeof document === 'undefined') return;
     const root = document.documentElement;
+    root.classList.add('dark');
+    root.setAttribute('data-theme', 'dark');
 
-    if (resolvedTheme === 'dark') {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
-
-    root.setAttribute('data-theme', resolvedTheme);
-
-    // Update meta theme-color for mobile browser address bars
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
     if (metaThemeColor) {
-      metaThemeColor.setAttribute('content', resolvedTheme === 'dark' ? '#0b0d13' : '#f8fafc');
+      metaThemeColor.setAttribute('content', '#0b0d13');
     }
-  }, [resolvedTheme]);
+  }, []);
 
-  const setTheme = (newTheme: Theme) => {
-    setThemeState(newTheme);
-    try {
-      localStorage.setItem(THEME_STORAGE_KEY, newTheme);
-    } catch {
-      // LocalStorage error handling
-    }
+  const setTheme = (_newTheme: Theme) => {
+    // Locked to dark theme
   };
 
   const value = useMemo(
@@ -107,7 +59,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       resolvedTheme,
       setTheme,
     }),
-    [theme, resolvedTheme]
+    []
   );
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
