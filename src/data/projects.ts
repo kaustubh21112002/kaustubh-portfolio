@@ -1068,5 +1068,68 @@ export const projects: Project[] = [
       ],
       disclaimer: "EquiTrack Analytics OS is an independent financial analytics and data-governance demonstration prototype built in Google Sheets. All reported metrics reflect workbook prototype acceptance testing on demonstration data."
     }
+  },
+  {
+    id: "mis-ledger-reconciliation",
+    title: "MIS & Financial Ledger Data Reconciliation",
+    tagline: "Automated SQL schema constraints, formula validation, and exception flagging across multi-source financial ledgers.",
+    category: "Financial Analytics",
+    featured: false,
+    status: "Completed Independent Research",
+    date: "November 2026",
+    summary: "Structured MIS reporting and ledger reconciliation framework combining relational SQL constraints, Excel/Google Sheets cross-sheet formula audits, and automated exception flagging without silent record modification.",
+    datasetScope: {
+      scale: "Controlled Multi-Tab Ledger & Sub-Ledger Reconciliation Workbook",
+      structure: "General Ledger Control Table, Sub-Ledger Transaction Register, SQL Staging Schema, Exception Audit Log",
+      qualityNote: "Follows PRESERVE → DOCUMENT → FLAG → GOVERN; unmapped or mismatched entries are isolated in an exception register rather than silently adjusted."
+    },
+    problemStatement: "Monthly MIS close cycles frequently suffer from silent spreadsheet overrides, unlinked sub-ledger entries, and broken cross-sheet references—causing management reports to diverge from underlying accounting ledgers.",
+    approach: "Designed a two-layer reconciliation architecture: (1) SQL staging tables with NOT NULL, CHECK, and foreign-key constraints to block malformed voucher imports, and (2) automated Excel/Sheets reconciliation formulas (SUMIFS, XLOOKUP, variance checks) that route every debit/credit or tax mismatch into an immutable exception log.",
+    keyFinding: "Enforcing strict primary-key voucher uniqueness and automated variance thresholds eliminated silent formula drift during close, isolating 100% of rounding, duplicate-voucher, and missing-cost-center exceptions for analyst sign-off.",
+    businessImplication: "Separating raw ledger ingestion from governed MIS reporting reduces manual close rework while giving finance and operations leaders an auditable trail from summary KPIs back to individual journal lines.",
+    personalContribution: "Authored the relational SQL validation schema, built the cross-sheet reconciliation formulas and variance flags, and documented the exception-triage workflow for monthly MIS close.",
+    cardBrief: {
+      objective: "Reconcile sub-ledger transactions against general ledger controls using SQL constraints and auditable spreadsheet formulas.",
+      methods: "SQL staging constraints (CHECK/FK) • SUMIFS & XLOOKUP variance checks • Automated exception flagging • Immutable audit log",
+      keyDeliverable: "Governed MIS reconciliation workbook and SQL validation script with zero silent overrides."
+    },
+    tools: ["SQL (PostgreSQL / MySQL)", "Excel & Google Sheets", "MIS Reporting", "Ledger Reconciliation", "Data Governance"],
+    keyMetrics: [
+      { label: "Reconciliation Scope", value: "GL vs Sub-Ledger", subtext: "Voucher-level variance matching", classification: "DEMONSTRATED" },
+      { label: "Schema Controls", value: "PK / FK / CHECK", subtext: "Blocks malformed staging imports", classification: "DEMONSTRATED" },
+      { label: "Silent Overrides", value: "0", subtext: "All variances routed to Exception Log", classification: "DEMONSTRATED" },
+      { label: "Audit Trail", value: "100%", subtext: "Line-item traceability to MIS KPIs", classification: "DEMONSTRATED" }
+    ],
+    methodsAndAssumptions: [
+      "Voucher-Level Matching: Every sub-ledger entry must map to a valid General Ledger account code and cost center before entering MIS summary tables.",
+      "Zero Silent Imputation: Missing cost centers or tax-rate mismatches are flagged as 'Unspecified' or 'REVIEW' in the Exception Log rather than coerced to zero.",
+      "Formula Integrity: Cross-sheet totals use dynamic range references and explicit variance-check cells (ABS(GL_Total - SubLedger_Total) > 0.01)."
+    ],
+    limitations: [
+      "Designed as an independent MIS governance and reconciliation framework; production ERP deployment requires organization-specific chart-of-accounts mapping."
+    ],
+    caseStudy: {
+      researchQuestion: "How can MIS teams automate monthly ledger reconciliation between relational SQL extracts and executive spreadsheets without introducing silent formula overrides?",
+      executiveSummary: "An independent MIS & Financial Ledger Reconciliation framework demonstrating how SQL staging constraints and auditable spreadsheet variance checks work together to isolate exceptions and preserve accounting integrity.",
+      sections: [
+        {
+          title: "1. Relational SQL Staging & Schema Constraints",
+          content: [
+            "Before data reaches executive MIS sheets, raw journal exports pass through a relational SQL staging layer:",
+            "• Primary Key & Duplicate Prevention: Composite keys on (voucher_id, line_number) prevent double-counting during incremental imports.",
+            "• Referential & Domain Checks: Foreign keys validate account_code and cost_center_id against master tables, while CHECK constraints enforce non-negative quantities and valid posting dates."
+          ]
+        },
+        {
+          title: "2. Cross-Sheet Formula Validation & Exception Flagging",
+          content: [
+            "Within the MIS workbook, summary schedules reconcile directly against the staging register:",
+            "• Automated Variance Checks: Control cells compare General Ledger balances against aggregated Sub-Ledger SUMIFS totals, surfacing any discrepancy exceeding ₹0.01.",
+            "• Exception Triage Register: Unmatched vouchers, missing cost centers, and tax discrepancies are automatically flagged for analyst review without altering source rows."
+          ]
+        }
+      ],
+      disclaimer: "Independent MIS and data-governance architecture case study demonstrating SQL and spreadsheet reconciliation controls."
+    }
   }
 ];
