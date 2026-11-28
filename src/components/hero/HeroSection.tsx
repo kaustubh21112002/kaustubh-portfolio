@@ -210,7 +210,7 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(({
         <div className="w-full max-w-xl lg:max-w-xl xl:max-w-2xl my-auto py-4 sm:py-6 max-md:bg-[#0b0d13]/85 max-md:backdrop-blur-xl max-md:border max-md:border-white/10 max-md:rounded-3xl max-md:p-5 sm:max-md:p-7 max-md:shadow-2xl min-w-0">
           {/* Candidate Name & Positioning */}
           <div className="flex flex-wrap items-center gap-2 mb-2 sm:mb-2.5">
-            <span className="text-white font-mono text-xs sm:text-base font-bold tracking-widest uppercase">
+            <span className="text-white font-mono text-sm sm:text-base font-bold tracking-wide">
               Kaustubh K. Nandurkar
             </span>
           </div>
