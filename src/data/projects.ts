@@ -1,3 +1,9 @@
+import {
+  externalManifests,
+  validateProjectManifest,
+  type ProjectManifest,
+} from './externalManifests';
+
 export interface MetricItem {
   label: string;
   value: string;
@@ -121,7 +127,7 @@ export function getProjectEvidenceLink(project: Project): VerifiedLink | null {
   return null;
 }
 
-export const projects: Project[] = [
+const baseProjects: Project[] = [
   {
     id: "phonepe-valuation",
     title: "PhonePe Pre-IPO Equity Research & Valuation",
@@ -1133,3 +1139,52 @@ export const projects: Project[] = [
     }
   }
 ];
+
+/**
+ * Safely overlays validated external release manifests onto matching baseProjects.
+ * Preserves all local case studies and falls back to baseProjects if a manifest
+ * is missing or fails strict schema validation.
+ */
+export function mergeExternalManifests(
+  localProjects: Project[],
+  manifests: Record<string, ProjectManifest>
+): Project[] {
+  return localProjects.map((project) => {
+    const candidate = manifests[project.id];
+    if (!candidate) return project;
+    if (!validateProjectManifest(candidate, project.id)) {
+      return project;
+    }
+
+    const updatedLinks = [...(project.verifiedLinks ?? [])];
+    if (candidate.liveUrl && !updatedLinks.some((l) => l.url === candidate.liveUrl)) {
+      updatedLinks.unshift({
+        label: 'Live Interactive Application',
+        url: candidate.liveUrl,
+        isInternal: false,
+        type: 'evidence',
+      });
+    }
+    if (candidate.repoUrl && !updatedLinks.some((l) => l.url === candidate.repoUrl)) {
+      updatedLinks.push({
+        label: 'GitHub Source Repository',
+        url: candidate.repoUrl,
+        isInternal: false,
+        type: 'repository',
+      });
+    }
+
+    return {
+      ...project,
+      title: candidate.title,
+      summary: candidate.summary,
+      keyMetrics: candidate.metrics,
+      tools: candidate.stack,
+      evidenceUrl: candidate.liveUrl ?? project.evidenceUrl,
+      verifiedLinks: updatedLinks.length > 0 ? updatedLinks : project.verifiedLinks,
+      date: candidate.updatedAt,
+    };
+  });
+}
+
+export const projects: Project[] = mergeExternalManifests(baseProjects, externalManifests);

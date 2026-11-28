@@ -1,0 +1,49 @@
+# Reusable GitHub Action Workflow Template for Source Project Repositories
+# Place this in `.github/workflows/sync-portfolio.yml` inside source repos
+# (e.g. EquiTrack Analytics, IT Ticket Support & Performance Dashboard).
+#
+# Required Repository Secrets:
+# - VERCEL_DEPLOY_HOOK_URL: Vercel Deploy Hook URL for kaustubh-portfolio-six
+# - PORTFOLIO_SYNC_TOKEN (optional): GitHub PAT if dispatching manifest PRs
+
+name: Sync Release Manifest to Portfolio
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  validate-and-trigger-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout tagged release
+        uses: actions/checkout@v4
+
+      - name: Validate portfolio-manifest.json
+        run: |
+          if [ ! -f "portfolio-manifest.json" ]; then
+            echo "Error: portfolio-manifest.json not found in release."
+            exit 1
+          fi
+          node -e '
+            const fs = require("fs");
+            const m = JSON.parse(fs.readFileSync("portfolio-manifest.json", "utf8"));
+            const required = ["id", "title", "summary", "metrics", "stack", "updatedAt", "version"];
+            for (const key of required) {
+              if (!m[key]) throw new Error("Missing required manifest field: " + key);
+            }
+            if (!Array.isArray(m.metrics) || m.metrics.length === 0) {
+              throw new Error("metrics must be a non-empty array");
+            }
+            if (!Array.isArray(m.stack) || m.stack.length === 0) {
+              throw new Error("stack must be a non-empty array");
+            }
+            console.log("Validated manifest:", m.id, m.version);
+          '
+
+      - name: Trigger Portfolio Vercel Deploy Hook
+        if: ${{ secrets.VERCEL_DEPLOY_HOOK_URL != '' }}
+        run: |
+          curl -fsS -X POST "${{ secrets.VERCEL_DEPLOY_HOOK_URL }}"
+          echo "Triggered portfolio rebuild for tagged release ${{ github.ref_name }}."
