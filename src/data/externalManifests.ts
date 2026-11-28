@@ -110,4 +110,38 @@ export function validateProjectManifest(
  * (e.g. equitrack-analytics-os, it-support-analytics).
  * Empty by default until a tagged release (v*) pushes a verified manifest.
  */
-export const externalManifests: Record<string, ProjectManifest> = {};
+export const externalManifests: Record<string, ProjectManifest> = {
+  'equitrack-analytics-os': {
+    id: 'equitrack-analytics-os',
+    title: 'EquiTrack Analytics OS — Financial News Intelligence & Data Governance',
+    summary:
+      'Spreadsheet-based financial news intelligence and business reporting prototype combining structured register management, source compliance rules, analyst review workflows, and executive KPI monitoring across reported demonstration records.',
+    metrics: [
+      { label: 'Reported Records', value: '7', subtext: 'Prototype Demonstration Dataset', classification: 'PROTOTYPE DEMO' },
+      { label: 'Audit Health Score', value: '100/100', subtext: 'Reported: 0 Failed Audit Rules', classification: 'PROTOTYPE DEMO' },
+      { label: 'Source Compliance', value: '100%', subtext: 'Configured Approved-Source List', classification: 'PROTOTYPE DEMO' },
+      { label: 'Review Velocity', value: '57.1%', subtext: 'Below 70% Target (Backlog Flag)', classification: 'PROTOTYPE DEMO' },
+    ],
+    stack: ['Google Sheets', 'Financial Intelligence', 'Data Governance', 'KPI Frameworks', 'Workflow Quality Assurance'],
+    liveUrl: 'https://docs.google.com/spreadsheets/d/1kYoHioEEruwGpU0QJxqu3Ntk3JnnGSqb-e94ei4yjy0/edit?usp=drivesdk',
+    updatedAt: '2026-11-28',
+    version: '1.0.0',
+  },
+  'it-support-analytics': {
+    id: 'it-support-analytics',
+    title: 'IT Support Service Intelligence & Resolution Prediction',
+    summary:
+      'High-fidelity enterprise service-intelligence SaaS workspace analyzing 8,000 synthetic ticket transactions across calendar year 2024 with operational triage, SLA compliance analytics, and resolution-time modeling.',
+    metrics: [
+      { label: 'Dataset Scale', value: '8,000 Records', subtext: 'Synthetic transactions (CY 2024)', classification: 'DEMONSTRATED' },
+      { label: 'SLA Compliance', value: '87.9%', subtext: '5,814 / 6,612 completed tickets', classification: 'OPERATIONAL SLA' },
+      { label: 'Mean vs Median', value: '14.9h / 7.3h', subtext: 'Turnaround distribution skew', classification: 'DEMONSTRATED' },
+      { label: 'Model Baseline', value: '3.42h MAE', subtext: 'Offline LightGBM (R² 0.784)', classification: 'STUDY ESTIMATE' },
+    ],
+    stack: ['React 18 & TypeScript', 'Tailwind CSS & Recharts', 'dataService.ts Abstraction', 'MySQL Relational Schema', 'LightGBM Regression (Offline)'],
+    liveUrl: 'https://it-support-analytics.vercel.app/',
+    repoUrl: 'https://github.com/kaustubh21112002/it-support-analytics',
+    updatedAt: '2026-11-28',
+    version: '1.0.0',
+  },
+};
