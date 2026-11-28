@@ -237,7 +237,7 @@ const PersonalStoryVideo: React.FC = () => {
   };
 
   // Caption track support: ready for /videos/personal-story.vtt when governed track is provided
-  const captionTrackSrc = '';
+  const captionTrackSrc = '/captions/personal-story.vtt';
 
   return (
     <div className="relative rounded-3xl overflow-hidden border border-white/15 bg-black/40 group shadow-2xl">
@@ -258,9 +258,10 @@ const PersonalStoryVideo: React.FC = () => {
         {captionTrackSrc && (
           <track
             kind="captions"
-            label="English"
+            label="English captions"
             src={captionTrackSrc}
             srcLang="en"
+            default
           />
         )}
         Your browser does not support HTML5 video playback.

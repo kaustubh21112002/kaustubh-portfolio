@@ -148,6 +148,7 @@ export const Header: React.FC<HeaderProps> = ({ activeSection = 'hero' }) => {
       {/* 2. Floating Frosted Navigation Pill */}
       <header className="fixed top-5 left-0 right-0 z-50 flex items-center justify-center px-4 pointer-events-none">
         <nav
+          aria-label="Primary Navigation"
           className={`pointer-events-auto flex items-center justify-between gap-3 lg:gap-4 px-4 py-2 sm:px-5 sm:py-2 rounded-full border shadow-2xl transition-all duration-300 ${
             scrolled
               ? 'bg-white/90 dark:bg-[#12141c]/90 backdrop-blur-[24px] shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.6)] border-neutral-300 dark:border-white/20'
